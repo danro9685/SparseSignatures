@@ -1,0 +1,29 @@
+%\VignetteEngine{knitr::knitr}
+
+\documentclass[a4paper,9pt]{article}
+
+<<style-knitr,eval=TRUE,echo=FALSE,results="asis">>=
+BiocStyle::latex()
+@
+
+%% \VignetteIndexEntry{SOME TEXT HERE}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{url}
+
+\begin{document}
+
+\title{SOME TITLE HERE}
+
+\author{
+Authors here. 
+}
+
+\date{\today}
+\maketitle
+
+ALL THE CONTENTS HERE. 
+
+\end{document}
