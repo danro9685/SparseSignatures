@@ -48,19 +48,21 @@ load("data/patient.RData")
 load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
-K = 2:5
-lambda_values = seq(0.001,0.01,by=0.003)
+K = 2:12
+lambda_values = seq(0.000,0.050,by=0.010)
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patient,K=K,background_signature=genome$freq,lambda_values=lambda_values,iterations=20,seed=43899,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patient,K=K,background_signature=genome$freq,lambda_values=lambda_values,iterations=20,seed=59040,verbose=TRUE)
+save(signatures_with_genome,file="signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lambda_values=lambda_values,iterations=20,seed=43899,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lambda_values=lambda_values,iterations=20,seed=59040,verbose=TRUE)
+save(signatures_without_genome,file="signatures_without_genome.RData")
 
-# plot the signatures
-plotSignatures(signatures_with_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
-plotSignatures(signatures_without_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+# # plot the signatures
+# plotSignatures(signatures_with_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+# plotSignatures(signatures_without_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
 
-# plot the log-likelihood values
-plot(signatures_with_genome$loglik)
-plot(signatures_without_genome$loglik)
+# # plot the log-likelihood values
+# plot(signatures_with_genome$loglik)
+# plot(signatures_without_genome$loglik)
