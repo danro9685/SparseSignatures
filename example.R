@@ -47,14 +47,15 @@ clinical_data = read.csv("data/clinical_data.csv")
 load("data/patient.RData")
 load("data/genome.RData")
 
-# set the number of signatures
-K = 7
+# set the number of signatures to be considered
+K = 2:5
+lambda_values = seq(0.001,0.01,by=0.003)
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patient,K=K,background_signature=genome$freq,iterations=20,lambda_rate=0.01,seed=43899,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patient,K=K,background_signature=genome$freq,lambda_values=lambda_values,iterations=20,seed=43899,verbose=TRUE)
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,iterations=20,lambda_rate=0.01,seed=43899,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lambda_values=lambda_values,iterations=20,seed=43899,verbose=TRUE)
 
 # plot the signatures
 plotSignatures(signatures_with_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
