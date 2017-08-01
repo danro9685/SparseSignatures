@@ -59,10 +59,10 @@ save(signatures_with_genome,file="signatures_with_genome.RData")
 signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lambda_values=lambda_values,iterations=20,seed=59040,verbose=TRUE)
 save(signatures_without_genome,file="signatures_without_genome.RData")
 
-# # plot the signatures
-# plotSignatures(signatures_with_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
-# plotSignatures(signatures_without_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+# plot the signatures
+plotSignatures(signatures_with_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+plotSignatures(signatures_without_genome$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
 
-# # plot the log-likelihood values
-# plot(signatures_with_genome$loglik)
-# plot(signatures_without_genome$loglik)
+# plot the log-likelihood values
+plot(signatures_with_genome$loglik)
+plot(signatures_without_genome$loglik)
