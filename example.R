@@ -47,7 +47,7 @@ clinical_data = read.csv("data/clinical_data.csv")
 load("data/patient.RData")
 load("data/genome.RData")
 
-# set the number of signatures to be considered
+# set the number of signatures and lambda to be considered
 K = 2:5
 lambda_values = seq(0.001,0.01,by=0.003)
 
