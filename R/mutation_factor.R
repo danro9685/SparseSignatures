@@ -1,14 +1,8 @@
 # perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:12, background_signature = NULL, lambda_values = seq(0.000,0.050,by=0.010), iterations = 20, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), iterations = 20, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
-    
-    # compute the initial values of beta
-    if(verbose) {
-        cat("Computing the initial values of beta by standard NMF...","\n")
-    }
-    beta = t(nmfDecomposition(x=t(x),r=max(K))$w)
     
     # set 10% of the entries to 0 in order to perform cross validation
     x_cv = x
@@ -32,7 +26,7 @@
     for(k in K) {
             
         # get the first k signatures to be used for the current configuration
-        curr_beta = beta[1:k,]
+        curr_beta = t(nmfDecomposition(x=t(x),r=k)$w)
         pos_k = pos_k + 1
         
         # consider all the values for lambda
@@ -81,7 +75,7 @@
             error = 0
             for(i in 1:J) {
                 # compute for each trinucleotide the error between the observed counts, i.e., x, and the predicted ones
-                curr_error = mean((x[,k] - as.vector(curr_alpha %*% curr_beta[,k]))^2)
+                curr_error = mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
                 error = error + curr_error
             }
             error = error / J
@@ -98,7 +92,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.01, iterations = 20, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.5, iterations = 20, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -132,7 +126,7 @@
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.01, iterations = 20, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.5, iterations = 20, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -151,9 +145,15 @@
     # structure where to save the log-likelihood at each iteration 
     loglik = rep(NA,iterations)
     
+    # structure where to save the lambda values for each J
+    lambda_values = rep(NA,J)
+    
     if(verbose) {
         cat("Performing a total of",iterations,"EM iterations...","\n")
     }
+            
+    # normalize the rate of the current signature to sum to 1
+    beta = (beta / rowSums(beta))
     
     # repeat a 2 step algorithm iteratively, where first alpha is estimated by Non-Negative Linear Least Squares 
     # and, then, beta is estimated by Non-Negative Lasso
@@ -161,9 +161,6 @@
     best_alpha = NA
     best_beta = NA
     for(i in 1:iterations) {
-            
-        # normalize the rate of the current signature to sum to 1
-        beta = beta / rowSums(beta)
         
         # initialize the value of the log-likelihood for the current iteration
         loglik[i] = 0
@@ -181,12 +178,14 @@
             error = x[,k] - alpha[,1] * beta[1,k]
             
             # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
-            max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
-            lambda_value = max(max_lambda_value*lambda_rate,1e-4)
-            beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,lambda=lambda_value,intercept=FALSE,normalize=FALSE,path=FALSE)$coef[2,])
+            if(is.na(lambda_values[k])) {
+                max_lambda_value = max(abs(t(alpha[,2:K]) %*% error)) / n
+                lambda_values[k] = max(max_lambda_value*lambda_rate,1e-4)
+            }
+            beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,family="normal",lambda=lambda_values[k],intercept=FALSE,normalize=FALSE,path=FALSE)$coef[2,])
             
             # update the log-likelihood for the current iteration
-            curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_value * sum(beta[2:K,k])
+            curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
             loglik[i] = loglik[i] + curr_loglik
             
         }
