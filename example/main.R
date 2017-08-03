@@ -45,8 +45,9 @@ library("gridExtra")
             panel.grid.major = element_line(colour = "grey80"), 
             panel.grid.minor = element_blank()) + 
       ggtitle(sig)
-  } 
+  }
   grid.arrange(grobs=glist, ncol=ceiling(nrow(beta)/4))
+  
 }
 
 # load the data
