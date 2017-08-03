@@ -26,7 +26,8 @@
     for(k in K) {
             
         # get the first k signatures to be used for the current configuration
-        curr_beta = t(nmfDecomposition(x=t(x),r=k)$w)
+        curr_beta = basis(nmf(t(x),rank=k))
+        curr_beta = t(curr_beta)
         pos_k = pos_k + 1
         
         # consider all the values for lambda
@@ -109,7 +110,8 @@
         if(verbose) {
             cat("Computing the initial values of beta by standard NMF...","\n")
         }
-        beta = t(nmfDecomposition(x=t(x),r=K)$w)
+        beta = basis(nmf(t(x),rank=K))
+        beta = t(beta)
     }
     
     # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
