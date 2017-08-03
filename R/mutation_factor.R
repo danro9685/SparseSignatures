@@ -1,5 +1,5 @@
 # perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), cross_validation_entries = 0.1, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), cross_validation_entries = 0.15, iterations = 20, max_iterations_lasso = 100000, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -21,6 +21,11 @@
     rownames(grid_search) = paste0(as.character(K),"_signatures")
     colnames(grid_search) = paste0(as.character(lambda_values),"_lambda")
     
+    # structure to save the starting values of beta for each K
+    starting_beta = array(list(),c(length(K),1))
+    rownames(starting_beta) = paste0(as.character(K),"_signatures")
+    colnames(starting_beta) = "Value"
+    
     # consider all the values for K
     pos_k = 0
     for(k in K) {
@@ -29,6 +34,7 @@
         curr_beta = basis(nmf(t(x),rank=k))
         curr_beta = t(curr_beta)
         pos_k = pos_k + 1
+        starting_beta[[pos_k,1]] = curr_beta
         
         # consider all the values for lambda
         pos_l = 0
@@ -94,14 +100,14 @@
     }
     
     # save the results
-    results = list(grid_search=grid_search,mean_squared_error=mean_squared_error)
+    results = list(grid_search=grid_search,mean_squared_error=mean_squared_error,starting_beta=starting_beta)
     
     return(results)
     
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"estimateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.05, 0.1, 0.3, 0.5), lambda_grid_size = 5, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"estimateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.05, 0.1, 0.3, 0.5), lambda_grid_size = 5, iterations = 20, max_iterations_lasso = 100000, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -155,7 +161,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 100000, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -190,7 +196,7 @@
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 10000, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 100000, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -215,9 +221,6 @@
     if(verbose) {
         cat("Performing a total of",iterations,"EM iterations...","\n")
     }
-            
-    # normalize the rate of the current signature to sum to 1
-    beta = (beta / rowSums(beta))
     
     # repeat a 2 step algorithm iteratively, where first alpha is estimated by Non-Negative Linear Least Squares 
     # and, then, beta is estimated by Non-Negative Lasso
