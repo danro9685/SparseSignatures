@@ -60,9 +60,9 @@ signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lam
 save(signatures_without_genome,file="signatures_without_genome.RData")
 
 # plot the signatures
-###plotSignatures(signatures_with_genome$grid_search[[10,2]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
-###plotSignatures(signatures_without_genome$grid_search[[10,2]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+plotSignatures(signatures_with_genome$grid_search[[10,2]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+plotSignatures(signatures_without_genome$grid_search[[14,5]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
 
 # plot the log-likelihood values
-###plot(signatures_with_genome$grid_search[[10,2]]$loglik)
-###plot(signatures_without_genome$grid_search[[10,2]]$loglik)
+plot(signatures_with_genome$grid_search[[10,2]]$loglik)
+plot(signatures_without_genome$grid_search[[14,5]]$loglik)
