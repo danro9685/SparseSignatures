@@ -1,13 +1,13 @@
 # perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), iterations = 20, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), cross_validation_entries = 0.1, iterations = 20, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
     
-    # set 10% of the entries to 0 in order to perform cross validation
+    # set a percentage of cross_validation_entries entries to 0 in order to perform cross validation
     x_cv = x
     valid_entries = which(x_cv>0,arr.ind=TRUE)
-    cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*0.10),replace=FALSE),]
+    cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
     x_cv[cv_entries] = 0
     
     # perform a grid search to estimate the best values of K and lambda
@@ -34,7 +34,14 @@
         for(l in lambda_values) {
             
             # perform the inference
-            curr_results = nmfLassoK(x=x_cv,K=k,beta=curr_beta,background_signature=background_signature,lambda_rate=l,iterations=iterations,seed=round(runif(1)*100000),verbose=FALSE)
+            curr_results = nmfLassoK(x = x_cv, 
+                                     K = k, 
+                                     beta = curr_beta, 
+                                     background_signature = background_signature, 
+                                     lambda_rate = l, 
+                                     iterations = iterations, 
+                                     seed = round(runif(1)*100000), 
+                                     verbose = FALSE)
             
             # save the results for the current configuration
             pos_l = pos_l + 1
@@ -180,7 +187,7 @@
             # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
             if(is.na(lambda_values[k])) {
                 max_lambda_value = max(abs(t(alpha[,2:K]) %*% error)) / n
-                lambda_values[k] = max(max_lambda_value*lambda_rate,1e-4)
+                lambda_values[k] = max_lambda_value * lambda_rate
             }
             beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,family="normal",lambda=lambda_values[k],intercept=FALSE,normalize=FALSE,path=FALSE)$coef[2,])
             

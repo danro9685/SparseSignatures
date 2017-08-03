@@ -7,12 +7,14 @@ library("SomaticSignatures")
 library("nnlasso")
 library("nnls")
 source("R/mutation_factor.R")
+
+# libraries required to plot the extracted signatures
 library("data.table")
 library("ggplot2")
 library("gridExtra")
 
-# function to plot extracted signatures
-"plotSignatures" <- function( beta, patients_ids, genomeFreq = TRUE ) {
+# function to plot the extracted signatures
+"plotSignatures" <- function( beta, patientss_ids, genomeFreq = TRUE ) {
     
     # set rownames and colnames
     if(genomeFreq) {
@@ -21,7 +23,7 @@ library("gridExtra")
     else {
         rownames(beta) = paste0("S",1:nrow(beta))
     }
-    colnames(beta) = patients_ids
+    colnames(beta) = patientss_ids
     
     # make the plot
     x = as.data.table(melt(beta))
@@ -42,26 +44,27 @@ library("gridExtra")
     grid.arrange(grobs=glist,ncol=ceiling(nrow(beta)/4))
 }
 
-# read the data
-clinical_data = read.csv("data/clinical_data.csv")
-load("data/patient.RData")
+# load the data
+load("data/clinical_data.RData")
+load("data/patients.RData")
 load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
 lambda_values = seq(0.3,0.7,by=0.1)
+cross_validation_entries = 0.1
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patient,K=K,background_signature=genome$freq,lambda_values=lambda_values,iterations=20,seed=59040,verbose=TRUE)
-save(signatures_with_genome,file="signatures_with_genome.RData")
+signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries= cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
+save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patient,K=K,background_signature=NULL,lambda_values=lambda_values,iterations=20,seed=59040,verbose=TRUE)
-save(signatures_without_genome,file="signatures_without_genome.RData")
+signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries= cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
+save(signatures_without_genome,file="data/signatures_without_genome.RData")
 
 # plot the signatures
-plotSignatures(signatures_with_genome$grid_search[[10,2]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
-plotSignatures(signatures_without_genome$grid_search[[14,5]]$beta,patients_ids=colnames(patient),genomeFreq=TRUE)
+plotSignatures(signatures_with_genome$grid_search[[10,2]]$beta,patientss_ids=colnames(patients),genomeFreq=TRUE)
+plotSignatures(signatures_without_genome$grid_search[[14,5]]$beta,patientss_ids=colnames(patients),genomeFreq=TRUE)
 
 # plot the log-likelihood values
 plot(signatures_with_genome$grid_search[[10,2]]$loglik)
