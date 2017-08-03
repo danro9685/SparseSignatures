@@ -1,5 +1,5 @@
 # perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), cross_validation_entries = 0.1, iterations = 20, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = seq(0.3, 0.7, by = 0.1), cross_validation_entries = 0.1, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -41,6 +41,7 @@
                                      background_signature = background_signature, 
                                      lambda_rate = l, 
                                      iterations = iterations, 
+                                     max_iterations_lasso = max_iterations_lasso, 
                                      seed = round(runif(1)*100000), 
                                      verbose = FALSE)
             
@@ -99,8 +100,62 @@
     
 }
 
+# estimate the range of lambda values to be considered in the signature inference
+"estimateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.05, 0.1, 0.3, 0.5), lambda_grid_size = 5, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+    
+    # set the seed
+    set.seed(seed)
+    
+    # compute the initial values of beta
+    if(verbose) {
+        cat("Computing the initial values of beta by standard NMF...","\n")
+    }
+    beta = basis(nmf(t(x),rank=K))
+    beta = t(beta)
+    
+    if(verbose) {
+        cat("Estimating the signatures for the different values of lambda...","\n")
+    }
+    
+    # structure to save the estimated signatures
+    lambda_results = array(list(),c(length(K),length(lambda_values)))
+    rownames(lambda_results) = paste0(as.character(K),"_signatures")
+    colnames(lambda_results) = paste0(as.character(lambda_values),"_lambda")
+    
+    # perform signature discovery for all the values of lambda
+    cont = 0
+    for(l in lambda_values) {
+            
+        # perform the inference
+        curr_results = nmfLassoK(x = x, 
+                                 K = K, 
+                                 beta = beta, 
+                                 background_signature = background_signature, 
+                                 lambda_rate = l, 
+                                 iterations = iterations, 
+                                 max_iterations_lasso = max_iterations_lasso, 
+                                 seed = round(runif(1)*100000), 
+                                 verbose = FALSE)
+                                 
+        # save the results for the current configuration
+        cont = cont + 1
+        lambda_results[[1,cont]] = curr_results
+            
+        if(verbose) {
+            cat("Progress",paste0(round((cont/(length(K)*length(lambda_values)))*100,digits=3),"%..."),"\n")
+        }
+        
+    }
+    
+    # save the results
+    results = lambda_results
+    
+    return(results)
+    
+}
+
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.5, iterations = 20, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -128,14 +183,14 @@
     }
     
     # perform the discovery of the signatures
-    results = nmfLassoDecomposition(x,beta,lambda_rate,iterations,verbose)
+    results = nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,verbose)
     
     return(results)
     
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.5, iterations = 20, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.5, iterations = 20, max_iterations_lasso = 10000, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -191,7 +246,7 @@
                 max_lambda_value = max(abs(t(alpha[,2:K]) %*% error)) / n
                 lambda_values[k] = max_lambda_value * lambda_rate
             }
-            beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,family="normal",lambda=lambda_values[k],intercept=FALSE,normalize=FALSE,path=FALSE)$coef[2,])
+            beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,family="normal",lambda=lambda_values[k],intercept=FALSE,normalize=FALSE,maxiter=max_iterations_lasso,path=FALSE)$coef[2,])
             
             # update the log-likelihood for the current iteration
             curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
