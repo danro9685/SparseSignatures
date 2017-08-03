@@ -1,0 +1,175 @@
+%% LyX 2.2.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[LGR,T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\DeclareRobustCommand{\greektext}{%
+  \fontencoding{LGR}\selectfont\def\encodingdefault{LGR}}
+\DeclareRobustCommand{\textgreek}[1]{\leavevmode{\greektext #1}}
+\ProvideTextCommand{\~}{LGR}[1]{\char126#1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\renewcommand{\vec}[1]{\mathbf{#1}} 
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+\title{Extracting mutational signatures using LASSO}
+
+\author{Avantika Lal, Daniele Ramazzotti}
+\maketitle
+
+\section{Mutational signatures}
+
+Point mutations occurring in a genome can be divided into 96 categories
+based on the base being mutated, the base it is mutated into and its
+two flanking bases. Therefore, for any patient, it is possible to
+represent all the point mutations occurring in that patient's tumor
+as a vector $\mathbf{m}$ of length 96; $\mathbf{m}=$ {[}$m_{1...}$$m_{96}${]}
+, where each element $m_{j}$ represents the count of mutations of
+category $j$ in the patient. 
+
+A mutational signature represents the pattern of mutations produced
+by a mutagen or mutagenic process inside the cell. Each signature
+can be represented by a vector $\mathbf{s}$ of length 96; $\mathbf{s}=$
+{[}$s_{1...}$$s_{96}${]} where each element $s_{j}$ represents
+the probability that this particular mutagenic process generates a
+mutation of category $j$. Since these are probabilities, $\sum\limits _{j=1}^{96}s_{j}=$
+1.
+
+A patient's tumor genome can be exposed to multiple mutagenic processes,
+at different intensities. Therefore the vector of mutations in a single
+patient's tumor can be considered to be a weighted sum of K mutational
+signatures (K is an unknown number).
+
+\begin{equation}
+\mathbf{m}=\sum\limits _{i=1}^{K}\alpha_{i}\mathbf{s_{i}}
+\end{equation}
+
+Where $\alpha_{i}$ is the exposure of the patient to the mutagenic
+process with signature $\mathbf{s_{i}}$. 
+
+Our goal here is to extract the mutational signatures that best explain
+the mutation counts of a large number of patients.
+
+\section{Matrix Representation}
+
+When dealing with multiple patients, we can represent their mutation
+counts in matrix form. $M_{n\times J}$ is the matrix of counts, where
+each row represents the $i^{th}$ patient and each column represents
+the $j^{th}$ category. $M_{ij}$ is the number of mutations of the
+$j^{th}$ category in the $i^{th}$ patient.
+
+n = Number of patients
+
+J = number of mutation categories (96)
+
+K = number of signatures 
+
+Alexandrov et al. have represented $M$ as follows:
+
+\begin{equation}
+M=\alpha\beta
+\end{equation}
+
+Where
+
+$\alpha_{n\times K}$ is the weights matrix. $\alpha_{ij}$ is the
+weight for the $j^{th}$ signature in the $i^{th}$ patient.
+
+$\beta_{K\times J}$ is the signature matrix, where each row represents
+a signature. $\beta_{ij}$ is the proportion of mutations in the $i^{th}$
+signature that fall into the $j^{th}$ category.
+
+They then use NNMF (non-negative matrix factorization) to solve equation (2) for $\alpha$ and $\beta$.
+
+\section{Improvements to the method of Alexandrov et al.}
+
+We propose two improvements to this method:
+\begin{enumerate}
+\item We introduce a null model based on genome frequencies of trinucleotides.
+This represents the pattern of mutations that would be expected by
+random chance, without any specific mutational process. Effectively,
+it is a signature of randomness. We represent this by a vector $\mathbf{m_{0}}$
+of length J.
+\item We also introduce a sparsity constraint. While signatures are J-dimensional
+vectors, each mutagenic process in the cell is expected to affect
+only a few specific trinucleotides. Therefore, we expect the matrix
+\textgreek{b} to be sparse.
+\end{enumerate}
+Based on these, we now represent the matrix $M$ as:
+
+\begin{equation}
+M=\mathbf{\alpha_{0}^{\intercal}}\mathbf{m_{0}}+\alpha\beta+\lambda\lVert\beta\lVert
+\end{equation}
+
+Where $\mathbf{\alpha_{0}}$ is a vector of weights of length n.
+
+\section{Solving}
+
+Given $M,$ $\mathbf{m_{0}}$ and $\lambda$, we can obtain the maximum
+likelihood values of $\alpha$ and $\beta$ using a three-step approach. The first two steps are performed in an iterative EM (expectation maximization) manner to maximize the fit and enhancing sparsity in the resulting signatures. 
+\begin{enumerate}
+\item Fit $M=\mathbf{\mathbf{\alpha_{0}^{\intercal}}}\mathbf{m_{0}}+\alpha\beta$ using
+nnls (non-negative least squares)
+\item Fit the residual $M - \mathbf{\mathbf{\alpha_{0}^{\intercal}}}\mathbf{m_{0}} = \alpha\beta+\lambda\lVert\beta\lVert$ using nnlasso (Non-Negative Lasso).
+Currently we use the signatures derived from NMF as a starting point for our first two steps.
+\item At the end of the EM, normalize each row of $\beta$ to sum to 1 to get rates.
+\end{enumerate}
+Here we assume that the null model $\mathbf{m_{0}}$ is known. If
+it is unknown, it is also possible to infer both $\mathbf{m_{0}}$
+and $\mathbf{\alpha_{0}}$ using SVD.
+
+\section{Cross-validation to choose $\mathbf{\lambda}$ and K}
+
+We can use the following cross-validation strategy to choose optimal
+values of $\lambda$ and K:
+\begin{enumerate}
+\item Randomly leave out 10\% of the cells in the matrix $M$ to obtain
+matrix $M'$. 
+\[
+M'=\begin{pmatrix}m_{11} & [] & m_{13}\cdots & m_{1J}\\{}
+[] & m_{22} & m_{23}\cdots & m_{2J}\\
+\vdots & \vdots & \ddots & \vdots\\
+m_{n1} & \cdots & [] & m_{nJ}
+\end{pmatrix}
+\]
+\item Solve equation (3) using $M'$ in place of $M$ (We have to somehow
+impute the missing values).
+\item Predict the missing values.
+\item Compute average prediction error for multiple values of $\lambda$
+and K.
+\item Select values of $\lambda$ and K that minimize prediction error.
+\end{enumerate}
+
+\section{Accounting for individual copy number variation}
+
+Tumors have copy number changes, so the actual trinucleotide frequency
+is expected to differ slightly from patient to patient. Thus there
+should ideally be n indipendent null models (one for each patient). If we wish
+to account for this, we can define the null model $M_{0}$ as a n
+x J matrix.
+
+\begin{equation}
+M=\mathbf{\alpha_{0}^{\intercal}}\cdot M0+\alpha\beta+\lambda\lVert\beta\lVert
+\end{equation}
+
+Where:
+
+\[
+\mathbf{\alpha_{0}^{\intercal}}\circ M0=(\alpha_{i}\cdot m_{ij})=\begin{pmatrix}\alpha_{1}\cdot m_{11} & \cdots & \alpha_{1}\cdot m_{1J}\\
+\vdots & \ddots & \vdots\\
+\alpha_{n}\cdot m_{n1} & \cdots & \alpha_{n}\cdot m_{nJ}
+\end{pmatrix}
+\]
+
+\end{document}
