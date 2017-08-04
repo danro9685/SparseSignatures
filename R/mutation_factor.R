@@ -1,5 +1,5 @@
 # perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.1), cross_validation_entries = 0.15, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), cross_validation_entries = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -14,6 +14,30 @@
     cont = 0
     if(verbose) {
         cat("Performing a grid search to estimate the best values of K and lambda...","\n")
+    }
+    
+    # setting up parallel execution
+    if(is.na(num_processes) || is.null(num_processes)) {
+        parallel = NULL
+    }
+    else if(num_processes==Inf) {
+        cores = as.integer((detectCores()-1))
+        if(cores < 2) {
+            parallel = NULL
+        }
+        else {
+            num_processes = cores
+            parallel = makeCluster(num_processes,outfile="")
+            clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+        }
+    }
+    else {
+        parallel = makeCluster(num_processes,outfile="")
+        clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+    }
+    
+    if(verbose && !is.null(parallel)) {
+        cat("Executing",num_processes,"processes via parallel","\n")
     }
     
     # structure to save the results of the grid search
@@ -48,6 +72,8 @@
                                      lambda_rate = l, 
                                      iterations = iterations, 
                                      max_iterations_lasso = max_iterations_lasso, 
+                                     num_processes = NULL, 
+                                     parallel = parallel, 
                                      seed = round(runif(1)*100000), 
                                      verbose = FALSE)
             
@@ -63,6 +89,9 @@
         }
         
     }
+    
+    # close parallel
+    stopCluster(parallel)
     
     if(verbose) {
         cat("Evaluating the results of the cross validation in terms of mean squared error...","\n")
@@ -107,7 +136,7 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.1), lambda_grid_size = 5, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -121,6 +150,30 @@
     
     if(verbose) {
         cat("Estimating the signatures for the different values of lambda...","\n")
+    }
+    
+    # setting up parallel execution
+    if(is.na(num_processes) || is.null(num_processes)) {
+        parallel = NULL
+    }
+    else if(num_processes==Inf) {
+        cores = as.integer((detectCores()-1))
+        if(cores < 2) {
+            parallel = NULL
+        }
+        else {
+            num_processes = cores
+            parallel = makeCluster(num_processes,outfile="")
+            clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+        }
+    }
+    else {
+        parallel = makeCluster(num_processes,outfile="")
+        clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+    }
+    
+    if(verbose && !is.null(parallel)) {
+        cat("Executing",num_processes,"processes via parallel","\n")
     }
     
     # structure to save the estimated signatures
@@ -140,6 +193,8 @@
                                  lambda_rate = l, 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 
+                                 num_processes = NULL, 
+                                 parallel = parallel, 
                                  seed = round(runif(1)*100000), 
                                  verbose = FALSE)
                                  
@@ -153,6 +208,9 @@
         
     }
     
+    # close parallel
+    stopCluster(parallel)
+    
     # save the results
     results = lambda_results
     
@@ -161,7 +219,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.05, iterations = 20, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.05, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -188,15 +246,49 @@
         cat("Performing the discovery of the signatures by NMF with Lasso...","\n")
     }
     
+    # setting up parallel execution
+    close_parallel = FALSE
+    if(is.null(parallel)) {
+        if(is.na(num_processes) || is.null(num_processes)) {
+            parallel = NULL
+        }
+        else if(num_processes==Inf) {
+            cores = as.integer((detectCores()-1))
+            if(cores < 2) {
+                parallel = NULL
+            }
+            else {
+                num_processes = cores
+                parallel = makeCluster(num_processes,outfile="")
+                clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+                close_parallel = TRUE
+            }
+        }
+        else {
+            parallel = makeCluster(num_processes,outfile="")
+            clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+            close_parallel = TRUE
+        }
+        
+        if(verbose && !is.null(parallel)) {
+            cat("Executing",num_processes,"processes via parallel","\n")
+        }
+    }
+    
     # perform the discovery of the signatures
-    results = nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,verbose)
+    results = nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
+    
+    # close parallel
+    if(close_parallel) {
+        stopCluster(parallel)
+    }
     
     return(results)
     
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.05, iterations = 20, max_iterations_lasso = 10000, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.05, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -233,27 +325,105 @@
         loglik[i] = 0
         
         # update alpha independently for each patient by Non-Negative Linear Least Squares
-        for(j in 1:n) {
-            alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+        if(is.null(parallel)) {
+            for(j in 1:n) {
+                alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+            }
+        }
+        else {
+            
+            # compute alpha in parallel
+            j = 1:n
+            res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
+            clusterExport(parallel,varlist=c("x","beta"))
+            alpha_res = parLapply(parallel,j,function(j) {
+                return(nnls(t(beta),as.vector(x[j,]))$x)
+            })
+            
+            # reduce the results
+            for(j in 1:n) {
+                alpha[j,] = alpha_res[[j]]
+            }
+            
         }
         
         # update beta by Non-Negative Lasso
-        for(k in 1:J) {
+        if(is.null(parallel)) {
             
-            # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
-            # and the ones predicted by the first signature (i.e., which represents the noise model)
-            error = x[,k] - alpha[,1] * beta[1,k]
-            
-            # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
-            if(is.na(lambda_values[k])) {
-                max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
-                lambda_values[k] = max_lambda_value * lambda_rate
+            for(k in 1:J) {
+                
+                # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
+                # and the ones predicted by the first signature (i.e., which represents the noise model)
+                error = x[,k] - alpha[,1] * beta[1,k]
+                
+                # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
+                if(is.na(lambda_values[k])) {
+                    max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
+                    lambda_values[k] = max_lambda_value * lambda_rate
+                }
+                beta[2:K,k] = as.vector(nnlasso(x = alpha[,2:K], 
+                                                y = error, 
+                                                family = "normal", 
+                                                lambda = lambda_values[k], 
+                                                intercept = FALSE, 
+                                                normalize = FALSE, 
+                                                maxiter = max_iterations_lasso, 
+                                                path = FALSE)$coef[2,])
+                
+                # update the log-likelihood for the current iteration
+                curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
+                loglik[i] = loglik[i] + curr_loglik
+                
             }
-            beta[2:K,k] = as.vector(nnlasso(x=alpha[,2:K],y=error,family="normal",lambda=lambda_values[k],intercept=FALSE,normalize=FALSE,maxiter=max_iterations_lasso,path=FALSE)$coef[2,])
             
-            # update the log-likelihood for the current iteration
-            curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
-            loglik[i] = loglik[i] + curr_loglik
+        }
+        else {
+            
+            # if this is the first iteration, compute the values of lambda sequentially
+            if(is.na(lambda_values[1])) {
+                
+                for(k in 1:J) {
+                    error = x[,k] - alpha[,1] * beta[1,k]
+                    max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
+                    lambda_values[k] = max_lambda_value * lambda_rate
+                }
+                
+            }
+            
+            # perform the computations of beta in parallel
+            k = 1:J
+            res_clusterEvalQ = clusterEvalQ(parallel,library("nnlasso"))
+            clusterExport(parallel,varlist=c("x","alpha","beta","lambda_values","K","max_iterations_lasso"))
+            beta_res = parLapply(parallel,1:J,function(k) {
+                
+                # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
+                # and the ones predicted by the first signature (i.e., which represents the noise model)
+                error = x[,k] - alpha[,1] * beta[1,k]
+                
+                # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
+                beta[2:K,k] = as.vector(nnlasso(x = alpha[,2:K], 
+                                                y = error, 
+                                                family = "normal", 
+                                                lambda = lambda_values[k], 
+                                                intercept = FALSE, 
+                                                normalize = FALSE, 
+                                                maxiter = max_iterations_lasso, 
+                                                path = FALSE)$coef[2,])
+                
+                # compute the log-likelihood for the current iteration
+                curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
+                
+                return(list(beta=beta[2:K,k],loglik=curr_loglik))
+                
+            })
+            
+            # reduce the results
+            for(k in 1:J) {
+                
+                beta[2:K,k] = beta_res[[k]][["beta"]]
+                loglik[i] = loglik[i] + beta_res[[k]][["loglik"]]
+                
+            }
             
         }
         
@@ -276,8 +446,26 @@
     beta = beta / rowSums(beta)
         
     # final computation of alpha by Non-Negative Linear Least Squares using the normalized version o the best beta
-    for(j in 1:n) {
-        alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+    if(is.null(parallel)) {
+        for(j in 1:n) {
+            alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+        }
+    }
+    else {
+        
+        # compute alpha in parallel
+        j = 1:n
+        res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
+        clusterExport(parallel,varlist=c("x","beta"))
+        alpha_res = parLapply(parallel,j,function(j) {
+            return(nnls(t(beta),as.vector(x[j,]))$x)
+        })
+        
+        # reduce the results
+        for(j in 1:n) {
+            alpha[j,] = alpha_res[[j]]
+        }
+        
     }
     
     # save the results

@@ -6,6 +6,7 @@ setwd(work.dir)
 library("SomaticSignatures")
 library("nnlasso")
 library("nnls")
+library("parallel")
 source("R/mutation_factor.R")
 
 # libraries required to plot the extracted signatures
