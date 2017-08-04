@@ -57,8 +57,8 @@ load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
-lambda_values = seq(0.3,0.7,by=0.1)
-cross_validation_entries = 0.1
+lambda_values = c(0.01,0.05,0.1,0.2)
+cross_validation_entries = 0.15
 
 # fit the signatures with the genome frequencies as noise model
 signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries= cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
