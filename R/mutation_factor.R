@@ -37,7 +37,7 @@
     }
     
     if(verbose && !is.null(parallel)) {
-        cat("Executing",num_processes,"processes via parallel","\n")
+        cat("Executing",num_processes,"processes via parallel...","\n")
     }
     
     # structure to save the results of the grid search
@@ -173,7 +173,7 @@
     }
     
     if(verbose && !is.null(parallel)) {
-        cat("Executing",num_processes,"processes via parallel","\n")
+        cat("Executing",num_processes,"processes via parallel...","\n")
     }
     
     # structure to save the estimated signatures
@@ -271,7 +271,7 @@
         }
         
         if(verbose && !is.null(parallel)) {
-            cat("Executing",num_processes,"processes via parallel","\n")
+            cat("Executing",num_processes,"processes via parallel...","\n")
         }
     }
     
