@@ -57,21 +57,23 @@ load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
-lambda_values = c(0.01,0.05,0.1,0.2)
+lambda_values = c(0.01,0.05,0.1)
 cross_validation_entries = 0.15
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries= cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
 save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries= cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,iterations=20,seed=59040,verbose=TRUE)
 save(signatures_without_genome,file="data/signatures_without_genome.RData")
 
 # plot the signatures
-plotSignatures(signatures_with_genome$grid_search[[10,2]]$beta,patientss_ids=colnames(patients),genomeFreq=TRUE)
-plotSignatures(signatures_without_genome$grid_search[[14,5]]$beta,patientss_ids=colnames(patients),genomeFreq=TRUE)
+starting_beta = rbind(genome$freq,signatures_with_genome$starting_beta[[4]])/rowSums(rbind(genome$freq,signatures_with_genome$starting_beta[[4]]))
+plotSignatures(starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
+plotSignatures(signatures_with_genome$grid_search[[4,3]]$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
+plotSignatures(signatures_without_genome$grid_search[[4,3]]$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 
 # plot the log-likelihood values
-plot(signatures_with_genome$grid_search[[10,2]]$loglik)
-plot(signatures_without_genome$grid_search[[14,5]]$loglik)
+plot(signatures_with_genome$grid_search[[4,3]]$loglik)
+plot(signatures_without_genome$grid_search[[4,3]]$loglik)
