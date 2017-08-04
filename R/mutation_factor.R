@@ -335,7 +335,7 @@
             # compute alpha in parallel
             j = 1:n
             res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
-            clusterExport(parallel,varlist=c("x","beta"))
+            clusterExport(parallel,varlist=c("x","beta"),envir=environment())
             alpha_res = parLapply(parallel,j,function(j) {
                 return(nnls(t(beta),as.vector(x[j,]))$x)
             })
@@ -393,7 +393,7 @@
             # perform the computations of beta in parallel
             k = 1:J
             res_clusterEvalQ = clusterEvalQ(parallel,library("nnlasso"))
-            clusterExport(parallel,varlist=c("x","alpha","beta","lambda_values","K","max_iterations_lasso"))
+            clusterExport(parallel,varlist=c("x","alpha","beta","lambda_values","K","max_iterations_lasso"),envir=environment())
             beta_res = parLapply(parallel,1:J,function(k) {
                 
                 # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
@@ -456,7 +456,7 @@
         # compute alpha in parallel
         j = 1:n
         res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
-        clusterExport(parallel,varlist=c("x","beta"))
+        clusterExport(parallel,varlist=c("x","beta"),envir=environment())
         alpha_res = parLapply(parallel,j,function(j) {
             return(nnls(t(beta),as.vector(x[j,]))$x)
         })
