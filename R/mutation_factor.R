@@ -276,7 +276,14 @@
     }
     
     # perform the discovery of the signatures
-    results = nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
+    result = tryCatch({
+        nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
+    }, error = function(e) {
+        warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,".")
+        return(list(alpha=NA,beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations)))
+    })
+    
+    results = 
     
     # close parallel
     if(close_parallel) {
@@ -441,6 +448,19 @@
     }
     alpha = best_alpha
     beta = best_beta
+    
+    # check if the likelihood is increasing
+    if(length(loglik)>1) {
+        cont = 1
+        for(i in 2:length(loglik)) {
+            if(loglik[i]>loglik[(i-1)]) {
+                cont = cont + 1
+            }
+        }
+        if(cont/iterations<0.5) {
+            warning("The likelihood is not increasing during the EM, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,".")
+        }
+    }
     
     # normalize the rate of the signatures to sum to 1
     beta = beta / rowSums(beta)
