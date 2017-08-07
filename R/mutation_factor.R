@@ -5,7 +5,6 @@
     set.seed(seed)
     
     # perform a grid search to estimate the best values of K and lambda
-    cont = 0
     if(verbose) {
         cat("Performing a grid search to estimate the best values of K and lambda...","\n")
     }
@@ -64,6 +63,7 @@
         colnames(starting_beta) = "Value"
 
         # consider all the values for K
+        cont = 0
         pos_k = 0
         for(k in K) {
                 
