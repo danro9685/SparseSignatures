@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -58,9 +58,11 @@
         colnames(grid_search) = paste0(as.character(lambda_values),"_lambda")
         
         # structure to save the starting values of beta for each K
-        starting_beta = array(list(),c(length(K),1))
-        rownames(starting_beta) = paste0(as.character(K),"_signatures")
-        colnames(starting_beta) = "Value"
+        if(is.null(starting_beta)) {
+            starting_beta = array(list(),c(length(K),1))
+            rownames(starting_beta) = paste0(as.character(K),"_signatures")
+            colnames(starting_beta) = "Value"
+        }
 
         # consider all the values for K
         cont = 0
@@ -68,10 +70,15 @@
         for(k in K) {
                 
             # get the first k signatures to be used for the current configuration
-            curr_beta = basis(nmf(t(x),rank=k))
-            curr_beta = t(curr_beta)
             pos_k = pos_k + 1
-            starting_beta[[pos_k,1]] = curr_beta
+            if(is.null(starting_beta)) {
+                curr_beta = basis(nmf(t(x),rank=k))
+                curr_beta = t(curr_beta)
+                starting_beta[[pos_k,1]] = curr_beta
+            }
+            else {
+                curr_beta = starting_beta[[pos_k,1]]
+            }
             
             # consider all the values for lambda
             pos_l = 0
@@ -172,17 +179,19 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
     
     # compute the initial values of beta
-    if(verbose) {
-        cat("Computing the initial values of beta by standard NMF...","\n")
+    if(is.null(beta)) {
+        if(verbose) {
+            cat("Computing the initial values of beta by standard NMF...","\n")
+        }
+        beta = basis(nmf(t(x),rank=K))
+        beta = t(beta)
     }
-    beta = basis(nmf(t(x),rank=K))
-    beta = t(beta)
     
     if(verbose) {
         cat("Estimating the signatures for the different values of lambda...","\n")
