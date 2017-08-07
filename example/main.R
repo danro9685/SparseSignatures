@@ -34,8 +34,8 @@ library("gridExtra")
   glist = list()
   
   for(i in 1:nrow(beta)) {
-    sig = rownames(beta)[i]
-    glist[[i]] = ggplot(x[Var1 == sig]) + 
+      sig = rownames(beta)[i]
+      glist[[i]] = ggplot(x[Var1 == sig]) + 
       geom_bar(aes(x = context, y = value, fill = alt), stat = "identity", position = "identity") + 
       facet_grid(.~alt) + 
       theme(legend.position="none", 
@@ -58,15 +58,16 @@ load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
-lambda_values = c(0.01,0.05,0.10,0.15)
+lambda_values = c(0.01,0.05,0.10,0.15,0.20)
 cross_validation_entries = 0.15
+cross_validation_iterations = 10
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,iterations=20, max_iterations_lasso=10000,num_processes=4,seed=59040,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=30021,verbose=TRUE)
 save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,iterations=20, max_iterations_lasso=10000,num_processes=4,seed=59040,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=30021,verbose=TRUE)
 save(signatures_without_genome,file="data/signatures_without_genome.RData")
 
 # plot the signatures

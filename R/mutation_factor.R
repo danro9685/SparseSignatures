@@ -1,14 +1,8 @@
-# perform the discovery of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), cross_validation_entries = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+# perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
+"nmfLasso" <- function( x, K = 2:15, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
-    
-    # set a percentage of cross_validation_entries entries to 0 in order to perform cross validation
-    x_cv = x
-    valid_entries = which(x_cv>0,arr.ind=TRUE)
-    cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
-    x_cv[cv_entries] = 0
     
     # perform a grid search to estimate the best values of K and lambda
     cont = 0
@@ -40,54 +34,79 @@
         cat("Executing",num_processes,"processes via parallel...","\n")
     }
     
-    # structure to save the results of the grid search
-    grid_search = array(list(),c(length(K),length(lambda_values)))
-    rownames(grid_search) = paste0(as.character(K),"_signatures")
-    colnames(grid_search) = paste0(as.character(lambda_values),"_lambda")
+    # structure to save the results of the grid search for all the cross_validation_iterations
+    grid_search_iterations = list()
     
-    # structure to save the starting values of beta for each K
-    starting_beta = array(list(),c(length(K),1))
-    rownames(starting_beta) = paste0(as.character(K),"_signatures")
-    colnames(starting_beta) = "Value"
-    
-    # consider all the values for K
-    pos_k = 0
-    for(k in K) {
-            
-        # get the first k signatures to be used for the current configuration
-        curr_beta = basis(nmf(t(x),rank=k))
-        curr_beta = t(curr_beta)
-        pos_k = pos_k + 1
-        starting_beta[[pos_k,1]] = curr_beta
+    # structure to save the starting values of beta for each K for all the cross_validation_iterations
+    starting_beta_iterations = list()
+
+    # repeat the estimation for a number of cross_validation_iterations
+    for(cv_iteration in 1:cross_validation_iterations) {
+                
+        if(verbose) {
+            cat(paste0("Performing cross validation iteration ",cv_iteration," out of ",cross_validation_iterations,"..."),"\n")
+        }
+
+        # set a percentage of cross_validation_entries entries to 0 in order to perform cross validation
+        x_cv = x
+        valid_entries = which(x_cv>0,arr.ind=TRUE)
+        cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
+        x_cv[cv_entries] = 0
         
-        # consider all the values for lambda
-        pos_l = 0
-        for(l in lambda_values) {
+        # structure to save the results of the grid search
+        grid_search = array(list(),c(length(K),length(lambda_values)))
+        rownames(grid_search) = paste0(as.character(K),"_signatures")
+        colnames(grid_search) = paste0(as.character(lambda_values),"_lambda")
+        
+        # structure to save the starting values of beta for each K
+        starting_beta = array(list(),c(length(K),1))
+        rownames(starting_beta) = paste0(as.character(K),"_signatures")
+        colnames(starting_beta) = "Value"
+
+        # consider all the values for K
+        pos_k = 0
+        for(k in K) {
+                
+            # get the first k signatures to be used for the current configuration
+            curr_beta = basis(nmf(t(x),rank=k))
+            curr_beta = t(curr_beta)
+            pos_k = pos_k + 1
+            starting_beta[[pos_k,1]] = curr_beta
             
-            # perform the inference
-            curr_results = nmfLassoK(x = x_cv, 
-                                     K = k, 
-                                     beta = curr_beta, 
-                                     background_signature = background_signature, 
-                                     lambda_rate = l, 
-                                     iterations = iterations, 
-                                     max_iterations_lasso = max_iterations_lasso, 
-                                     num_processes = NULL, 
-                                     parallel = parallel, 
-                                     seed = round(runif(1)*100000), 
-                                     verbose = FALSE)
-            
-            # save the results for the current configuration
-            pos_l = pos_l + 1
-            grid_search[[pos_k,pos_l]] = curr_results
-            
-            if(verbose) {
-                cont = cont + 1
-                cat("Progress",paste0(round((cont/(length(K)*length(lambda_values)))*100,digits=3),"%..."),"\n")
+            # consider all the values for lambda
+            pos_l = 0
+            for(l in lambda_values) {
+                
+                # perform the inference
+                curr_results = nmfLassoK(x = x_cv, 
+                                         K = k, 
+                                         beta = curr_beta, 
+                                         background_signature = background_signature, 
+                                         lambda_rate = l, 
+                                         iterations = iterations, 
+                                         max_iterations_lasso = max_iterations_lasso, 
+                                         num_processes = NULL, 
+                                         parallel = parallel, 
+                                         seed = round(runif(1)*100000), 
+                                         verbose = FALSE)
+                
+                # save the results for the current configuration
+                pos_l = pos_l + 1
+                grid_search[[pos_k,pos_l]] = curr_results
+                
+                if(verbose) {
+                    cont = cont + 1
+                    cat("Progress",paste0(round((cont/(length(K)*length(lambda_values)))*100,digits=3),"%..."),"\n")
+                }
+                
             }
             
         }
         
+        # save the results for the current iteration
+        starting_beta_iterations[[cv_iteration]] = starting_beta
+        grid_search_iterations[[cv_iteration]] = grid_search
+
     }
     
     # close parallel
@@ -96,47 +115,64 @@
     if(verbose) {
         cat("Evaluating the results of the cross validation in terms of mean squared error...","\n")
     }
+
+    # structure to save the mean squared errors for all the cross_validation_iterations
+    mean_squared_error_iterations = list()
+
+    # repeat the estimation for a number of cross_validation_iterations
+    for(cv_iteration in 1:cross_validation_iterations) {
     
-    # structure to save the mean squared errors
-    mean_squared_error = array(NA,c(length(K),length(lambda_values)))
-    rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
-    colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
-    
-    # assess the results of the cross validation by mean squared error
-    J = dim(x)[2]
-    pos_k = 0
-    for(k in K) {
-        pos_k = pos_k + 1
-        pos_l = 0
-        for(l in lambda_values) {
-            
-            # consider the current configuration
-            pos_l = pos_l + 1
-            curr_alpha = grid_search[[pos_k,pos_l]][["alpha"]]
-            curr_beta = grid_search[[pos_k,pos_l]][["beta"]]
-            
-            # compute the mean squared error
-            error = 0
-            for(i in 1:J) {
-                # compute for each trinucleotide the error between the observed counts, i.e., x, and the predicted ones
-                curr_error = mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
-                error = error + curr_error
+        # structure to save the mean squared errors
+        mean_squared_error = array(NA,c(length(K),length(lambda_values)))
+        rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
+        colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
+        
+        # assess the results of the cross validation by mean squared error
+        J = dim(x)[2]
+        pos_k = 0
+        for(k in K) {
+            pos_k = pos_k + 1
+            pos_l = 0
+            for(l in lambda_values) {
+                
+                # consider the current configuration
+                pos_l = pos_l + 1
+                curr_alpha = grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["alpha"]]
+                curr_beta = grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["beta"]]
+                
+                # compute the mean squared error
+                if(!is.na(curr_alpha)&&!is.na(curr_beta)) {
+                    error = 0
+                    for(i in 1:J) {
+                        # compute for each trinucleotide the error between the observed counts, i.e., x, and the predicted ones
+                        curr_error = mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
+                        error = error + curr_error
+                    }
+                    error = error / J
+                }
+                else {
+                    error = NA
+                }
+
+                mean_squared_error[pos_k,pos_l] = error
+                
             }
-            error = error / J
-            mean_squared_error[pos_k,pos_l] = error
-            
         }
+
+        # save the results for the current iteration
+        mean_squared_error_iterations[[cv_iteration]] = mean_squared_error
+
     }
     
     # save the results
-    results = list(grid_search=grid_search,mean_squared_error=mean_squared_error,starting_beta=starting_beta)
+    results = list(grid_search=grid_search_iterations,mean_squared_error=mean_squared_error_iterations,starting_beta=starting_beta_iterations)
     
     return(results)
     
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 8, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -276,14 +312,12 @@
     }
     
     # perform the discovery of the signatures
-    result = tryCatch({
+    results = tryCatch({
         nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
     }, error = function(e) {
         warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,".")
         return(list(alpha=NA,beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations)))
     })
-    
-    results = 
     
     # close parallel
     if(close_parallel) {
