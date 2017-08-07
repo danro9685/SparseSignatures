@@ -3,20 +3,27 @@ setwd("~/Documents/GitHub/SparseSignatures/")
 
 #Load libraru
 require("deconstructSigs")
+require("BSgenome.Hsapiens.1000genomes.hs37d5")
+require("data.table")
 
 #Load data
 load("data/cna.RData")
 load("data/ssm.RData")
 
+setkey(cna, patient, chrom)
+setkey(ssm, patient, chrom)
+
 #Function to get snvs in specific intervals
 intersectSnvCna = function(ssm, cna){
   snvs_in = c()
+  ssm[, index:= 1:nrow(ssm)]
   for(i in 1:nrow(cna)){
-    snvs_in = c(snvs_in, which(ssm[,1] == cna[i,1] & 
-                    ssm[,2] == cna[i,2] & 
-                    ssm[,3] >= cna[i,3] & 
-                    ssm[,3] <= cna[i,4]))
+    snvs_in = c(snvs_in, ssm[.(cna[i, patient], cna[i, chrom])][pos >= cna[i,start] & pos <= cna[i,end], index])
+    if(i %% 5000 == 0){
+     cat(paste0("completed ", i, " of ", nrow(cna), " rows.\n"))
+    }
   }
+  ssm[, index := NULL]
   return(snvs_in)
 }
 
