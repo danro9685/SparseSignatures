@@ -3,7 +3,7 @@ work.dir = "/Users/daniele/Documents/Stanford-github/SparseSignatures"
 setwd(work.dir)
 
 # load the required libraries and sources
-library("SomaticSignatures")
+library("NMF")
 library("nnlasso")
 library("nnls")
 library("parallel")
