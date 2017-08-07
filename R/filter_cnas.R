@@ -37,8 +37,8 @@ filterDiploidSnvs = function(snvs, cna){
 ssm_filtered = filterDiploidSnvs(ssm, cna)
 
 #Make filtered motif table
-patients_filtered = mut.to.sigs.input(snvs_out, "sample", "chrom", "pos", "ref", "alt", bsg = BSgenome.Hsapiens.1000genomes.hs37d5)
+patients_filtered = mut.to.sigs.input(ssm_filtered, "patient", "chrom", "pos", "ref", "alt", bsg = BSgenome.Hsapiens.1000genomes.hs37d5)
 patients_filtered = patients_filtered[sort(colnames(patients_filtered))]
 
 #Save data
-save(patients_filtered, file = "patients_filtered.RData")
+save(patients_filtered, file = "data/patients_filtered.RData")
