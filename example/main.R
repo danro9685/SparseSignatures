@@ -59,15 +59,15 @@ load("data/genome.RData")
 # set the number of signatures and lambda to be considered
 K = 2:15
 lambda_values = c(0.01,0.05,0.10,0.15,0.20)
-cross_validation_entries = 0.15
-cross_validation_iterations = 10
+cross_validation_entries = 0.10
+cross_validation_iterations = 20
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=30021,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=84300,verbose=TRUE)
 save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=30021,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=84300,verbose=TRUE)
 save(signatures_without_genome,file="data/signatures_without_genome.RData")
 
 # plot the signatures

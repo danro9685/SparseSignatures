@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15, 0.20), cross_validation_entries = 0.10, cross_validation_iterations = 20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -116,9 +116,6 @@
 
     }
     
-    # close parallel
-    stopCluster(parallel)
-    
     if(verbose) {
         cat("Evaluating the results of the cross validation in terms of mean squared error...","\n")
     }
@@ -171,8 +168,88 @@
 
     }
     
+    if(verbose) {
+        cat("Estimating the best configuration...","\n")
+    }
+    
+    # structure to save the mean squared errors averaged over the cross_validation_iterations
+    mean_squared_error = array(list(),c(length(K),length(lambda_values)))
+    rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
+    colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
+    
+    # average the results over the different cross_validation_iterations
+    for(i in 1:length(mean_squared_error_iterations)) {
+        curr_mean_squared_error = mean_squared_error_iterations[[i]]
+        for(j in 1:nrow(mean_squared_error)) {
+            for(k in 1:ncol(mean_squared_error)) {
+                mean_squared_error[j,k] = list(c(unlist(mean_squared_error[j,k]),curr_mean_squared_error[j,k]))
+            }
+        }
+    }
+    for(j in 1:nrow(mean_squared_error)) {
+        for(k in 1:ncol(mean_squared_error)) {
+            mean_squared_error[j,k] = mean(unlist(mean_squared_error[j,k]),na.rm=TRUE)
+        }
+    }
+    
+    # find the best configuration
+    best_j = NA
+    best_k = NA
+    best_result = NA
+    for(j in 1:nrow(mean_squared_error)) {
+        for(k in 1:ncol(mean_squared_error)) {
+            if(is.na(best_result)&&!is.nan(as.numeric(mean_squared_error[j,k]))) {
+                best_result = as.numeric(mean_squared_error[j,k])
+                best_j = j
+                best_k = k
+            }
+            else if(!is.nan(as.numeric(mean_squared_error[j,k]))) {
+                if(as.numeric(mean_squared_error[j,k])<best_result) {
+                    best_result = as.numeric(mean_squared_error[j,k])
+                    best_j = j
+                    best_k = k
+                }
+            }
+        }
+    }
+    
+    # compute the signatures for the best configuration
+    if(!is.na(best_j)&&!is.na(best_k)) {
+
+        # set the starting beta values
+        if(is.null(starting_beta)) {
+            curr_beta = NULL
+        }
+        else {
+            curr_beta = starting_beta[[K[best_j],1]]
+        }
+
+        # perform the inference
+        curr_results = nmfLassoK(x = x, 
+                                 K = K[best_j], 
+                                 beta = curr_beta, 
+                                 background_signature = background_signature, 
+                                 lambda_rate = lambda_values[best_k], 
+                                 iterations = iterations, 
+                                 max_iterations_lasso = max_iterations_lasso, 
+                                 num_processes = NULL, 
+                                 parallel = parallel, 
+                                 seed = round(runif(1)*100000), 
+                                 verbose = TRUE)
+
+        # save the results
+        best_configuration = curr_results
+
+    }
+    else {
+        best_configuration = NA
+    }
+    
+    # close parallel
+    stopCluster(parallel)
+    
     # save the results
-    results = list(grid_search=grid_search_iterations,mean_squared_error=mean_squared_error_iterations,starting_beta=starting_beta_iterations)
+    results = list(grid_search=grid_search_iterations,mean_squared_error=mean_squared_error_iterations,starting_beta=starting_beta_iterations,best_configuration=best_configuration)
     
     return(results)
     
