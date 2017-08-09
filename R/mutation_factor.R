@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.20, 0.30), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), cross_validation_entries = 0.15, cross_validation_iterations = 20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -172,7 +172,7 @@
         cat("Estimating the best configuration...","\n")
     }
     
-    # structure to save the mean squared errors averaged over the cross_validation_iterations
+    # structure to save the mean squared errors for all the cross_validation_iterations
     mean_squared_error = array(list(),c(length(K),length(lambda_values)))
     rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
     colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
@@ -186,9 +186,15 @@
             }
         }
     }
-    for(j in 1:nrow(mean_squared_error)) {
-        for(k in 1:ncol(mean_squared_error)) {
-            mean_squared_error[j,k] = mean(unlist(mean_squared_error[j,k]),na.rm=TRUE)
+    
+    # structure to save the mean squared errors averaged over the cross_validation_iterations
+    mean_squared_error_avg = array(NA,c(length(K),length(lambda_values)))
+    rownames(mean_squared_error_avg) = paste0(as.character(K),"_signatures")
+    colnames(mean_squared_error_avg) = paste0(as.character(lambda_values),"_lambda")
+    
+    for(j in 1:nrow(mean_squared_error_avg)) {
+        for(k in 1:ncol(mean_squared_error_avg)) {
+            mean_squared_error_avg[j,k] = mean(unlist(mean_squared_error[j,k]),na.rm=TRUE)
         }
     }
     
@@ -196,16 +202,16 @@
     best_j = NA
     best_k = NA
     best_result = NA
-    for(j in 1:nrow(mean_squared_error)) {
-        for(k in 1:ncol(mean_squared_error)) {
-            if(is.na(best_result)&&!is.nan(as.numeric(mean_squared_error[j,k]))) {
-                best_result = as.numeric(mean_squared_error[j,k])
+    for(j in 1:nrow(mean_squared_error_avg)) {
+        for(k in 1:ncol(mean_squared_error_avg)) {
+            if(is.na(best_result)&&!is.nan(mean_squared_error_avg[j,k])) {
+                best_result = mean_squared_error_avg[j,k]
                 best_j = j
                 best_k = k
             }
-            else if(!is.nan(as.numeric(mean_squared_error[j,k]))) {
-                if(as.numeric(mean_squared_error[j,k])<best_result) {
-                    best_result = as.numeric(mean_squared_error[j,k])
+            else if(!is.nan(mean_squared_error_avg[j,k])) {
+                if(mean_squared_error_avg[j,k]<best_result) {
+                    best_result = mean_squared_error_avg[j,k]
                     best_j = j
                     best_k = k
                 }
@@ -217,12 +223,7 @@
     if(!is.na(best_j)&&!is.na(best_k)) {
 
         # set the starting beta values
-        if(is.null(starting_beta)) {
-            curr_beta = NULL
-        }
-        else {
-            curr_beta = starting_beta[[K[best_j],1]]
-        }
+        curr_beta = starting_beta[[K[best_j],1]]
 
         # perform the inference
         curr_results = nmfLassoK(x = x, 
@@ -239,7 +240,9 @@
 
         # save the results
         best_configuration = curr_results
+        best_configuration[["mean_squared_error_avg"]] = mean_squared_error_avg
         best_configuration[["starting_beta"]] = curr_beta
+        best_configuration[["background_signature"]] = background_signature
         best_configuration[["K"]] = K[best_j]
         best_configuration[["lambda_rate"]] = lambda_values[best_k]
 
@@ -259,7 +262,7 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.20, 0.30), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -404,7 +407,7 @@
     results = tryCatch({
         nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
     }, error = function(e) {
-        warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,".")
+        warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
         return(list(alpha=NA,beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations)))
     })
     
@@ -581,7 +584,7 @@
             }
         }
         if(cont/iterations<0.5) {
-            warning("The likelihood is not increasing during the EM, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,".")
+            warning("The likelihood is not increasing during the EM, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
         }
     }
     

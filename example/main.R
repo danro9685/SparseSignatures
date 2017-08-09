@@ -16,39 +16,39 @@ library("gridExtra")
 
 # function to plot extracted signatures
 "plotSignatures" <- function( beta, patients_ids = colnames(beta), genomeFreq = TRUE ) {
-  
-  # set rownames and colnames
-  if(genomeFreq) {
-    rownames(beta) = c("Background",paste0("S",1:(nrow(beta)-1)))
-  }
-  else {
-    rownames(beta) = paste0("S",1:nrow(beta))
-  }
-  colnames(beta) = patients_ids
-  
-  # make the plot
-  x = as.data.table(melt(beta))
-  x[,context := paste0(substr(Var2,1,1),".",substr(Var2,7,7))]
-  x[,alt := paste0(substr(Var2,3,3),">",substr(Var2,5,5))]
-  
-  glist = list()
-  
-  for(i in 1:nrow(beta)) {
-      sig = rownames(beta)[i]
-      glist[[i]] = ggplot(x[Var1 == sig]) + 
-      geom_bar(aes(x = context, y = value, fill = alt), stat = "identity", position = "identity") + 
-      facet_grid(.~alt) + 
-      theme(legend.position="none", 
+    
+    # set rownames and colnames
+    if(genomeFreq) {
+        rownames(beta) = c("Background",paste0("S",1:(nrow(beta)-1)))
+    }
+    else {
+        rownames(beta) = paste0("S",1:nrow(beta))
+    }
+    colnames(beta) = patients_ids
+    
+    # make the plot
+    x = as.data.table(melt(beta))
+    x[,context := paste0(substr(Var2,1,1),".",substr(Var2,7,7))]
+    x[,alt := paste0(substr(Var2,3,3),">",substr(Var2,5,5))]
+    
+    glist = list()
+    
+    for(i in 1:nrow(beta)) {
+        sig = rownames(beta)[i]
+        glist[[i]] = ggplot(x[Var1 == sig]) + 
+        geom_bar(aes(x = context, y = value, fill = alt), stat = "identity", position = "identity") + 
+        facet_grid(.~alt) + 
+        theme(legend.position="none", 
             axis.text.x = element_text(angle = 90, hjust = 1),
             axis.ticks.x = element_blank(),
             axis.title.y = element_blank(),
-            panel.background = element_rect(fill = "white", colour = NA), 
-            panel.grid.major = element_line(colour = "grey80"), 
+            panel.background = element_rect(fill = "white", colour = NA),
+            panel.grid.major = element_line(colour = "grey80"),
             panel.grid.minor = element_blank()) + 
-      ggtitle(sig)
-  }
-  grid.arrange(grobs=glist, ncol=ceiling(nrow(beta)/4))
-  
+        ggtitle(sig)
+    }
+    grid.arrange(grobs=glist, ncol=ceiling(nrow(beta)/4))
+    
 }
 
 # load the data
@@ -58,22 +58,30 @@ load("data/genome.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
-lambda_values = c(0.01,0.05,0.10,0.20,0.30)
+lambda_values = c(0.01,0.05,0.10,0.30,0.50)
 cross_validation_entries = 0.15
-cross_validation_iterations = 10
+cross_validation_iterations = 20
+num_processes = 10
+my_seed = 53277
 
 # fit the signatures with the genome frequencies as noise model
-signatures_with_genome = nmfLasso(x=patients,K=K,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=23311,verbose=TRUE)
+signatures_with_genome = nmfLasso(x=patients,K=K,starting_beta=NULL,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed,verbose=TRUE)
 save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
 # fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patients,K=K,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries, cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=4,seed=23311,verbose=TRUE)
+signatures_without_genome = nmfLasso(x=patients,K=K,starting_beta=NULL,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed,verbose=TRUE)
 save(signatures_without_genome,file="data/signatures_without_genome.RData")
 
-# plot the signatures
-plotSignatures(signatures_with_genome$best_configuration$starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
-plotSignatures(signatures_without_genome$best_configuration$starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
+# plot the signatures with a given genome
+starting_beta = rbind(signatures_with_genome$best_configuration$background_signature,signatures_with_genome$best_configuration$starting_beta)
+starting_beta = starting_beta / rowSums(starting_beta)
+plotSignatures(starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 plotSignatures(signatures_with_genome$best_configuration$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
+
+# plot the signatures without a given genome
+starting_beta = rbind(signatures_without_genome$best_configuration$background_signature,signatures_without_genome$best_configuration$starting_beta)
+starting_beta = starting_beta / rowSums(starting_beta)
+plotSignatures(starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 plotSignatures(signatures_without_genome$best_configuration$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 
 # plot the log-likelihood values
