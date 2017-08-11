@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), cross_validation_entries = 0.15, cross_validation_iterations = 20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -242,6 +242,9 @@
         best_configuration = curr_results
         best_configuration[["mean_squared_error_avg"]] = mean_squared_error_avg
         best_configuration[["starting_beta"]] = curr_beta
+        if(is.null(background_signature)) {
+            background_signature = best_configuration$beta["background_signature",]
+        }
         best_configuration[["background_signature"]] = background_signature
         best_configuration[["K"]] = K[best_j]
         best_configuration[["lambda_rate"]] = lambda_values[best_k]
