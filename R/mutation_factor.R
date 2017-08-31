@@ -223,7 +223,7 @@
     if(!is.na(best_j)&&!is.na(best_k)) {
 
         # set the starting beta values
-        curr_beta = starting_beta[[K[best_j],1]]
+        curr_beta = starting_beta[[best_j,1]]
 
         # perform the inference
         curr_results = nmfLassoK(x = x, 
