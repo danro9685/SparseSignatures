@@ -35,9 +35,6 @@
     
     # structure to save the results of the grid search for all the cross_validation_iterations
     grid_search_iterations = list()
-    
-    # structure to save the starting values of beta for each K for all the cross_validation_iterations
-    starting_beta_iterations = list()
 
     # repeat the estimation for a number of cross_validation_iterations
     for(cv_iteration in 1:cross_validation_iterations) {
@@ -121,7 +118,6 @@
         }
         
         # save the results for the current iteration
-        starting_beta_iterations[[cv_iteration]] = starting_beta
         grid_search_iterations[[cv_iteration]] = grid_search
 
     }
@@ -186,9 +182,9 @@
     mean_squared_error_last = mean_squared_error_iterations[[length(mean_squared_error_iterations)]]
     
     # find the best configuration
+    best_result = NA
     best_j = NA
     best_k = NA
-    best_result = NA
     for(j in 1:nrow(mean_squared_error_last)) {
         for(k in 1:ncol(mean_squared_error_last)) {
             if(is.na(best_result)&&!is.nan(mean_squared_error_last[j,k])) {
@@ -227,9 +223,9 @@
 
         # save the results
         best_configuration = curr_results
-        best_configuration[["mean_squared_error"]] = mean_squared_error_last
-        best_configuration[["starting_beta"]] = curr_beta
         best_configuration[["background_signature"]] = background_signature
+        best_configuration[["starting_beta"]] = curr_beta
+        best_configuration[["mean_squared_error"]] = best_result
         best_configuration[["K"]] = K[best_j]
         best_configuration[["lambda_rate"]] = lambda_values[best_k]
 
@@ -244,7 +240,7 @@
     }
     
     # save the results
-    results = list(grid_search=grid_search_iterations,mean_squared_error=mean_squared_error_iterations,starting_beta=starting_beta_iterations,best_configuration=best_configuration)
+    results = list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations,best_configuration=best_configuration)
     
     return(results)
     
