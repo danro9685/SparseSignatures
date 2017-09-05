@@ -366,12 +366,11 @@
     
     # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
     if(is.null(background_signature)) {
-        background_signature = svd(x)$d
-        if(min(background_signature)<0) {
-            background_signature = background_signature + abs(min(background_signature))
-        }
+        warning("No background signature has been specified...")
     }
-    beta = rbind(background_signature,beta)
+    else {
+        beta = rbind(background_signature,beta)
+    }
     
     if(verbose) {
         cat("Performing the discovery of the signatures by NMF with Lasso...","\n")
