@@ -87,6 +87,7 @@
             for(l in lambda_values) {
                 
                 # set the predicted values for the cross validation entries
+                pos_l = pos_l + 1
                 if(cv_iteration>1) {
                     best_alpha = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["alpha"]]
                     best_beta = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["beta"]]
@@ -108,7 +109,6 @@
                                          verbose = FALSE)
                 
                 # save the results for the current configuration
-                pos_l = pos_l + 1
                 grid_search[[pos_k,pos_l]] = curr_results
                 
                 if(verbose) {
