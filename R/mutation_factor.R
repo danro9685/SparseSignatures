@@ -239,7 +239,9 @@
     }
     
     # close parallel
-    stopCluster(parallel)
+    if(!is.null(parallel)) {
+        stopCluster(parallel)
+    }
     
     # save the results
     results = list(grid_search=grid_search_iterations,mean_squared_error=mean_squared_error_iterations,starting_beta=starting_beta_iterations,best_configuration=best_configuration)
