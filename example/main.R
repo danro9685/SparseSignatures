@@ -52,7 +52,6 @@ library("gridExtra")
 }
 
 # load the data
-load("data/clinical_data.RData")
 load("data/patients.RData")
 load("data/genome.RData")
 
@@ -62,28 +61,17 @@ lambda_values = c(0.01,0.05,0.10,0.15)
 cross_validation_entries = 0.15
 cross_validation_iterations = 10
 num_processes = 10
-my_seed = 21198
+my_seed = 54611
 
 # fit the signatures with the genome frequencies as noise model
 signatures_with_genome = nmfLasso(x=patients,K=K,starting_beta=NULL,background_signature=genome$freq,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed,verbose=TRUE)
 save(signatures_with_genome,file="data/signatures_with_genome.RData")
 
-# fit the signatures without the genome frequencies as noise model
-signatures_without_genome = nmfLasso(x=patients,K=K,starting_beta=NULL,background_signature=NULL,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed,verbose=TRUE)
-save(signatures_without_genome,file="data/signatures_without_genome.RData")
-
-# plot the signatures with a given genome
+# plot the resulting signatures
 starting_beta = rbind(signatures_with_genome$best_configuration$background_signature,signatures_with_genome$best_configuration$starting_beta)
 starting_beta = starting_beta / rowSums(starting_beta)
 plotSignatures(starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 plotSignatures(signatures_with_genome$best_configuration$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
 
-# plot the signatures without a given genome
-starting_beta = rbind(signatures_without_genome$best_configuration$background_signature,signatures_without_genome$best_configuration$starting_beta)
-starting_beta = starting_beta / rowSums(starting_beta)
-plotSignatures(starting_beta,patients_ids=colnames(patients),genomeFreq=TRUE)
-plotSignatures(signatures_without_genome$best_configuration$beta,patients_ids=colnames(patients),genomeFreq=TRUE)
-
 # plot the log-likelihood values
 plot(signatures_with_genome$best_configuration$loglik_progression)
-plot(signatures_without_genome$best_configuration$loglik_progression)
