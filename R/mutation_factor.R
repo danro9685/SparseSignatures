@@ -182,46 +182,23 @@
         cat("Estimating the best configuration...","\n")
     }
     
-    # structure to save the mean squared errors for all the cross_validation_iterations
-    mean_squared_error = array(list(),c(length(K),length(lambda_values)))
-    rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
-    colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
-    
-    # average the results over the different cross_validation_iterations
-    for(i in 1:length(mean_squared_error_iterations)) {
-        curr_mean_squared_error = mean_squared_error_iterations[[i]]
-        for(j in 1:nrow(mean_squared_error)) {
-            for(k in 1:ncol(mean_squared_error)) {
-                mean_squared_error[j,k] = list(c(unlist(mean_squared_error[j,k]),curr_mean_squared_error[j,k]))
-            }
-        }
-    }
-    
-    # structure to save the mean squared errors averaged over the cross_validation_iterations
-    mean_squared_error_avg = array(NA,c(length(K),length(lambda_values)))
-    rownames(mean_squared_error_avg) = paste0(as.character(K),"_signatures")
-    colnames(mean_squared_error_avg) = paste0(as.character(lambda_values),"_lambda")
-    
-    for(j in 1:nrow(mean_squared_error_avg)) {
-        for(k in 1:ncol(mean_squared_error_avg)) {
-            mean_squared_error_avg[j,k] = mean(unlist(mean_squared_error[j,k]),na.rm=TRUE)
-        }
-    }
+    # consider the results for the last cross_validation_iterations
+    mean_squared_error_last = mean_squared_error_iterations[[length(mean_squared_error_iterations)]]
     
     # find the best configuration
     best_j = NA
     best_k = NA
     best_result = NA
-    for(j in 1:nrow(mean_squared_error_avg)) {
-        for(k in 1:ncol(mean_squared_error_avg)) {
-            if(is.na(best_result)&&!is.nan(mean_squared_error_avg[j,k])) {
-                best_result = mean_squared_error_avg[j,k]
+    for(j in 1:nrow(mean_squared_error_last)) {
+        for(k in 1:ncol(mean_squared_error_last)) {
+            if(is.na(best_result)&&!is.nan(mean_squared_error_last[j,k])) {
+                best_result = mean_squared_error_last[j,k]
                 best_j = j
                 best_k = k
             }
-            else if(!is.nan(mean_squared_error_avg[j,k])) {
-                if(mean_squared_error_avg[j,k]<best_result) {
-                    best_result = mean_squared_error_avg[j,k]
+            else if(!is.nan(mean_squared_error_last[j,k])) {
+                if(mean_squared_error_last[j,k]<best_result) {
+                    best_result = mean_squared_error_last[j,k]
                     best_j = j
                     best_k = k
                 }
@@ -250,11 +227,8 @@
 
         # save the results
         best_configuration = curr_results
-        best_configuration[["mean_squared_error_avg"]] = mean_squared_error_avg
+        best_configuration[["mean_squared_error"]] = mean_squared_error_last
         best_configuration[["starting_beta"]] = curr_beta
-        if(is.null(background_signature)) {
-            background_signature = best_configuration$beta["background_signature",]
-        }
         best_configuration[["background_signature"]] = background_signature
         best_configuration[["K"]] = K[best_j]
         best_configuration[["lambda_rate"]] = lambda_values[best_k]
