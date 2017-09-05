@@ -47,10 +47,12 @@
         }
 
         # set a percentage of cross_validation_entries entries to 0 in order to perform cross validation
-        x_cv = x
-        valid_entries = which(x_cv>0,arr.ind=TRUE)
-        cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
-        x_cv[cv_entries] = 0
+        if(cv_iteration==1) {
+            x_cv = x
+            valid_entries = which(x_cv>0,arr.ind=TRUE)
+            cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
+            x_cv[cv_entries] = 0
+        }
         
         # structure to save the results of the grid search
         grid_search = array(list(),c(length(K),length(lambda_values)))
@@ -83,6 +85,14 @@
             # consider all the values for lambda
             pos_l = 0
             for(l in lambda_values) {
+                
+                # set the predicted values for the cross validation entries
+                if(cv_iteration>1) {
+                    best_alpha = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["alpha"]]
+                    best_beta = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["beta"]]
+                    predicted_counts = best_alpha %*% best_beta
+                    x_cv[cv_entries] = predicted_counts[cv_entries]
+                }
                 
                 # perform the inference
                 curr_results = nmfLassoK(x = x_cv, 
