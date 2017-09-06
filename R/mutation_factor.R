@@ -187,12 +187,12 @@
     best_k = NA
     for(j in 1:nrow(mean_squared_error_last)) {
         for(k in 1:ncol(mean_squared_error_last)) {
-            if(is.na(best_result)&&!is.nan(mean_squared_error_last[j,k])) {
+            if(is.na(best_result)&&!is.nan(mean_squared_error_last[j,k])&&!is.na(mean_squared_error_last[j,k])) {
                 best_result = mean_squared_error_last[j,k]
                 best_j = j
                 best_k = k
             }
-            else if(!is.nan(mean_squared_error_last[j,k])) {
+            else if(!is.nan(mean_squared_error_last[j,k])&&!is.na(mean_squared_error_last[j,k])) {
                 if(mean_squared_error_last[j,k]<best_result) {
                     best_result = mean_squared_error_last[j,k]
                     best_j = j
