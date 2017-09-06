@@ -85,7 +85,7 @@
                 
                 # set the predicted values for the cross validation entries
                 pos_l = pos_l + 1
-                if(cv_iteration>1) {
+                if(cv_iteration>1 && !is.na(grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]])) {
                     best_alpha = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["alpha"]]
                     best_beta = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["beta"]]
                     predicted_counts = best_alpha %*% best_beta
@@ -428,7 +428,7 @@
     lambda_values = rep(NA,J)
     
     if(verbose) {
-        cat("Performing a total of",iterations,"EM iterations...","\n")
+        cat("Performing a total of",iterations," iterations...","\n")
     }
     
     # repeat a 2 step algorithm iteratively, where first alpha is estimated by Non-Negative Linear Least Squares 
@@ -568,7 +568,7 @@
             }
         }
         if(cont/iterations<0.5) {
-            warning("The likelihood is not increasing during the EM, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
+            warning("The likelihood is not increasing, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
         }
     }
     
