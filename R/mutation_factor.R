@@ -97,6 +97,7 @@
                                          K = k, 
                                          beta = curr_beta, 
                                          background_signature = background_signature, 
+                                         nmf_runs = 10, 
                                          lambda_rate = l, 
                                          iterations = iterations, 
                                          max_iterations_lasso = max_iterations_lasso, 
@@ -221,6 +222,7 @@
                                  K = K[best_j], 
                                  beta = curr_beta, 
                                  background_signature = background_signature, 
+                                 nmf_runs = 10, 
                                  lambda_rate = lambda_values[best_k], 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 
@@ -251,6 +253,42 @@
     results = list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations,best_configuration=best_configuration)
     
     return(results)
+    
+}
+
+# perform a robust estimation of the starting beta for the nmfLasso method
+"startingBetaEstimation" <- function( x, K = 2:15, nmf_runs = 10, seed = NULL, verbose = TRUE ) {
+    
+    # set the seed
+    set.seed(seed)
+    
+    # perform a robust estimation of the starting beta for the nmfLasso method
+    if(verbose) {
+        cat("Performing a robust estimation of the starting beta for the nmfLasso method...","\n")
+    }
+
+    # structure to save the starting values of beta for each K
+    starting_beta = array(list(),c(length(K),1))
+    rownames(starting_beta) = paste0(as.character(K),"_signatures")
+    colnames(starting_beta) = "Value"
+
+    # consider all the values for K
+    pos_k = 0
+    for(k in K) {
+
+        # get the first k signatures to be used for the current configuration
+        pos_k = pos_k + 1
+        curr_beta = basis(nmf(t(x),rank=k,nrun=nmf_runs))
+        curr_beta = t(curr_beta)
+        starting_beta[[pos_k,1]] = curr_beta
+
+        if(verbose) {
+            cat("Progress",paste0(round((pos_k/length(K))*100,digits=3),"%..."),"\n")
+        }
+
+    }
+
+    return(starting_beta)
     
 }
 
@@ -311,6 +349,7 @@
                                  K = K, 
                                  beta = beta, 
                                  background_signature = background_signature, 
+                                 nmf_runs = 10, 
                                  lambda_rate = l, 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 
