@@ -257,14 +257,14 @@
 }
 
 # perform a robust estimation of the starting beta for the nmfLasso method
-"startingBetaEstimation" <- function( x, K = 2:15, nmf_runs = 10, seed = NULL, verbose = TRUE ) {
+"startingBetasEstimation" <- function( x, K = 2:15, nmf_runs = 10, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
     
     # perform a robust estimation of the starting beta for the nmfLasso method
     if(verbose) {
-        cat("Performing a robust estimation of the starting beta for the nmfLasso method...","\n")
+        cat("Performing a robust estimation of the starting betas for the nmfLasso method...","\n")
     }
 
     # structure to save the starting values of beta for each K

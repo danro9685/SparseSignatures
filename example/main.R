@@ -65,7 +65,7 @@ my_seed_starring_beta = 93211
 my_seed_nmfLasso = 74833
 
 # fit the initial betas for each configuration
-initial_betas = startingBetaEstimation(x=patients,K=K,nmf_runs=10,seed=my_seed_starring_beta,verbose=TRUE)
+initial_betas = startingBetasEstimation(x=patients,K=K,nmf_runs=10,seed=my_seed_starring_beta,verbose=TRUE)
 save(initial_betas,file="data/initial_betas.RData")
 
 # fit the signatures with the given background noise model
