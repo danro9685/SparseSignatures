@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.15), cross_validation_entries = 0.15, cross_validation_iterations = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLasso" <- function( x, K = 2:15, starting_beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.01, 0.05, 0.10, 0.15), cross_validation_entries = 0.15, cross_validation_iterations = 5, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -71,7 +71,7 @@
             # get the first k signatures to be used for the current configuration
             pos_k = pos_k + 1
             if(is.null(starting_beta[[pos_k,1]])) {
-                curr_beta = basis(nmf(t(x),rank=k))
+                curr_beta = basis(nmf(t(x),rank=k,nrun=nmf_runs))
                 curr_beta = t(curr_beta)
                 starting_beta[[pos_k,1]] = curr_beta
             }
@@ -178,27 +178,35 @@
         cat("Estimating the best configuration...","\n")
     }
     
-    # consider the results for the last cross_validation_iterations
-    mean_squared_error_last = mean_squared_error_iterations[[length(mean_squared_error_iterations)]]
-    
     # find the best configuration
     best_result = NA
     best_j = NA
     best_k = NA
     for(j in 1:nrow(mean_squared_error_last)) {
         for(k in 1:ncol(mean_squared_error_last)) {
-            if(is.na(best_result)&&!is.nan(mean_squared_error_last[j,k])&&!is.na(mean_squared_error_last[j,k])) {
-                best_result = mean_squared_error_last[j,k]
+
+            # get the cross validation value at the latest iteration which is not NA
+            curr_mean_squared_error_last = NA
+            for(cv_best_val in (length(mean_squared_error_iterations):1)) {
+                if(!is.na(mean_squared_error_iterations[[cv_best_val]][j,k])) {
+                    curr_mean_squared_error_last = mean_squared_error_iterations[[cv_best_val]][j,k]
+                    break;
+                }
+            }
+
+            if(is.na(best_result)&&!is.na(curr_mean_squared_error_last)) {
+                best_result = curr_mean_squared_error_last
                 best_j = j
                 best_k = k
             }
-            else if(!is.nan(mean_squared_error_last[j,k])&&!is.na(mean_squared_error_last[j,k])) {
-                if(mean_squared_error_last[j,k]<best_result) {
-                    best_result = mean_squared_error_last[j,k]
+            else if(!is.na(curr_mean_squared_error_last)) {
+                if(curr_mean_squared_error_last<best_result) {
+                    best_result = curr_mean_squared_error_last
                     best_j = j
                     best_k = k
                 }
             }
+
         }
     }
     
@@ -247,7 +255,7 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -257,7 +265,7 @@
         if(verbose) {
             cat("Computing the initial values of beta by standard NMF...","\n")
         }
-        beta = basis(nmf(t(x),rank=K))
+        beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
         beta = t(beta)
     }
     
@@ -332,7 +340,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, lambda_rate = 0.10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_rate = 0.10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -342,7 +350,7 @@
         if(verbose) {
             cat("Computing the initial values of beta by standard NMF...","\n")
         }
-        beta = basis(nmf(t(x),rank=K))
+        beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
         beta = t(beta)
     }
     
