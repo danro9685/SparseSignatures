@@ -183,8 +183,8 @@
     best_result = NA
     best_j = NA
     best_k = NA
-    for(j in 1:nrow(mean_squared_error_last)) {
-        for(k in 1:ncol(mean_squared_error_last)) {
+    for(j in 1:nrow(mean_squared_error_iterations[[1]])) {
+        for(k in 1:ncol(mean_squared_error_iterations[[1]])) {
 
             # get the cross validation value at the latest iteration which is not NA
             curr_mean_squared_error_last = NA
