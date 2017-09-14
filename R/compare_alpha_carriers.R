@@ -3,13 +3,13 @@ library(data.table)
 
 setwd("~/Documents/GitHub/SparseSignatures/")
 
-load("data/signatures_with_genome.RData")
+load("data/signatures_nmfLasso_new_background.RData")
 load("data/patients.RData")
 load("data/clinical.RData")
 load("data/brca_status.RData")
 
 #Choose best alpha from grid search
-best_alpha = signatures_with_genome$best_configuration$alpha
+best_alpha = signatures_nmfLasso$best_configuration$alpha
 
 #Normalize alpha to sum to 1 for each patient
 alpha_norm = as.data.table(best_alpha/rowSums(best_alpha))
@@ -21,7 +21,9 @@ alpha_norm = merge(alpha_norm, brca_status[, c("Sample", "Gene")], by.x = "patie
 alpha_norm[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA", "Control"), by = 1:nrow(alpha_norm)]
 
 #Plot normalized alphas for carriers and controls
-ggplot(melt(alpha_norm[, c(1:7, 9)], id.vars = c(1, 8), variable.name = "signature")) + geom_boxplot(aes(x = signature, y = value, fill = germline))
+ggplot(melt(alpha_norm[, c(1:7, 9)], id.vars = c(1, 8), variable.name = "signature")) + 
+  geom_boxplot(aes(x = signature, y = value, fill = germline)) 
+  
 
 #Include triple-negatives for comparison
 clinical_merge = clinical[,.(sample_name, final.ER, final.PR, final.HER2)]
