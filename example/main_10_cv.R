@@ -59,7 +59,7 @@ load("data/allbg.RData")
 # set the number of signatures and lambda to be considered
 K = 2:15
 lambda_values = c(0.01,0.05,0.10,0.15)
-cross_validation_entries = 0.15
+cross_validation_entries = 0.10
 cross_validation_iterations = 5
 num_processes = 10
 my_seed_starting_beta = 93211
@@ -69,11 +69,11 @@ my_seed_nmfLasso = 74833
 
 # fit the initial betas for each configuration
 initial_betas_genome = startingBetasEstimation(x=patients,K=K,nmf_runs=10,seed=my_seed_starting_beta,verbose=TRUE)
-save(initial_betas_genome,file="data/initial_betas_genome.RData")
+save(initial_betas_genome,file="data/initial_betas_genome_10.RData")
 
 # fit the signatures with the given background noise model
 signatures_nmfLasso_genome = nmfLasso(x=patients,K=K,starting_beta=initial_betas_genome,background_signature=genome$freq,nmf_runs=10,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed_nmfLasso,verbose=TRUE)
-save(signatures_nmfLasso_genome,file="data/signatures_nmfLasso_genome.RData")
+save(signatures_nmfLasso_genome,file="data/signatures_nmfLasso_genome_10.RData")
 
 # plot the resulting signatures
 initial_betas_genome = rbind(signatures_nmfLasso_genome$best_configuration$background_signature,signatures_nmfLasso_genome$best_configuration$starting_beta)
@@ -88,11 +88,11 @@ plot(signatures_nmfLasso_genome$best_configuration$loglik_progression)
 
 # fit the initial betas for each configuration
 initial_betas_germline = initial_betas_genome
-save(initial_betas_germline,file="data/initial_betas_germline.RData")
+save(initial_betas_germline,file="data/initial_betas_germline_10.RData")
 
 # fit the signatures with the given background noise model
 signatures_nmfLasso_germline = nmfLasso(x=patients,K=K,starting_beta=initial_betas_germline,background_signature=allbg$freq,nmf_runs=10,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed_nmfLasso,verbose=TRUE)
-save(signatures_nmfLasso_germline,file="data/signatures_nmfLasso_germline.RData")
+save(signatures_nmfLasso_germline,file="data/signatures_nmfLasso_germline_10.RData")
 
 # plot the resulting signatures
 initial_betas_germline = rbind(signatures_nmfLasso_germline$best_configuration$background_signature,signatures_nmfLasso_germline$best_configuration$starting_beta)
