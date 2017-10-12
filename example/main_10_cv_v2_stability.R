@@ -20,7 +20,7 @@ lambda_values = c(0.10,0.15)
 cross_validation_entries = 0.10
 cross_validation_iterations = 5
 num_processes = 15
-num_iterations = 50
+num_iterations = 100
 
 # ANALYSIS USING THE GERMLINE SIGNATURE AS BACKGROUND
 
