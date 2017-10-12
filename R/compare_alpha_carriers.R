@@ -4,6 +4,8 @@ library(data.table)
 setwd("~/Documents/GitHub/SparseSignatures/")
 
 load("data/signatures_nmfLasso_new_background.RData")
+#load("data/signatures_nmfLasso_new_background_v2.RData")
+#load("data/signatures_nmfLasso.RData")
 load("data/patients.RData")
 load("data/clinical.RData")
 load("data/brca_status.RData")
@@ -23,7 +25,12 @@ alpha_norm[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA", "Control"
 #Plot normalized alphas for carriers and controls
 ggplot(melt(alpha_norm[, c(1:7, 9)], id.vars = c(1, 8), variable.name = "signature")) + 
   geom_boxplot(aes(x = signature, y = value, fill = germline)) 
-  
+
+#Get p-values
+for(sig in colnames(alpha_norm)[2:(ncol(alpha_norm)-2)]){
+  print(sig)
+  print(wilcox.test(alpha_norm[germline=="BRCA",get(sig)], alpha_norm[germline!="BRCA",get(sig)]))
+}
 
 #Include triple-negatives for comparison
 clinical_merge = clinical[,.(sample_name, final.ER, final.PR, final.HER2)]
