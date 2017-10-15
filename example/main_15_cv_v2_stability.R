@@ -35,3 +35,10 @@ for(i in 1:num_iterations) {
     stability_cv_15[[i]] = signatures_nmfLasso_germline[["best_configuration"]]
 }
 save(stability_cv_15,file="data/stability_cv_15.RData")
+
+avg_K = NULL
+avg_lambda_rate = NULL
+for(i in 1:length(stability_cv_15)) {
+    avg_K = c(avg_K,stability_cv_15[[i]][["K"]])
+    avg_lambda_rate = c(avg_lambda_rate,stability_cv_15[[i]][["lambda_rate"]])
+}
