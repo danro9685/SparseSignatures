@@ -3,28 +3,38 @@ library(data.table)
 
 setwd("~/Documents/GitHub/SparseSignatures/")
 
-load("data/signatures_nmfLasso_new_background.RData")
+load("data/signatures_nmfLasso_germline_15.RData")
 #load("data/signatures_nmfLasso_new_background_v2.RData")
-#load("data/signatures_nmfLasso.RData")
 load("data/patients.RData")
 load("data/clinical.RData")
 load("data/brca_status.RData")
 
 #Choose best alpha from grid search
-best_alpha = signatures_nmfLasso$best_configuration$alpha
-
-#Normalize alpha to sum to 1 for each patient
-alpha_norm = as.data.table(best_alpha/rowSums(best_alpha))
-colnames(alpha_norm)[2:ncol(alpha_norm)] = paste0("S", 1:(ncol(alpha_norm)-1))
-alpha_norm$patient = rownames(patients)
+best_alpha = as.data.table(signatures_nmfLasso_germline$best_configuration$alpha)
+colnames(best_alpha)[2:ncol(best_alpha)] = paste0("S", 1:(ncol(best_alpha)-1))
+best_alpha$patient = rownames(patients)
 
 #Merge germline data
-alpha_norm = merge(alpha_norm, brca_status[, c("Sample", "Gene")], by.x = "patient", by.y = "Sample")
-alpha_norm[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA", "Control"), by = 1:nrow(alpha_norm)]
+best_alpha = merge(best_alpha, brca_status[, c("Sample", "Gene")], by.x = "patient", by.y = "Sample")
+best_alpha[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA+", "BRCA-WT"), by = 1:nrow(best_alpha)]
+best_alpha = melt(best_alpha[, c(1:7, 9)], id.vars = c(1, 8), variable.name = "signature")
+
+#Normalize alpha to sum to 1 for each patient
+best_alpha[, norm:=value/sum(value), by = patient]
+
+#Adjust alpha to equalize means for BRCA and non-BRCA
+avg_mutations = best_alpha[, sum(value), by=.(patient, germline)][, mean(V1), by = germline]
+adjustment_factor = avg_mutations[germline=="BRCA+", V1]/avg_mutations[germline=="BRCA-WT", V1]
+best_alpha[, adjusted:=ifelse(germline=="BRCA+", value/adjustment_factor, value)]
+
+#Plot without normalization
+plt1 = ggplot(best_alpha) + geom_boxplot(aes(x = signature, y = value, fill = germline)) +ylim(c(0, 10000)) + ggtitle("Alpha values (raw)")
 
 #Plot normalized alphas for carriers and controls
-ggplot(melt(alpha_norm[, c(1:7, 9)], id.vars = c(1, 8), variable.name = "signature")) + 
-  geom_boxplot(aes(x = signature, y = value, fill = germline)) 
+plt2= ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = norm, fill = germline)) + ggtitle("Alpha values (normalized for each patient)")
+
+#Plot rescaled alpha
+plt3 = ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = adjusted, fill = germline))+ylim(c(0, 7500)) + ggtitle("Alpha values (rescaled for BRCA+ and BRCA-WT)")
 
 #Get p-values
 for(sig in colnames(alpha_norm)[2:(ncol(alpha_norm)-2)]){
