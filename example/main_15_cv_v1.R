@@ -55,6 +55,7 @@ library("gridExtra")
 load("data/patients.RData")
 load("data/genome.RData")
 load("data/allbg.RData")
+load("data/finalbg2.RData")
 
 # set the number of signatures and lambda to be considered
 K = 2:15
@@ -102,3 +103,22 @@ plotSignatures(signatures_nmfLasso_germline$best_configuration$beta,patients_ids
 
 # plot the log-likelihood values
 plot(signatures_nmfLasso_germline$best_configuration$loglik_progression)
+
+# ANALYSIS USING THE GERMLINE FROM THE PAPER AS BACKGROUND
+
+# fit the initial betas for each configuration
+initial_betas_germline_paper = initial_betas_genome
+save(initial_betas_germline_paper,file="data/initial_betas_germline_paper_15.RData")
+
+# fit the signatures with the given background noise model
+signatures_nmfLasso_germline_paper = nmfLasso(x=patients,K=K,starting_beta=initial_betas_germline,background_signature= finalbg$freq,nmf_runs=10,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,iterations=20,max_iterations_lasso=10000,num_processes=num_processes,seed=my_seed_nmfLasso,verbose=TRUE)
+save(signatures_nmfLasso_germline_paper,file="data/signatures_nmfLasso_germline_paper_15.RData")
+
+# plot the resulting signatures
+initial_betas_germline_paper = rbind(signatures_nmfLasso_germline_paper$best_configuration$background_signature,signatures_nmfLasso_germline_paper$best_configuration$starting_beta)
+initial_betas_germline_paper = initial_betas_germline_paper / rowSums(initial_betas_germline_paper)
+plotSignatures(initial_betas_germline_paper,patients_ids=colnames(patients),backgroundFreq=TRUE)
+plotSignatures(signatures_nmfLasso_germline_paper$best_configuration$beta,patients_ids=colnames(patients),backgroundFreq=TRUE)
+
+# plot the log-likelihood values
+plot(signatures_nmfLasso_germline_paper$best_configuration$loglik_progression)
