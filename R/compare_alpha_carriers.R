@@ -1,5 +1,6 @@
 library(ggplot2)
 library(data.table)
+library(nnls)
 
 setwd("~/Documents/GitHub/SparseSignatures/")
 
@@ -35,6 +36,28 @@ plt2= ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = norm, fill = ger
 
 #Plot rescaled alpha
 plt3 = ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = adjusted, fill = germline))+ylim(c(0, 7500)) + ggtitle("Alpha values (rescaled for BRCA+ and BRCA-WT)")
+
+#####
+#Construct fake beta
+beta = as.data.table(signatures_nmfLasso_germline$best_configuration$beta)
+peaks = c("T[C>A]A", "T[C>A]C", "T[C>A]G" , "T[C>A]T","T[C>G]A", "T[C>G]C", "T[C>G]G" , "T[C>G]T")
+beta[5,which(colnames(beta) %in% peaks), with=F]
+
+beta_1 = beta[5,]
+beta_2 = beta[5,]
+
+beta_1[,c("T[C>A]A", "T[C>A]C", "T[C>A]G" , "T[C>A]T","T[C>G]A", "T[C>G]C", "T[C>G]G" , "T[C>G]T")]=0
+beta_2[,setdiff(colnames(beta_2), c("T[C>A]A", "T[C>A]C", "T[C>A]G" , "T[C>A]T","T[C>G]A", "T[C>G]C", "T[C>G]G" , "T[C>G]T"))]=0
+
+beta_new = rbind(beta[1:4,], beta_1, beta_2, beta[6,])
+
+#Calculate new alphas
+alpha_new = matrix(0, nrow=560, ncol=7)
+for(j in 1:560) {
+  alpha_new[j,] = nnls(t(beta_new),as.vector(patients[j,]))$x
+}
+
+
 
 #Get p-values
 for(sig in colnames(alpha_norm)[2:(ncol(alpha_norm)-2)]){
