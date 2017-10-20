@@ -11,9 +11,7 @@ source("R/mutation_factor.R")
 
 # load the data
 load("data/patients.RData")
-load("data/genome.RData")
-load("data/finalbg2.RData")
-finalbg$freq = finalbg$freq/sum(finalbg$freq)
+load("data/finalbg3.RData")
 
 # set the number of signatures and lambda to be considered
 K = 3:9
@@ -21,7 +19,7 @@ lambda_values = c(0.10,0.15)
 nmf_runs = 100
 cross_validation_entries = 0.10
 cross_validation_iterations = 10
-num_processes = 15
+num_processes = 48
 num_iterations = 100
 my_seed_starting_beta = 28954
 
