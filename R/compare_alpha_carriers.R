@@ -1,4 +1,5 @@
 library(ggplot2)
+library(gridExtra)
 library(data.table)
 library(nnls)
 
@@ -161,9 +162,57 @@ plt2
 plt3 = ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = adjusted, fill = germline))+ylim(c(0, 7500)) + ggtitle("Alpha values (rescaled for BRCA+ and BRCA-WT)")
 plt3
 
+#Compare alphas for initial betas
+load("data/initial_betas_germline_10.RData")
+beta_init = initial_betas_germline[[6,1]]
+plotSignatures(beta_init, backgroundFreq = FALSE)
 
+#Compute alpha
+alpha_init = matrix(0, nrow=560, ncol=7)
+for(ii in 1:560){
+  alpha_init[ii,] = nnls(t(beta_init/rowSums(beta_init)), as.vector(patients[ii,]))$x
+}
+alpha_init = as.data.table(alpha_init)
+colnames(alpha_init)[1:ncol(alpha_init)] = paste0("S", 1:(ncol(alpha_init)))
+alpha_init$patient = rownames(patients)
 
+#Merge germline data
+alpha_init = merge(alpha_init, brca_status[, c("Sample", "Gene")], by.x = "patient", by.y = "Sample")
+alpha_init[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA+", "BRCA-WT"), by = 1:nrow(alpha_init)]
+alpha_init = melt(alpha_init, id.vars = c(1, 9, 10), variable.name = "signature")
 
+#Normalize alpha to sum to 1 for each patient
+alpha_init[, norm:=value/sum(value), by = patient]
+
+#Plot without normalization
+plt1 = ggplot(alpha_init) + geom_boxplot(aes(x = signature, y = value, fill = Gene)) + ggtitle("Alpha values (raw)")+ylim(c(0, 15000))
+plt1
+
+#Plot normalized alphas for carriers and controls
+plt2= ggplot(alpha_init) +  geom_boxplot(aes(x = signature, y = norm, fill = germline)) + ggtitle("Alpha values (normalized for each patient)")
+plt2
+
+#Compute alphas with background added
+alpha_init_2 = matrix(0, nrow=560, ncol=8)
+beta_init_2 = rbind(signatures_nmfLasso_germline$best_configuration$background_signature, (beta_init/rowSums(beta_init)))
+for(ii in 1:560){
+  alpha_init_2[ii,] = nnls(t(beta_init_2), as.vector(patients[ii,]))$x
+}
+alpha_init_2 = as.data.table(alpha_init_2)
+colnames(alpha_init_2)[1:ncol(alpha_init_2)] = c("background", paste0("S", 1:(ncol(alpha_init_2)-1)))
+alpha_init_2$patient = rownames(patients)
+
+#Merge germline data
+alpha_init_2 = merge(alpha_init_2, brca_status[, c("Sample", "Gene")], by.x = "patient", by.y = "Sample")
+alpha_init_2[, germline := ifelse(Gene %in% c("BRCA1", "BRCA2"), "BRCA+", "BRCA-WT"), by = 1:nrow(alpha_init_2)]
+alpha_init_2 = melt(alpha_init_2, id.vars = c(1, 10, 11), variable.name = "signature")
+
+#Normalize alpha to sum to 1 for each patient
+alpha_init_2[, norm:=value/sum(value), by = patient]
+
+#Plot without normalization
+plt1 = ggplot(alpha_init_2) + geom_boxplot(aes(x = signature, y = value, fill = Gene)) + ggtitle("Alpha values (raw)")+ylim(c(0, 15000))
+plt1
 
 
 
