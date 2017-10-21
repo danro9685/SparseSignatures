@@ -87,21 +87,124 @@ for(i in 1:nrow(initial_betas_germline_cv_10)) {
     curr_predicted_counts = round(curr_alpha_nmf_standard%*%curr_beta_nmf_standard)
     curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
     curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
-    curr_results_nmf_standard = list(alpha=curr_alpha_nmf_standard,alpha=curr_alpha_nmf_standard,mse=curr_mse,mse_loss=curr_mse_loss)
-    # NMF lasso
-    curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
-    curr_alpha_nmf_lasso = curr_res$alpha
-    curr_beta_nmf_lasso = curr_res$beta
-    curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
-    curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
-    curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
-    curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,alpha=curr_alpha_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+    curr_results_nmf_standard = list(alpha=curr_alpha_nmf_standard,beta=curr_beta_nmf_standard,mse=curr_mse,mse_loss=curr_mse_loss)
     # save the results for the current configuration
     nmf_standard_results[[i]] = curr_results_nmf_standard
-    nmf_lasso_results[[i]] = curr_results_nmf_lasso
     cat(i/nrow(initial_betas_germline_cv_10),"\n")
 }
+
+# NMF lasso
+i = 1
+set.seed(65788)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 2
+set.seed(96700)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 3
+set.seed(54677)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 4
+set.seed(12344)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 5
+set.seed(43566)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.10,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 6
+set.seed(96577)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
+i = 7
+set.seed(32144)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.15,verbose=FALSE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients)
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients))
+curr_results_nmf_lasso = list(alpha=curr_alpha_nmf_lasso,beta=curr_beta_nmf_lasso,mse=curr_mse,mse_loss=curr_mse_loss)
+nmf_lasso_results[[i]] = curr_results_nmf_lasso
+
 nmf_results = list(standard=nmf_standard_results,lasso=nmf_lasso_results)
 
 # save the results
-save(nmf_results,file="/example/test2/nmf_results.RData")
+save(nmf_results,file="example/test2/nmf_results.RData")
+
+# compute the mse progression
+mse_standard = NULL
+mse_lasso = NULL
+for(i in 1:7) {
+    mse_standard = c(mse_standard,nmf_results$standard[[i]]$mse)
+    mse_lasso = c(mse_lasso,nmf_results$lasso[[i]]$mse)
+}
+
+# plots standard
+plotSignatures(nmf_results$standard[[1]]$beta)
+plotSignatures(nmf_results$standard[[2]]$beta)
+plotSignatures(nmf_results$standard[[3]]$beta)
+plotSignatures(nmf_results$standard[[4]]$beta)
+plotSignatures(nmf_results$standard[[5]]$beta)
+plotSignatures(nmf_results$standard[[6]]$beta)
+plotSignatures(nmf_results$standard[[7]]$beta)
+
+# plots lasso
+plotSignatures(nmf_results$lasso[[1]]$beta)
+plotSignatures(nmf_results$lasso[[2]]$beta)
+plotSignatures(nmf_results$lasso[[3]]$beta)
+plotSignatures(nmf_results$lasso[[4]]$beta)
+plotSignatures(nmf_results$lasso[[5]]$beta)
+plotSignatures(nmf_results$lasso[[6]]$beta)
+plotSignatures(nmf_results$lasso[[7]]$beta)
