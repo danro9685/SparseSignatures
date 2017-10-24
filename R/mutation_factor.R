@@ -257,10 +257,40 @@
 }
 
 # perform a robust estimation of the starting beta for the nmfLasso method
-"startingBetasEstimation" <- function( x, K = 2:15, nmf_runs = 10, seed = NULL, verbose = TRUE ) {
+"startingBetasEstimation" <- function( x, K = 3:9, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
+    
+    # setting up parallel execution
+    parallel = NULL
+    close_parallel = FALSE
+    if(is.null(parallel)) {
+        if(is.na(num_processes) || is.null(num_processes)) {
+            parallel = NULL
+        }
+        else if(num_processes==Inf) {
+            cores = as.integer((detectCores()-1))
+            if(cores < 2) {
+                parallel = NULL
+            }
+            else {
+                num_processes = cores
+                parallel = makeCluster(num_processes,outfile="")
+                clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+                close_parallel = TRUE
+            }
+        }
+        else {
+            parallel = makeCluster(num_processes,outfile="")
+            clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+            close_parallel = TRUE
+        }
+        
+        if(verbose && !is.null(parallel)) {
+            cat("Executing",num_processes,"processes via parallel...","\n")
+        }
+    }
     
     # perform a robust estimation of the starting beta for the nmfLasso method
     if(verbose) {
@@ -275,17 +305,102 @@
     # consider all the values for K
     pos_k = 0
     for(k in K) {
-
-        # get the first k signatures to be used for the current configuration
+    
+        # compute the initial values of beta
         pos_k = pos_k + 1
-        curr_beta = basis(nmf(t(x),rank=k,nrun=nmf_runs))
-        curr_beta = t(curr_beta)
-        starting_beta[[pos_k,1]] = curr_beta
+        beta = NULL
+        if(is.null(beta)) {
+            if(nmf_method=="nmf_lasso") {
+                
+                if(verbose) {
+                    cat("Computing the initial values of beta by NMF with Lasso...","\n")
+                }
+                
+                # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+                if(is.null(background_signature)) {
+                    warning("No background signature has been specified...")
+                }
+                
+                # compute the starting points nmf_runs times
+                beta_estimation = list()
+                beta_mse = NULL
+                for(i in 1:nmf_runs) {
+                    
+                    # set the initial random values for beta
+                    if(is.null(background_signature)) {
+                        beta = matrix(0,nrow=k,ncol=dim(x)[2])
+                        for(i in 1:k) {
+                            beta[i,] = runif(dim(x)[2])
+                        }
+                        colnames(beta) = colnames(x)
+                    }
+                    else {
+                        beta = matrix(0,nrow=(k+1),ncol=dim(x)[2])
+                        beta[1,] = background_signature
+                        for(i in 2:(k+1)) {
+                            beta[i,] = runif(dim(x)[2])
+                        }
+                        rownames(beta) = c("background_signature",rep("",k))
+                        colnames(beta) = colnames(x)
+                    }
+                    
+                    # compute the starting beta given these initial values
+                    curr_starting_beta_estimation = tryCatch({
+                        res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                        mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                        list(beta=res$beta,mse=mse)
+                    }, error = function(e) {
+                        list(beta=NA,mse=NA)
+                    })
+                    
+                    # save the results at the current step if not NA
+                    if(!is.na(curr_starting_beta_estimation$mse)) {
+                        beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
+                        beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                    }
+                    
+                }
+                # estimate the best starting betas
+                if(is.null(beta_mse)) {
+                    if(close_parallel) {
+                        stopCluster(parallel)
+                    }
+                    stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
+                }
+                else {
+                    beta = beta_estimation[[which.min(beta_mse)]]
+                }
+                
+            }
+            else if(nmf_method=="nmf_standard") {
+                
+                if(verbose) {
+                    cat("Computing the initial values of beta by standard NMF...","\n")
+                }
+                beta = basis(nmf(t(x),rank=k,nrun=nmf_runs))
+                beta = t(beta)
+                
+                # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+                if(is.null(background_signature)) {
+                    warning("No background signature has been specified...")
+                }
+                else {
+                    beta = rbind(background_signature,beta)
+                }
+                
+            }
+        }
+        starting_beta[[pos_k,1]] = beta
 
         if(verbose) {
             cat("Progress",paste0(round((pos_k/length(K))*100,digits=3),"%..."),"\n")
         }
 
+    }
+    
+    # close parallel
+    if(close_parallel) {
+        stopCluster(parallel)
     }
 
     return(starting_beta)
@@ -293,46 +408,122 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 8, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.01, 0.05, 0.10, 0.30, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, lambda_values = c(0.05, 0.10, 0.15, 0.20, 0.25), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
     
-    # compute the initial values of beta
-    if(is.null(beta)) {
-        if(verbose) {
-            cat("Computing the initial values of beta by standard NMF...","\n")
-        }
-        beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
-        beta = t(beta)
-    }
-    
-    if(verbose) {
-        cat("Estimating the signatures for the different values of lambda...","\n")
-    }
-    
     # setting up parallel execution
-    if(is.na(num_processes) || is.null(num_processes)) {
-        parallel = NULL
-    }
-    else if(num_processes==Inf) {
-        cores = as.integer((detectCores()-1))
-        if(cores < 2) {
+    parallel = NULL
+    close_parallel = FALSE
+    if(is.null(parallel)) {
+        if(is.na(num_processes) || is.null(num_processes)) {
             parallel = NULL
         }
+        else if(num_processes==Inf) {
+            cores = as.integer((detectCores()-1))
+            if(cores < 2) {
+                parallel = NULL
+            }
+            else {
+                num_processes = cores
+                parallel = makeCluster(num_processes,outfile="")
+                clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+                close_parallel = TRUE
+            }
+        }
         else {
-            num_processes = cores
             parallel = makeCluster(num_processes,outfile="")
             clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
+            close_parallel = TRUE
+        }
+        
+        if(verbose && !is.null(parallel)) {
+            cat("Executing",num_processes,"processes via parallel...","\n")
         }
     }
-    else {
-        parallel = makeCluster(num_processes,outfile="")
-        clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-    }
     
-    if(verbose && !is.null(parallel)) {
-        cat("Executing",num_processes,"processes via parallel...","\n")
+    # compute the initial values of beta
+    if(is.null(beta)) {
+        if(nmf_method=="nmf_lasso") {
+            
+            if(verbose) {
+                cat("Computing the initial values of beta by NMF with Lasso...","\n")
+            }
+            
+            # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+            if(is.null(background_signature)) {
+                warning("No background signature has been specified...")
+            }
+            
+            # compute the starting points nmf_runs times
+            beta_estimation = list()
+            beta_mse = NULL
+            for(i in 1:nmf_runs) {
+                
+                # set the initial random values for beta
+                if(is.null(background_signature)) {
+                    beta = matrix(0,nrow=K,ncol=dim(x)[2])
+                    for(i in 1:K) {
+                        beta[i,] = runif(dim(x)[2])
+                    }
+                    colnames(beta) = colnames(x)
+                }
+                else {
+                    beta = matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                    beta[1,] = background_signature
+                    for(i in 2:(K+1)) {
+                        beta[i,] = runif(dim(x)[2])
+                    }
+                    rownames(beta) = c("background_signature",rep("",K))
+                    colnames(beta) = colnames(x)
+                }
+                
+                # compute the starting beta given these initial values
+                curr_starting_beta_estimation = tryCatch({
+                    res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                    mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                    list(beta=res$beta,mse=mse)
+                }, error = function(e) {
+                    list(beta=NA,mse=NA)
+                })
+                
+                # save the results at the current step if not NA
+                if(!is.na(curr_starting_beta_estimation$mse)) {
+                    beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
+                    beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                }
+                
+            }
+            # estimate the best starting betas
+            if(is.null(beta_mse)) {
+                if(close_parallel) {
+                    stopCluster(parallel)
+                }
+                stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
+            }
+            else {
+                beta = beta_estimation[[which.min(beta_mse)]]
+            }
+            
+        }
+        else if(nmf_method=="nmf_standard") {
+            
+            if(verbose) {
+                cat("Computing the initial values of beta by standard NMF...","\n")
+            }
+            beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
+            beta = t(beta)
+            
+            # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+            if(is.null(background_signature)) {
+                warning("No background signature has been specified...")
+            }
+            else {
+                beta = rbind(background_signature,beta)
+            }
+            
+        }
     }
     
     # structure to save the estimated signatures
@@ -350,6 +541,7 @@
                                  beta = beta, 
                                  background_signature = background_signature, 
                                  nmf_runs = 10, 
+                                 nmf_method = "nmf_lasso", 
                                  lambda_rate = l, 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 
@@ -369,7 +561,9 @@
     }
     
     # close parallel
-    stopCluster(parallel)
+    if(close_parallel) {
+        stopCluster(parallel)
+    }
     
     # save the results
     results = lambda_results
@@ -379,31 +573,10 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_rate = 0.10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
-    
-    # compute the initial values of beta
-    if(is.null(beta)) {
-        if(verbose) {
-            cat("Computing the initial values of beta by standard NMF...","\n")
-        }
-        beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
-        beta = t(beta)
-    }
-    
-    # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
-    if(is.null(background_signature)) {
-        warning("No background signature has been specified...")
-    }
-    else {
-        beta = rbind(background_signature,beta)
-    }
-    
-    if(verbose) {
-        cat("Performing the discovery of the signatures by NMF with Lasso...","\n")
-    }
     
     # setting up parallel execution
     close_parallel = FALSE
@@ -434,12 +607,99 @@
         }
     }
     
+    # compute the initial values of beta
+    if(is.null(beta)) {
+        if(nmf_method=="nmf_lasso") {
+            
+            if(verbose) {
+                cat("Computing the initial values of beta by NMF with Lasso...","\n")
+            }
+            
+            # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+            if(is.null(background_signature)) {
+                warning("No background signature has been specified...")
+            }
+            
+            # compute the starting points nmf_runs times
+            beta_estimation = list()
+            beta_mse = NULL
+            for(i in 1:nmf_runs) {
+                
+                # set the initial random values for beta
+                if(is.null(background_signature)) {
+                    beta = matrix(0,nrow=K,ncol=dim(x)[2])
+                    for(i in 1:K) {
+                        beta[i,] = runif(dim(x)[2])
+                    }
+                    colnames(beta) = colnames(x)
+                }
+                else {
+                    beta = matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                    beta[1,] = background_signature
+                    for(i in 2:(K+1)) {
+                        beta[i,] = runif(dim(x)[2])
+                    }
+                    rownames(beta) = c("background_signature",rep("",K))
+                    colnames(beta) = colnames(x)
+                }
+                
+                # compute the starting beta given these initial values
+                curr_starting_beta_estimation = tryCatch({
+                    res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                    mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                    list(beta=res$beta,mse=mse)
+                }, error = function(e) {
+                    list(beta=NA,mse=NA)
+                })
+                
+                # save the results at the current step if not NA
+                if(!is.na(curr_starting_beta_estimation$mse)) {
+                    beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
+                    beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                }
+                
+            }
+            # estimate the best starting betas
+            if(is.null(beta_mse)) {
+                if(close_parallel) {
+                    stopCluster(parallel)
+                }
+                stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
+            }
+            else {
+                beta = beta_estimation[[which.min(beta_mse)]]
+            }
+            
+        }
+        else if(nmf_method=="nmf_standard") {
+            
+            if(verbose) {
+                cat("Computing the initial values of beta by standard NMF...","\n")
+            }
+            beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
+            beta = t(beta)
+            
+            # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
+            if(is.null(background_signature)) {
+                warning("No background signature has been specified...")
+            }
+            else {
+                beta = rbind(background_signature,beta)
+            }
+            
+        }
+    }
+    
+    if(verbose) {
+        cat("Performing the discovery of the signatures by NMF with Lasso...","\n")
+    }
+    
     # perform the discovery of the signatures
     results = tryCatch({
         nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
     }, error = function(e) {
         warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
-        return(list(alpha=NA,beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations)))
+        list(alpha=NA,beta=NA,starting_beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations))
     })
     
     # close parallel
@@ -452,7 +712,7 @@
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.10, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -468,6 +728,10 @@
     rownames(alpha) = 1:nrow(alpha)
     colnames(alpha) = rownames(beta)
     
+    # starting beta
+    starting_beta = beta / rowSums(beta)
+    beta = starting_beta * 10000
+    
     # structure where to save the log-likelihood at each iteration 
     loglik = rep(NA,iterations)
     
@@ -475,7 +739,7 @@
     lambda_values = rep(NA,J)
     
     if(verbose) {
-        cat("Performing a total of",iterations," iterations...","\n")
+        cat("Performing a total of",iterations,"iterations...","\n")
     }
     
     # repeat a 2 step algorithm iteratively, where first alpha is estimated by Non-Negative Linear Least Squares 
@@ -646,7 +910,7 @@
     }
     
     # save the results
-    results = list(alpha=alpha,beta=beta,best_loglik=best_loglik,loglik_progression=loglik)
+    results = list(alpha=alpha,beta=beta,starting_beta=starting_beta,best_loglik=best_loglik,loglik_progression=loglik)
     
     return(results)
     
