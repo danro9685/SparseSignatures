@@ -263,9 +263,8 @@
     set.seed(seed)
     
     # setting up parallel execution
-    parallel = NULL
     close_parallel = FALSE
-    if(is.null(parallel)) {
+    if(nmf_method=="nmf_lasso") {
         if(is.na(num_processes) || is.null(num_processes)) {
             parallel = NULL
         }
