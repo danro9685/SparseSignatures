@@ -233,3 +233,16 @@ curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients) # 44268.6
 curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients)) # 461.1313
 plot(curr_res$loglik_progression)
 plotSignatures(curr_res$beta)
+
+# make the final inference for the best configurations but with more sparsity
+i = 3
+set.seed(43214)
+curr_starting_beta = initial_betas_germline_cv_10[[i,1]]
+curr_res = nmfLassoDecomposition(x=patients,beta=rbind(genome_background,curr_starting_beta),lambda_rate=0.25,iterations=100,verbose=TRUE)
+curr_alpha_nmf_lasso = curr_res$alpha
+curr_beta_nmf_lasso = curr_res$beta
+curr_predicted_counts = round(curr_alpha_nmf_lasso%*%curr_beta_nmf_lasso)
+curr_mse = sum((patients-curr_predicted_counts)^2)/nrow(patients) # 92673.87
+curr_mse_loss = MSE(curr_predicted_counts,as.matrix(patients)) # 965.3528
+plot(curr_res$loglik_progression)
+plotSignatures(curr_res$beta)
