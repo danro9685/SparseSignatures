@@ -257,7 +257,7 @@
 }
 
 # perform a robust estimation of the starting beta for the nmfLasso method
-"startingBetasEstimation" <- function( x, K = 3:9, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"startingBetasEstimation" <- function( x, K = 3:9, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -407,7 +407,7 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, lambda_values = c(0.05, 0.10, 0.15, 0.20, 0.25), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.05, 0.10, 0.15, 0.20, 0.25), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -540,7 +540,7 @@
                                  beta = beta, 
                                  background_signature = background_signature, 
                                  nmf_runs = 10, 
-                                 nmf_method = "nmf_lasso", 
+                                 nmf_method = "nmf_standard", 
                                  lambda_rate = l, 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 
@@ -572,7 +572,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_lasso", nmf_runs = 10, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)

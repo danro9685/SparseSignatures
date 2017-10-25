@@ -53,21 +53,21 @@ library("gridExtra")
 
 # load the data
 load("data/patients.RData")
-load("data/finalbg2.RData")
-background_germline = finalbg$freq/sum(finalbg$freq)
+load("data/allbg.RData")
+background_germline = allbg$freq/sum(allbg$freq)
 
 # set the number of signatures and lambda to be considered
 num_processes = 48
 K = 3:9
 nmf_runs = 100
-my_seed_starting_beta = 76509
+my_seed_starting_beta = 34411
 cross_validation_entries = 0.10
 cross_validation_iterations = 10
 lambda_values = c(0.10,0.15)
 num_iterations_cv = 100
 
-# ANALYSIS USING THE GERMLINE SIGNATURE ESTIMATED BY THE PAPER AS BACKGROUND
+# ANALYSIS USING THE GERMLINE SIGNATURE ESTIMATED BY US AS BACKGROUND
 
 # STEP 1: fit the initial betas for each configuration
-initial_betas_germline_cv_10 = startingBetasEstimation(x=patients,K=K,background_signature= background_germline,nmf_method="nmf_lasso",nmf_runs=nmf_runs,num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
-save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_paper_germline_cv_10.RData")
+initial_betas_germline_cv_10 = startingBetasEstimation(x=patients,K=K,background_signature= background_germline,nmf_method="nmf_standard",nmf_runs=nmf_runs,num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
+save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_our_germline_nmf_standard_cv_10.RData")
