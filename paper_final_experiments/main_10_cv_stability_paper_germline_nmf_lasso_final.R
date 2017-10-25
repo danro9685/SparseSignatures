@@ -61,6 +61,7 @@ num_processes = 48
 K = 3:9
 nmf_runs = 100
 my_seed_starting_beta = 76509
+my_seed_cross_validation = 15311
 cross_validation_entries = 0.10
 cross_validation_iterations = 10
 lambda_values = c(0.10,0.15)
@@ -71,3 +72,7 @@ num_iterations_cv = 100
 # STEP 1: fit the initial betas for each configuration
 initial_betas_germline_cv_10 = startingBetasEstimation(x=patients,K=K,background_signature= background_germline,nmf_method="nmf_lasso",nmf_runs=nmf_runs,num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
 save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_paper_germline_nmf_lasso_cv_10.RData")
+
+# STEP 2: initial exploration of the lambda ranges to be considered during cross-validation
+evaluate_lambda_range_germline_cv_10 = evaluateLambdaRange(x=patients,K=6,beta=initial_betas_germline_cv_10[4,1][[1]],lambda_values=c(0.10,0.20,0.30,0.40,0.50),num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
+save(evaluate_lambda_range_germline_cv_10,file="paper_final_experiments/evaluate_lambda_range_paper_germline_nmf_lasso_cv_10.RData")
