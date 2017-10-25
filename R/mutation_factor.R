@@ -407,7 +407,7 @@
 }
 
 # estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.05, 0.10, 0.15, 0.20, 0.25), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30, 0.40, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
