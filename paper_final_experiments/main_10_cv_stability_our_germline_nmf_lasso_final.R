@@ -70,4 +70,4 @@ num_iterations_cv = 100
 
 # STEP 1: fit the initial betas for each configuration
 initial_betas_germline_cv_10 = startingBetasEstimation(x=patients,K=K,background_signature= background_germline,nmf_method="nmf_lasso",nmf_runs=nmf_runs,num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
-save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_our_germline_cv_10.RData")
+save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_our_germline_nmf_lasso_cv_10.RData")
