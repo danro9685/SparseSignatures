@@ -64,7 +64,7 @@ my_seed_starting_beta = 76509
 my_seed_cross_validation = 15311
 cross_validation_entries = 0.10
 cross_validation_iterations = 10
-lambda_values = c(0.10,0.15)
+lambda_values = c(0.10,0.20,0.30)
 num_iterations_cv = 100
 
 # ANALYSIS USING THE GERMLINE SIGNATURE ESTIMATED BY THE PAPER AS BACKGROUND
@@ -76,3 +76,7 @@ save(initial_betas_germline_cv_10,file="paper_final_experiments/initial_betas_pa
 # STEP 2: initial exploration of the lambda ranges to be considered during cross-validation
 evaluate_lambda_range_germline_cv_10 = evaluateLambdaRange(x=patients,K=6,beta=initial_betas_germline_cv_10[4,1][[1]],lambda_values=c(0.10,0.20,0.30,0.40,0.50),num_processes=num_processes,seed=my_seed_starting_beta,verbose=TRUE)
 save(evaluate_lambda_range_germline_cv_10,file="paper_final_experiments/evaluate_lambda_range_paper_germline_nmf_lasso_cv_10.RData")
+
+# STEP 3: evaluation of the best solution by cross-validation
+nmfLlasso_cv_germline_cv_10 = nmfLassoCV(x=patients,K=K,starting_beta=initial_betas_germline_cv_10,lambda_values=lambda_values,cross_validation_entries=cross_validation_entries,cross_validation_iterations=cross_validation_iterations,cross_validation_repetitions=num_iterations_cv,num_processes=num_processes,seed=my_seed_cross_validation,verbose=TRUE)
+save(nmfLlasso_cv_germline_cv_10,file="paper_final_experiments/nmfLlasso_cv_germline_cv_10_paper_germline_nmf_lasso_cv_10.RData")
