@@ -63,9 +63,9 @@ nmf_runs = 100
 my_seed_starting_beta = 76509
 my_seed_cross_validation = 65600
 cross_validation_entries = 0.10
-cross_validation_iterations = 10
-lambda_values = c(0.10,0.20,0.30)
-num_iterations_cv = 100
+cross_validation_iterations = 5
+lambda_values = c(0.10,0.20)
+num_iterations_cv = 50
 
 # ANALYSIS USING THE GERMLINE SIGNATURE ESTIMATED BY THE PAPER AS BACKGROUND
 
