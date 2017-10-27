@@ -9,6 +9,7 @@ signatures = final_solution_our_germline_nmf_standard_cv_10_lambda_15
 load("/Users/daniele/Documents/Stanford-github/SparseSignatures/data/patients.RData")
 load("/Users/daniele/Documents/Stanford-github/SparseSignatures/data/clinical.RData")
 load("/Users/daniele/Documents/Stanford-github/SparseSignatures/data/brca_status.RData")
+load("/Users/daniele/Documents/Stanford-github/SparseSignatures/data/patients.RData")
 
 # get the best alpha
 best_alpha = as.data.table(signatures$alpha)
@@ -65,3 +66,16 @@ plt1
 # plot normalized alphas for carriers and controls
 plt2= ggplot(best_alpha) +  geom_boxplot(aes(x = signature, y = norm, fill = Subtype)) + ggtitle("Alpha values (normalized for each patient)")
 plt2
+
+# plot the number of mutations for the patients in each subtype
+patients_counts = best_alpha[which(!duplicated(best_alpha$patient)),]
+patients_counts$value = NULL
+patients_counts$norm = NULL
+patients_counts$signature = NULL
+patients_counts = cbind(patients_counts,rep(0,nrow(patients_counts)))
+colnames(patients_counts)[4] = "Mutations"
+for(i in 1:nrow(patients_counts)) {
+    patients_counts$Mutations[i] = sum(patients[patients_counts$patient[i],])
+}
+plt3 = ggplot(patients_counts) + geom_boxplot(aes(x = Subtype, y = Mutations, fill = Subtype)) + ylim(c(0, 25000)) + ggtitle("Number of point mutations")
+plt3
