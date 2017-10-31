@@ -1,5 +1,5 @@
 # perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLassoCV" <- function( x, K = 3:9, starting_beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.10, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmfLassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.10, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -162,6 +162,7 @@
                         }
                         
                     }
+                    curr_beta = curr_beta / rowSums(curr_beta)
                     starting_beta[[pos_k,1]] = curr_beta
                 }
                 else {
@@ -316,7 +317,7 @@
 }
 
 # perform a robust estimation of the starting beta for the nmfLasso method
-"startingBetasEstimation" <- function( x, K = 3:9, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"startingBetasEstimation" <- function( x, K = 3:10, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -450,6 +451,7 @@
             }
 
         }
+        beta = beta / rowSums(beta)
         starting_beta[[pos_k,1]] = beta
 
         if(verbose) {
@@ -633,7 +635,7 @@
 }
 
 # perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
+"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -772,7 +774,7 @@
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity
-"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.15, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
+"nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
     n = dim(x)[1]
@@ -790,7 +792,7 @@
     
     # starting beta
     starting_beta = beta / rowSums(beta)
-    beta = starting_beta * 10000
+    beta = starting_beta * 1000
     
     # structure where to save the log-likelihood at each iteration 
     loglik = rep(NA,iterations)
