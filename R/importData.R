@@ -2,9 +2,11 @@ library(data.table)
 library(Biostrings)
 library(GenomicRanges)
 
+load("../data/mutation_categories.RData")
+
 #Example data
-ssm560 = fread("../data/ssm560.txt")
-load("../data/patients.RData")
+#ssm560 = fread("../data/ssm560.txt")
+#load("../data/patients.RData")
 
 #Input requirements
 #input: a data.frame/data.table object or file with 5 columns: sample name, chromosome, position, ref, alt
@@ -63,12 +65,8 @@ importData = function(input, bsg)
                      paste0(subseq(inp$context,1,1), "[", inp$ref, ">", inp$alt, "]", subseq(inp$context, 3, 3)),
                      paste0(subseq(inp$rccontext,1,1), "[", inp$cref, ">", inp$calt, "]", subseq(inp$rccontext, 3, 3)))
   
-  #List all possible categories
-  types = as.data.table(expand.grid(b1=c("A", "C", "G", "T"), alt=c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G"), b2=c("A", "C", "G", "T")))
-  types[, cat:=paste0(b1, "[", alt, "]", b2)]
-  
   #Count number of mutations per sample, category
-  counts = merge(types[, .(cat)], data.table(sample=inp$sample, cat=inp$cat)[, .N, by=.(sample, cat)], by="cat", all=T)
+  counts = merge(mutation_categories[, .(cat)], data.table(sample=inp$sample, cat=inp$cat)[, .N, by=.(sample, cat)], by="cat", all=T)
   counts = dcast(counts, sample~cat, value.var = "N")
   counts = counts[!is.na(sample)]
   counts[is.na(counts)]=0
@@ -93,15 +91,3 @@ importData = function(input, bsg)
   #Return matrix
   return(countMatrix)
 }
-
-t1=Sys.time()
-x=importData(test_input, bsg = BSgenome.Hsapiens.1000genomes.hs37d5)
-t2=Sys.time()
-t2-t1
-
-t1=Sys.time()
-x2=mut.to.sigs.input(test_input, bsg = BSgenome.Hsapiens.1000genomes.hs37d5, sample.id="sample", chr = "chrom")
-t2=Sys.time()
-t2-t1
-
-x2 = x2[,order(colnames(x2))]
