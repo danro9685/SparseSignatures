@@ -1,0 +1,32 @@
+Package: SparseSignatures
+Version: 0.99.0
+Date: 2018-03-14
+Title: SparseSignatures
+Authors@R: c(person("Avantika", "Lal", role=c("aut")), 
+    person("Daniele", "Ramazzotti", role=c("aut"),email="daniele.ramazzotti@yahoo.com"))
+Maintainer: Stub
+Depends:
+    R (>= 3.4),
+Imports:
+    NMF,
+    nnlasso,
+    nnls,
+    parallel
+Suggests:
+    BiocGenerics,
+    BiocStyle,
+    testthat,
+    knitr,
+Name:
+    Stub
+Description:
+    Stub
+Encoding: UTF-8
+LazyData: TRUE
+License: file LICENSE
+URL: https://github.com/danro9685/SparseSignatures
+BugReports: https://github.com/danro9685/SparseSignatures
+biocViews: Stub1, 
+           Stub2
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
