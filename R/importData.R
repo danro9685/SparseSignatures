@@ -1,91 +1,107 @@
 library(data.table)
-library(deconstructSigs)
-library(BSgenome.Hsapiens.1000genomes.hs37d5)
+library(Biostrings)
+library(GenomicRanges)
 
 #Example data
 ssm560 = fread("../data/ssm560.txt")
 load("../data/patients.RData")
 
-#List bases
-bases = c("A", "C", "G", "T")
-alts = c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
+#Input requirements
+#input: a data.frame/data.table object or file with 5 columns: sample name, chromosome, position, ref, alt
+#bsg: a BSgenome object for the reference genome. Chromosome nmaes must match the input table.
 
-#List categories
-types = as.data.table(expand.grid(bases, alts, bases))
-setnames(types, c("prevbase", "alt", "nextbase"))
-types[, cat:=paste0(prevbase, "[", alt, "]", nextbase)]
-types = types[order(cat)]
-
-importData = function(input, sample = "sample", chr = "chrom", pos = "pos", ref = "ref", alt = "alt", bsg = NULL) 
+importData = function(input, bsg) 
 {
   #Check that input is a data frame or data table
-  if (class(input)=="data.frame") {
-    inp = as.data.table(input)
-    cat("found input data frame\n")
-  }else if(class(input)[1]=="data.table"){
-    inp = copy(inputname)
-    cat("found input data table\n")
-    }else if (file.exists(input)){
-      inp = fread(input, header = TRUE, as.is = FALSE, check.names = FALSE)
-    }else {
+  if (!("data.frame" %in% class(input))){
+    if (file.exists(input)){
+      input = fread(input, header = TRUE, as.is = FALSE, check.names = FALSE)
+    }else{
       stop("input is neither a file nor a loaded data frame")
     }
+  }
   
+  #Set column names
+  colnames(input = c("sample", "chrom", "pos", "ref", "alt"))
+  
+  #Convert input to GRanges
+  inp = GRanges(input$chrom, IRanges(start=input$pos-1, width=3), ref=DNAStringSet(input$ref), alt=DNAStringSet(input$alt), sample=input$sample)
+
   #Filter input: recognized bases only
-  inp = inp[, .(sample, chrom, pos, ref, alt)]
-  inp = inp[ref %in% c("A", "T", "C", "G") & alt %in% c("A", "T", "C", "G")]
+  bad = which(!(inp$ref %in% c("A", "T", "C", "G") & inp$alt %in% c("A", "T", "C", "G")))
+  if(length(bad)>0){
+    warning(paste0("Removing ", length(bad), " entries containing nonstandard bases. \n"))
+    inp = inp[inp$ref %in% c("A", "T", "C", "G") & inp$alt %in% c("A", "T", "C", "G")]
+  }
   
   #Check that bsg is a bsgenome object
-  if (is.null(bsg)|class(bsg) != "BSgenome") {
+  if(is.null(bsg)|class(bsg) != "BSgenome") {
       stop("The bsg parameter needs to be a BSgenome object.")
-    }else{
-      unknownChrom = inp[!chrom %in% GenomeInfoDb::seqnames(bsg)]
-      if(nrow(unknownChrom)>0){
+    }
+  
+  #Check that all chromosomes match bsg
+  if(length(setdiff(seqnames(inp), GenomeInfoDb::seqnames(bsg)))>0){
         warning(paste0("Check chromosome names -- not all match ", bsg, " object\n"))
-        inp = inp[chrom %in% GenomeInfoDb::seqnames(bsg)]
-      }
+        inp[seqnames(inp) %in% GenomeInfoDb::seqnames(bsg)]
     }
-  
+
   #Find context for each mutation
-  inp$context = BSgenome::getSeq(bsg, chrom, pos-1, pos+1, as.character = T)
-  
+  inp$context = getSeq(bsg, inp)
+
   #Check for mismatches with BSgenome context
-  bad = inp[ref!=substr(context,2,2)]
-  if(nrow(bad)>0){
-    warning("Check ref bases -- not all match context:\n ")
+  if(any(subseq(inp$context,2,2)!=inp$ref)){
+    warning("Check ref bases -- not all match context\n ")
   }
   
-  #If ref is G or A, convert alteration
-  inp[,alt := paste(ref, ">", alt, sep = "")]
-  inp[,stdalt := alt]
-  inp[ref %in% c("G", "A"), stdalt:=tolower(stdalt)]
-  inp[ref %in% c("G", "A"), stdalt:=gsub("g", "C", gsub("c", "G", gsub("t", "A", gsub("a", "T", stdalt))))]
+  #Get complements and reverse complements
+  inp$cref = complement(inp$ref)
+  inp$calt = complement(inp$alt)
+  inp$rccontext=reverseComplement(inp$context)
   
-  #If ref is G or A, take reverse complement of context
+  #Identify motif
+  inp$cat = ifelse(inp$ref %in% c("C", "T"), 
+                     paste0(subseq(inp$context,1,1), "[", inp$ref, ">", inp$alt, "]", subseq(inp$context, 3, 3)),
+                     paste0(subseq(inp$rccontext,1,1), "[", inp$cref, ">", inp$calt, "]", subseq(inp$rccontext, 3, 3)))
   
-  inp[,stdcontext := context]
-  mut$std.context[c(gind, tind)] <- gsub("G", "g", gsub("C", "c", gsub("T", "t", gsub("A", "a", mut$std.context[c(gind, tind)]))))
-  mut$std.context[c(gind, tind)] <- gsub("g", "C", gsub("c", "G", gsub("t", "A", gsub("a", "T", mut$std.context[c(gind, tind)]))))
-  mut$std.context[c(gind, tind)] <- sapply(strsplit(mut$std.context[c(gind, tind)], split = ""), function(str) {paste(rev(str), collapse = "")})
-  mut$tricontext = paste(substr(mut$std.context, 1, 1), "[", mut$std.mutcat, "]", substr(mut$std.context, 3, 3), sep = "")
-  final.matrix = matrix(0, ncol = 96, nrow = length(unique(mut[, sample.id])))
-  colnames(final.matrix) = all.tri
-  rownames(final.matrix) = unique(mut[, sample.id])
-  for (i in unique(mut[, sample.id])) {
-    tmp = subset(mut, mut[, sample.id] == i)
-    beep = table(tmp$tricontext)
-    for (l in 1:length(beep)) {
-      trimer = names(beep[l])
-      if (trimer %in% all.tri) {
-        final.matrix[i, trimer] = beep[trimer]
-      }
-    }
+  #List all possible categories
+  types = as.data.table(expand.grid(b1=c("A", "C", "G", "T"), alt=c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G"), b2=c("A", "C", "G", "T")))
+  types[, cat:=paste0(b1, "[", alt, "]", b2)]
+  
+  #Count number of mutations per sample, category
+  counts = merge(types[, .(cat)], data.table(sample=inp$sample, cat=inp$cat)[, .N, by=.(sample, cat)], by="cat", all=T)
+  counts = dcast(counts, sample~cat, value.var = "N")
+  counts = counts[!is.na(sample)]
+  counts[is.na(counts)]=0
+  
+  #Make count marix
+  countMatrix = as.matrix(counts[, 2:ncol(counts)])
+  rownames(countMatrix) = counts$sample
+  
+  #Order matrix columns alphabetically
+  countMatrix = countMatrix[,order(colnames(countMatrix))]
+  
+  #Identify samples with <100 mutations
+  if(!is.null(nrow(countMatrix))){
+    bad = names(rowSums(countMatrix) <= 100)
+  }else{
+    bad = (sum(countMatrix) <= 100)
   }
-  final.df = data.frame(final.matrix, check.names = F)
-  bad = names(which(rowSums(final.df) <= 50))
   if (length(bad) > 0) {
-    bad = paste(bad, collapse = ", ")
-    warning(paste("Some samples have fewer than 50 mutations:\n ", bad, sep = " "))
+    warning(paste("Some samples have fewer than 100 mutations:\n ", paste(bad, collapse = ", "), sep = " "))
   }
-  return(final.df)
+  
+  #Return matrix
+  return(countMatrix)
 }
+
+t1=Sys.time()
+x=importData(test_input, bsg = BSgenome.Hsapiens.1000genomes.hs37d5)
+t2=Sys.time()
+t2-t1
+
+t1=Sys.time()
+x2=mut.to.sigs.input(test_input, bsg = BSgenome.Hsapiens.1000genomes.hs37d5, sample.id="sample", chr = "chrom")
+t2=Sys.time()
+t2-t1
+
+x2 = x2[,order(colnames(x2))]
