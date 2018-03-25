@@ -18,7 +18,6 @@ Imports:
     GenomicRanges,
     IRanges,
     BSgenome,
-    subSeq,
     GenomeInfoDb,
     ggplot2,
     gridExtra
