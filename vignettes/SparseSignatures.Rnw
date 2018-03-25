@@ -1,0 +1,81 @@
+%\VignetteEngine{knitr::knitr}
+
+\documentclass[a4paper,9pt]{article}
+
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
+
+%\VignetteIndexEntry{SparseSignatures}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{url}
+\usepackage{tcolorbox}
+\usepackage{authblk}
+
+\begin{document}
+
+\title{Extracting sparse mutational signatures via LASSO}
+
+\author[1]{Daniele Ramazzotti}
+\author[1]{Avantika Lal}
+\author[2]{Luca De Sano}
+
+\affil[1]{Department of Pathology, Stanford University, Stanford, CA , USA.}
+\affil[2]{Dipartimento di Informatica Sistemistica e Comunicazione, Università degli Studi Milano Bicocca 
+    Milano, Italy.}
+
+\date{\today}
+\maketitle
+
+\begin{tcolorbox}{\bf Overview.} Point mutations occurring in a genome can be divided into 96 categories based on the base being 
+mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the 
+point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations 
+for a given category in the patient. 
+
+A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each 
+signature can also be represented by a vector of length 96, where each element represents the probability that this particular 
+mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to 
+extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients. 
+
+\vspace{1.0cm}
+
+{\em In this vignette, we give an overview of the package by presenting some of its main functions.}
+
+\vspace{1.0cm}
+
+\renewcommand{\arraystretch}{1.5}
+
+\end{tcolorbox}
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+concordance = TRUE,
+background = "#f3f3ff"
+)
+@
+
+\newpage
+
+\tableofcontents
+
+\section{Changelog} 
+
+\begin{itemize}
+\item[1.0.0] package released on Bioconductor in May 2018. 
+\end{itemize}
+
+\section{Using the SparseSignatures R package}
+
+Starting here the vignette. 
+
+\section{\Rcode{sessionInfo()}}
+
+<<sessioninfo,results='asis',echo=FALSE>>=
+toLatex(sessionInfo())
+@
+
+\end{document}
