@@ -6,7 +6,7 @@
 #' @param freq boolean value; shall I display rates instead of counts?
 #' @return A ggplot2 object
 #' @export patient.plot
-#' @importFrom data.table data.table as.data.table
+#' @importFrom data.table data.table as.data.table melt
 #' @import ggplot2
 #'
 "patient.plot" <- function( countMatrix, patientName, xlabels = TRUE, freq = FALSE ) {
@@ -54,7 +54,7 @@
 #' @param xlabels boolean value; shall I display x labels?
 #' @return A ggplot2 object
 #' @export signatures.plot
-#' @importFrom data.table data.table as.data.table
+#' @importFrom data.table data.table as.data.table melt
 #' @import ggplot2
 #' @import gridExtra
 #'

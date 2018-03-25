@@ -6,9 +6,13 @@
 #' by data(mutation_categories).
 #' @return A count matrix to extract mutatational signatues
 #' @export import.data
-#' @importFrom data.table data.table as.data.table
-#' @importFrom Biostrings DNAStringSet
+#' @importFrom data.table data.table as.data.table fread dcast
+#' @importFrom Biostrings DNAStringSet complement reverseComplement
 #' @import GenomicRanges
+#' @import IRanges
+#' @import GenomeInfoDb
+#' @importFrom BSgenome getSeq
+#' @import subSeq
 #'
 "import.data" <- function(input, bsg, mutation_categories) 
 {

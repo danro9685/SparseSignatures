@@ -16,6 +16,10 @@ Imports:
     data.table,
     Biostrings,
     GenomicRanges,
+    IRanges,
+    BSgenome,
+    subSeq,
+    GenomeInfoDb,
     ggplot2,
     gridExtra
 Suggests:
