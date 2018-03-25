@@ -4,6 +4,6 @@
 
 \section{Changes in Version 1.0.0}{
     \itemize{
-        \item Package released in May 2018. 
+        \item Package released on Bioconductor in May 2018. 
     }
 }
