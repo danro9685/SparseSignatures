@@ -1,8 +1,45 @@
-# perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
-"nmfLassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.10, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+#' Perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x 
+#' @title nmf.LassoCV
+#' @param x count matrix.
+#' @param K a range of numeric value (each of them greater than 1) indicating the number of signatures to be discovered.
+#' @param starting_beta a list of starting beta value for each configuration of K. If it is NULL, starting betas are estimated by 
+#' NMF.
+#' @param background_signature background signature to be used. If not provided, a warning is thrown.
+#' @param nmf_runs number of iteration of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+#' this parameter is ignored.
+#' @param lambda_values range of values of LASSO to be used between 0 and 1. This value should be greater than 0. 1 is the value of 
+#' LASSO 
+#' that would shrink all the signatures to 0 within one step. The higher lambda_rate is, the sparser are the resulting signatures, 
+#' but too large values result in a poor fit of the counts.
+#' @param cross_validation_entries Percentage of cells in the count matrix to be replaced by 0s.
+#' @param cross_validation_iterations For each configuration, the first time the signatures are discovered form a matrix with a 
+#' ercentage of values replaced by 0s. This may result in a poor. This parameter is the number of restarts to be performed to 
+#' improve this estimate.
+#' @param cross_validation_repetitions Number of time cross-validation should be repeated. Higher values result in better estimate, but are computationally expensive.
+#' @param iterations Number of iterations to be performed. Each iteration correspond to a first step where the counts are fitted 
+#' and a second step where sparsity is enhanced.
+#' @param max_iterations_lasso Number of maximum iterations to be performed during the sparsification.
+#' @param num_processes Number of processes to be used during parallel execution. If executing in single process mode, 
+#' this is ignored.
+#' @param seed Seed for reproducibility.
+#' @param verbose boolean; Shall I print all messages?
+#' @return A list corresponding to results of the function nmf.LassoK for each value of lambda to be tested. This function allows 
+#' to test a good range of lambda values to be considered. One should keep in mind that too small values generate dense solution, 
+#' while too high ones leads to poor fit. This behavior is resampled in the values of loglik_progression, which should be increasing: 
+#' too small values of lamda results in unstable log-likelihood through the iterations, while too large values make log-likelihood 
+#' drop. 
+#' @export nmf.LassoCV
+#' @import NMF
+#' @import nnlasso
+#' @import nnls
+#' @import parallel
+#'
+"nmf.LassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.10, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
+
+    nmf_method = "nmf_standard"
     
     # perform a grid search to estimate the best values of K and lambda
     if(verbose) {
@@ -183,7 +220,7 @@
                     }
                     
                     # perform the inference
-                    curr_results = nmfLassoK(x = x_cv, 
+                    curr_results = nmf.LassoK(x = x_cv, 
                                              K = k, 
                                              beta = curr_beta, 
                                              background_signature = background_signature, 
@@ -316,11 +353,29 @@
     
 }
 
-# perform a robust estimation of the starting beta for the nmfLasso method
-"startingBetasEstimation" <- function( x, K = 3:10, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+#' Perform a robust estimation of the starting beta for the nmfLasso method 
+#' @title starting.betas.estimation
+#' @param x count matrix.
+#' @param K range of numeric values (each of them greater than 1) indicating the number of signatures to be discovered.
+#' @param background_signature background signature to be used. If not provided, a warning is thrown.
+#' @param nmf_runs number of iteration of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+#' this parameter is ignored.
+#' @param num_processes Number of processes to be used during parallel execution. If executing in single process mode, 
+#' this is ignored.
+#' @param seed Seed for reproducibility.
+#' @param verbose boolean; Shall I print all messages?
+#' @return A list of starting beta values for each configuration of K.
+#' @export starting.betas.estimation
+#' @import NMF
+#' @import nnls
+#' @import parallel
+#'
+"starting.betas.estimation" <- function( x, K = 3:10, background_signature = NULL, nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
+
+    nmf_method = "nmf_standard"
     
     # setting up parallel execution
     close_parallel = FALSE
@@ -469,11 +524,42 @@
     
 }
 
-# estimate the range of lambda values to be considered in the signature inference
-"evaluateLambdaRange" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30, 0.40, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+#' Estimate the range of lambda values to be considered in the signature inference. Note that too small values of lambda 
+#' result in dense signatures, but too large values lead to bad fit of the counts.
+#' @title evaluate.lambda.range
+#' @param x count matrix.
+#' @param K numeric value (greater than 1) indicating the number of signatures to be discovered.
+#' @param beta starting beta for the estimation. If it is NULL, starting beta is estimated by NMF.
+#' @param background_signature background signature to be used. If not provided, a warning is thrown.
+#' @param nmf_runs number of iteration of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+#' this parameter is ignored.
+#' @param lambda_values range of values of LASSO to be used between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+#' that would shrink all the signatures to 0 within one step. The higher lambda_rate is, the sparser are the resulting signatures, 
+#' but too large values result in a poor fit of the counts.
+#' @param iterations Number of iterations to be performed. Each iteration correspond to a first step where the counts are fitted 
+#' and a second step where sparsity is enhanced.
+#' @param max_iterations_lasso Number of maximum iterations to be performed during the sparsification.
+#' @param num_processes Number of processes to be used during parallel execution. If executing in single process mode, 
+#' this is ignored.
+#' @param seed Seed for reproducibility.
+#' @param verbose boolean; Shall I print all messages?
+#' @return A list corresponding to results of the function nmf.LassoK for each value of lambda to be tested. This function allows 
+#' to test a good range of lambda values to be considered. One should keep in mind that too small values generate dense solution, 
+#' while too high ones leads to poor fit. This behavior is resampled in the values of loglik_progression, which should be increasing: 
+#' too small values of lamda results in unstable log-likelihood through the iterations, while too large values make log-likelihood 
+#' drop. 
+#' @export evaluate.lambda.range
+#' @import NMF
+#' @import nnlasso
+#' @import nnls
+#' @import parallel
+#'
+"evaluate.lambda.range" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30, 0.40, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
+
+    nmf_method = "nmf_standard"
     
     # setting up parallel execution
     parallel = NULL
@@ -598,7 +684,7 @@
     for(l in lambda_values) {
             
         # perform the inference
-        curr_results = nmfLassoK(x = x, 
+        curr_results = nmf.LassoK(x = x, 
                                  K = K, 
                                  beta = beta, 
                                  background_signature = background_signature, 
@@ -634,11 +720,43 @@
     
 }
 
-# perform the discovery of K somatic mutational signatures given a set of observations x
-"nmfLassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_method = "nmf_standard", nmf_runs = 10, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
+#' Perform the discovery of K somatic mutational signatures given a set of observed counts x.
+#' @title nmf.LassoK
+#' @param x count matrix.
+#' @param K numeric value (greater than 1) indicating the number of signatures to be discovered.
+#' @param beta starting beta for the estimation. If it is NULL, starting beta is estimated by NMF.
+#' @param background_signature background signature to be used. If not provided, a warning is thrown.
+#' @param nmf_runs number of iteration of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+#' this parameter is ignored.
+#' @param lambda_rate value of LASSO to be used between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+#' that would shrink all the signatures to 0 within one step. The higher lambda_rate is, the sparser are the resulting signatures, 
+#' but too large values result in a poor fit of the counts.
+#' @param iterations Number of iterations to be performed. Each iteration correspond to a first step where the counts are fitted 
+#' and a second step where sparsity is enhanced.
+#' @param max_iterations_lasso Number of maximum iterations to be performed during the sparsification.
+#' @param num_processes Number of processes to be used during parallel execution. If executing in single process mode, 
+#' this is ignored.
+#' @param parallel Cluster object for parallel execution.
+#' @param seed Seed for reproducibility.
+#' @param verbose boolean; Shall I print all messages?
+#' @return A list with the discovered signatures. It includes 5 elements: 
+#'              alpha: matrix of the discovered alpha values
+#'              beta: matrix of the discovered signatures
+#'              starting_beta: initial signatures on which the method has been apploid
+#'              best_loglik: log-likelihood of the best signatures configuration
+#'              loglik_progression: log-likelihood values during the iterations. This values should be increasing, if not the selected value of lambda is too high
+#' @export nmf.LassoK
+#' @import NMF
+#' @import nnlasso
+#' @import nnls
+#' @import parallel
+#'
+"nmf.LassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
+
+    nmf_method = "nmf_standard"
     
     # setting up parallel execution
     close_parallel = FALSE
