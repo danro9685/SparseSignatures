@@ -172,9 +172,7 @@
                         }
                         # estimate the best starting betas
                         if(is.null(beta_mse)) {
-                            if(close_parallel) {
-                                stopCluster(parallel)
-                            }
+                            stopCluster(parallel)
                             stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
                         }
                         else {
@@ -689,7 +687,6 @@
                                  beta = beta, 
                                  background_signature = background_signature, 
                                  nmf_runs = 10, 
-                                 nmf_method = "nmf_standard", 
                                  lambda_rate = l, 
                                  iterations = iterations, 
                                  max_iterations_lasso = max_iterations_lasso, 

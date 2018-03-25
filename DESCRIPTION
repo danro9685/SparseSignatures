@@ -1,6 +1,6 @@
 Package: SparseSignatures
 Version: 0.99.0
-Date: 2018-03-24
+Date: 2018-03-25
 Title: SparseSignatures
 Authors@R: c(person("Daniele", "Ramazzotti", role=c("aut","cre"),email="daniele.ramazzotti@yahoo.com"),
     person("Avantika", "Lal", role=c("ctb")),
@@ -16,6 +16,9 @@ Imports:
     data.table,
     Biostrings,
     GenomicRanges,
+    IRanges,
+    BSgenome,
+    GenomeInfoDb,
     ggplot2,
     gridExtra
 Suggests:

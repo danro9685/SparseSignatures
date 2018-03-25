@@ -6,23 +6,26 @@
 #' by data(mutation_categories).
 #' @return A count matrix to extract mutatational signatues
 #' @export import.data
-#' @import data.table
-#' @import Biostrings
+#' @importFrom data.table data.table as.data.table fread dcast
+#' @importFrom Biostrings DNAStringSet complement reverseComplement subseq
 #' @import GenomicRanges
+#' @import IRanges
+#' @import GenomeInfoDb
+#' @importFrom BSgenome getSeq
 #'
 "import.data" <- function(input, bsg, mutation_categories) 
 {
   # check that input is a data frame or data table
   if (!("data.frame" %in% class(input))) {
     if (file.exists(input)) {
-      input = fread(input, header = TRUE, as.is = FALSE, check.names = FALSE)
+      input = fread(input, header = TRUE, check.names = FALSE)
     } else {
       stop("Input is neither a file nor a loaded data frame.")
     }
   }
   
   # set column names
-  colnames(input = c("sample", "chrom", "pos", "ref", "alt"))
+  colnames(input) = c("sample", "chrom", "pos", "ref", "alt")
   
   # convert input to GRanges
   inp = GRanges(input$chrom, IRanges(start=input$pos-1, width=3), ref=DNAStringSet(input$ref), alt=DNAStringSet(input$alt), sample=input$sample)
