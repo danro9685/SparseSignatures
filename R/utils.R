@@ -21,7 +21,7 @@
 #'
 "as.alpha.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_values),"_lambda")]]
+    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$alpha)
     
 }
@@ -35,8 +35,8 @@
 #'
 "as.beta.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_values),"_lambda")]]
-    return(nmf.LassoK.result$alpha)
+    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    return(nmf.LassoK.result$beta)
     
 }
 
@@ -50,7 +50,7 @@
 #'
 "as.starting.beta.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_values),"_lambda")]]
+    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$starting_beta)
     
 }
@@ -65,8 +65,8 @@
 #'
 "as.loglik.progression.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_values),"_lambda")]]
-    return(nmf.LassoK.result$alpha)
+    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    return(nmf.LassoK.result$loglik_progression)
     
 }
 

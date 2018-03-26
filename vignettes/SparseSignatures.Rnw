@@ -75,7 +75,121 @@ background = "#f3f3ff"
 
 \section{Using the SparseSignatures R package}
 
-Starting here the vignette. 
+We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package. 
+
+<<req>>=
+library("SparseSignatures")
+data(ssm560_reduced)
+head(ssm560_reduced)
+@
+
+Those data are a reduced version with only 3 patients of the 560 Breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform imputs data in such a format to a count matrix to perform the signatures discovery with the function import.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides. This can be done as follow, where in the example we use hs37d5 as our reference genome. 
+
+<<req>>=
+library("BSgenome.Hsapiens.1000genomes.hs37d5")
+bsg = BSgenome.Hsapiens.1000genomes.hs37d5
+data(mutation_categories)
+head(mutation_categories)
+imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+head(imported_data)
+@
+
+The function import.data can also take a file as input with the same format as the one shown above. Now, we provide an example of visualization feature of the package, and we show the counts for the first patient PD10010a in the following plot. 
+
+<<image, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
+patient.plot(countMatrix=imported_data,patientName="PD10010a")
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-1}
+\end{center}
+\caption{Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al. (2016).}
+\end{figure*}
+
+After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation. 
+
+First of all, we need to specify the ranges of number of signatures (variable K) and the LASSO penalty value (variable lambda_rate) to be considered. In particular, the latter is more complicated to estimate, as it requires that the values in the range are not too small in order to avoid dense signatures, but also they should not be to high in order to still perform a good fit of the observed counts. 
+
+Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We not show how to to this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016). 
+
+<<req>>=
+data(patients)
+head(patients)
+@
+
+First, we can estimate the initial values of beta as follow. 
+
+<<req,eval=FALSE>>=
+starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signature=background,num_processes=5,seed=54251,verbose=FALSE)
+@
+
+Then, we need to explore the search space of values for LASSO penalty in order to make a good choise. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
+
+<<req,eval=FALSE>>=
+lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],lambda_values=c(0.01,0.05,0.10,0.15,0.20,0.25,0.30),num_processes=5,seed=86882,verbose=FALSE)
+@
+
+As the executions of these functions can be very time consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
+
+<<req>>=
+data(starting_betas_example)
+data(lambda_range_example)
+@
+
+To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here some examples. 
+
+<<req>>=
+# example of too small value of lambda
+# the log-likelihood is very unstable across the iterations
+lambda_range_result = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
+@
+
+<<image, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(lambda_range_result)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-2}
+\end{center}
+\caption{Example of too small value of lambda: the log-likelihood is very unstable across the iterations.}
+\end{figure*}
+
+<<req>>=
+# example of too high value of lambda
+# the log-likelihood drops after the first iteration
+lambda_range_result = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
+@
+
+<<image, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(lambda_range_result)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-3}
+\end{center}
+\caption{Example of too high value of lambda: the log-likelihood drops after the first iteration.}
+\end{figure*}
+
+<<req>>=
+# example of good value of lambda
+# the log-likelihood is increasing across the iterations
+lambda_range_result = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
+@
+
+<<image, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(lambda_range_result)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-4}
+\end{center}
+\caption{Example of good value of lambda: the log-likelihood is increasing across the iterations.}
+\end{figure*}
+
 
 \section{\Rcode{sessionInfo()}}
 

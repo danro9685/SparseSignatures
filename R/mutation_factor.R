@@ -332,7 +332,7 @@
 #' @param verbose boolean; Shall I print all messages?
 #' @return A list of starting beta values for each configuration of K.
 #' @export starting.betas.estimation
-#' @import NMF
+#' @importFrom NMF basis nmf
 #' @import nnls
 #' @import parallel
 #'

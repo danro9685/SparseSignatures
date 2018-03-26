@@ -12,7 +12,7 @@
 "patient.plot" <- function( countMatrix, patientName, xlabels = TRUE, freq = FALSE ) {
   
   # separate contexts and alterations
-  x = as.data.table(suppressWarnings(melt(countMatrix[patientName,], variable.name = "cat", value.name = "N")))
+  x = as.data.table(suppressWarnings(melt(countMatrix[patientName,], value.name = "N")), keep.rownames = "cat")
   x[, Context := paste0(substr(cat, 1,1), ".", substr(cat, 7,7))]
   x[, alt := paste0(substr(cat, 3,3), ">", substr(cat, 5,5))]
   
