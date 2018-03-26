@@ -50,12 +50,12 @@ this is ignored.}
 \item{verbose}{boolean; Shall I print all messages?}
 }
 \value{
-A list corresponding to results of the function nmf.LassoK for each value of lambda to be tested. This function allows 
-to test a good range of lambda values to be considered. One should keep in mind that too small values generate dense solution, 
-while too high ones leads to poor fit. This behavior is resampled in the values of loglik_progression, which should be increasing: 
-too small values of lamda results in unstable log-likelihood through the iterations, while too large values make log-likelihood 
-drop.
+A list corresponding with 3 elements: grid_search, starting_beta and mean_squared_error. Here, grid_search provides all the results of the executions within 
+the grid search; starting_beta is the set of initial values of beta used for each configuration and mean_squared_error is the mean squared error between the 
+observed counts and the predicted ones for each configuration.
 }
 \description{
-Perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x
+Perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x. The estimation can slow down because of 
+memory usage, when I high number of cross validation repetitions is asked and when the grid search is performed for a lot of configurations. In this case, 
+we advice to split the computation into multiple smaller sets.
 }
