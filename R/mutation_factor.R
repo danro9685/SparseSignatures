@@ -303,38 +303,6 @@
         if(verbose) {
             cat("Estimating the best configuration...","\n")
         }
-        
-        # find the best configuration
-        best_result = NA
-        best_j = NA
-        best_k = NA
-        for(j in 1:nrow(mean_squared_error_iterations[[1]])) {
-            for(k in 1:ncol(mean_squared_error_iterations[[1]])) {
-
-                # get the cross validation value at the latest iteration which is not NA
-                curr_mean_squared_error_last = NA
-                for(cv_best_val in (length(mean_squared_error_iterations):1)) {
-                    if(!is.na(mean_squared_error_iterations[[cv_best_val]][j,k])) {
-                        curr_mean_squared_error_last = mean_squared_error_iterations[[cv_best_val]][j,k]
-                        break;
-                    }
-                }
-
-                if(is.na(best_result)&&!is.na(curr_mean_squared_error_last)) {
-                    best_result = curr_mean_squared_error_last
-                    best_j = j
-                    best_k = k
-                }
-                else if(!is.na(curr_mean_squared_error_last)) {
-                    if(curr_mean_squared_error_last<best_result) {
-                        best_result = curr_mean_squared_error_last
-                        best_j = j
-                        best_k = k
-                    }
-                }
-
-            }
-        }
 
         # save the results
         curr_results = list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations)
