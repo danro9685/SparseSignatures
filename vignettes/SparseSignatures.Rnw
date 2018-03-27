@@ -102,7 +102,7 @@ patient.plot(countMatrix=imported_data,patientName="PD10010a")
 
 \begin{figure*}[ht]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{figure/image-1-1}
+\includegraphics[width=0.8\textwidth]{figure/image-1-1}
 \end{center}
 \caption{Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al.}
 \end{figure*}
@@ -201,6 +201,38 @@ We notice that the computations for this task can be very time consuming, expeci
 <<example_data_cv>>=
 data(cv_example)
 @
+
+We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lower error. 
+
+<<best_configuation>>=
+res = as.mean.squared.error(cv_example)$median
+res_best = which(res==res[which.min(res)],arr.ind=TRUE)
+best_K = rownames(res)[res_best[1]]
+best_lambda = colnames(res)[res_best[2]]
+best_K
+best_lambda
+@
+
+Finally, we can now compute the signeture for the best configuration, i.e., K = 5 and lamnda = 0.10. 
+
+<<best_configuation_signatures>>=
+beta = starting_betas_example[["5_signatures","Value"]]
+res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,iterations=5,num_processes=NA)
+@
+
+We conclude this vignette by plotting the discovered signatures. 
+
+<<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
+signatures = as.beta(res)
+signatures.plot(beta=signatures)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{figure/image-5-1}
+\end{center}
+\caption{Visualization of the discovered signatures.}
+\end{figure*}
 
 \section{\Rcode{sessionInfo()}}
 

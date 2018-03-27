@@ -9,6 +9,8 @@
 "as.mean.squared.error" <- function( nmf.LassoCV.result ) {
 
     mean_squared_error_distribution = array(list(),dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
+    rownames(mean_squared_error_distribution) = rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    colnames(mean_squared_error_distribution) = colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
 
     for(i in 1:length(nmf.LassoCV.result)) {
         curr_mse = nmf.LassoCV.result[[i]][["mean_squared_error"]]
@@ -33,6 +35,8 @@
     }
     
     mean_squared_error_median = array(NA,dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
+    rownames(mean_squared_error_median) = rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    colnames(mean_squared_error_median) = colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
     for(a in 1:dim(mean_squared_error_distribution)[1]) {
         for(b in 1:dim(mean_squared_error_distribution)[2]) {
             mean_squared_error_median[a,b] = median(mean_squared_error_distribution[[a,b]],na.rm=TRUE)
