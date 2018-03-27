@@ -83,7 +83,7 @@ data(ssm560_reduced)
 head(ssm560_reduced)
 @
 
-Those data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follow, where in the example we use hs37d5 as our reference genome. 
+These data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follows, where in the example we use hs37d5 as our reference genome. 
 
 <<example_import>>=
 library("BSgenome.Hsapiens.1000genomes.hs37d5")
@@ -94,7 +94,7 @@ imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mut
 head(imported_data)
 @
 
-The function import.data can also take a file as input with the same format as the one shown above. Now, we show an example of visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
+The function import.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
 
 <<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
 patient.plot(countMatrix=imported_data,patientName="PD10010a")
@@ -109,7 +109,7 @@ patient.plot(countMatrix=imported_data,patientName="PD10010a")
 
 After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation. 
 
-First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda rate) to be considered. In particular, the latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also they should not be to high in order to still perform a good fit of the observed counts. 
+First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda_rate) to be considered. The latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also should not be to high in order to still perform a good fit of the observed counts. 
 
 Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We now show how to do this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016). 
 
@@ -118,30 +118,30 @@ data(patients)
 head(patients)
 @
 
-First, we can estimate the initial values of beta as follow. 
+First, we can estimate the initial values of beta as follows. 
 
 <<starting_betas,eval=FALSE>>=
 starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signature=background)
 @
 
-Then, we also need to explore the search space of values for LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
+Then, we also need to explore the search space of values for the LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
 
 <<lambda_range,eval=FALSE>>=
 lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],
                                      lambda_values=c(0.05,0.10))
 @
 
-As the executions of these functions can be very time consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
+As the executions of these functions can be very time-consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
 
 <<example_data>>=
 data(starting_betas_example)
 data(lambda_range_example)
 @
 
-To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here some examples. 
+To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
 
 <<example_small>>=
-# example of too small value of lambda
+# example of using too small a value of lambda
 # the log-likelihood is very unstable across the iterations
 res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
 @
@@ -154,11 +154,11 @@ plot(res)
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figure/image-2-1}
 \end{center}
-\caption{Example of too small value of lambda: the log-likelihood is very unstable across the iterations.}
+\caption{Example of using too small a value of lambda: the log-likelihood is very unstable across the iterations.}
 \end{figure*}
 
 <<example_big>>=
-# example of too high value of lambda
+# example of using too high a value of lambda
 # the log-likelihood drops after the first iteration
 res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
 @
@@ -171,11 +171,11 @@ plot(res)
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figure/image-3-1}
 \end{center}
-\caption{Example of too high value of lambda: the log-likelihood drops after the first iteration.}
+\caption{Example of using too high a value of lambda: the log-likelihood drops after the first iteration.}
 \end{figure*}
 
 <<example_good>>=
-# example of good value of lambda
+# example of using a good value of lambda
 # the log-likelihood is increasing across the iterations
 res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
 @
@@ -188,7 +188,7 @@ plot(res)
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figure/image-4-1}
 \end{center}
-\caption{Example of good value of lambda: the log-likelihood is increasing across the iterations.}
+\caption{Example of using a good value of lambda: the log-likelihood is increasing across the iterations.}
 \end{figure*}
 
 Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
@@ -197,13 +197,13 @@ Now that we have evaluated all the required parameters, we need to decide which 
 cv = nmf.LassoCV(x=patients,K=3:10)
 @
 
-We notice that the computations for this task can be very time consuming, expecially when a lot of iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the executions, we suggest to use the parallel execution options. Also, to reduce the memory requirements, we advice to split the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest to make 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, cross validation iterations = 5, lambda values = c(0.05,0.10,0.15), num iterations cv = 2. 
+We notice that the computations for this task can be very time consuming, expecially when many iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the execution, we suggest using the parallel execution options. Also, to reduce the memory requirements, we advise splitting the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest making 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, lambda values = c(0.05,0.10,0.15), number of iterations of cross-validation = 2. 
 
 <<example_data_cv>>=
 data(cv_example)
 @
 
-We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lower error. 
+We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lowest error. 
 
 <<best_configuation>>=
 res = as.mean.squared.error(cv_example)$median
@@ -214,7 +214,7 @@ best_K
 best_lambda
 @
 
-Finally, we can now compute the signeture for the best configuration, i.e., K = 5 and lamnda = 0.10. 
+Finally, we can compute the signatures for the best configuration, i.e., K = 5 and lamnda = 0.10. 
 
 <<best_configuation_signatures>>=
 beta = starting_betas_example[["5_signatures","Value"]]
@@ -226,7 +226,7 @@ We conclude this vignette by plotting the discovered signatures.
 
 <<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
 signatures = as.beta(res)
-signatures.plot(beta=signatures)
+signatures.plot(beta=signatures, xlabels=FALSE)
 @
 
 \begin{figure*}[ht]

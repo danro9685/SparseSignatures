@@ -14,11 +14,12 @@
 #' by data(mutation_categories).
 #' @return A count matrix to extract mutatational signatues
 #' @export import.data
-#' @importFrom data.table data.table as.data.table fread dcast
+#' @importFrom data.table data.table as.data.table fread dcast .N
 #' @importFrom Biostrings DNAStringSet complement reverseComplement subseq
 #' @import GenomicRanges
 #' @import IRanges
 #' @import GenomeInfoDb
+#' @import BSgenome.Hsapiens.1000genomes.hs37d5
 #' @importFrom BSgenome getSeq
 #'
 "import.data" <- function(input, bsg, mutation_categories) 
