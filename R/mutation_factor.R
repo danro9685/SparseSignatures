@@ -1,4 +1,6 @@
-#' Perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x 
+#' Perform the discovery by cross validation of K (unknown) somatic mutational signatures given a set of observations x. The estimation can slow down because of 
+#' memory usage, when I high number of cross validation repetitions is asked and when the grid search is performed for a lot of configurations. In this case, 
+#' we advice to split the computation into multiple smaller sets. 
 #' @title nmf.LassoCV
 #' @param x count matrix.
 #' @param K a range of numeric value (each of them greater than 1) indicating the number of signatures to be discovered.
@@ -23,11 +25,9 @@
 #' this is ignored.
 #' @param seed Seed for reproducibility.
 #' @param verbose boolean; Shall I print all messages?
-#' @return A list corresponding to results of the function nmf.LassoK for each value of lambda to be tested. This function allows 
-#' to test a good range of lambda values to be considered. One should keep in mind that too small values generate dense solution, 
-#' while too high ones leads to poor fit. This behavior is resampled in the values of loglik_progression, which should be increasing: 
-#' too small values of lamda results in unstable log-likelihood through the iterations, while too large values make log-likelihood 
-#' drop. 
+#' @return A list corresponding with 3 elements: grid_search, starting_beta and mean_squared_error. Here, grid_search provides all the results of the executions within 
+#' the grid search; starting_beta is the set of initial values of beta used for each configuration and mean_squared_error is the mean squared error between the 
+#' observed counts and the predicted ones for each configuration.
 #' @export nmf.LassoCV
 #' @import NMF
 #' @import nnlasso
@@ -303,38 +303,6 @@
         if(verbose) {
             cat("Estimating the best configuration...","\n")
         }
-        
-        # find the best configuration
-        best_result = NA
-        best_j = NA
-        best_k = NA
-        for(j in 1:nrow(mean_squared_error_iterations[[1]])) {
-            for(k in 1:ncol(mean_squared_error_iterations[[1]])) {
-
-                # get the cross validation value at the latest iteration which is not NA
-                curr_mean_squared_error_last = NA
-                for(cv_best_val in (length(mean_squared_error_iterations):1)) {
-                    if(!is.na(mean_squared_error_iterations[[cv_best_val]][j,k])) {
-                        curr_mean_squared_error_last = mean_squared_error_iterations[[cv_best_val]][j,k]
-                        break;
-                    }
-                }
-
-                if(is.na(best_result)&&!is.na(curr_mean_squared_error_last)) {
-                    best_result = curr_mean_squared_error_last
-                    best_j = j
-                    best_k = k
-                }
-                else if(!is.na(curr_mean_squared_error_last)) {
-                    if(curr_mean_squared_error_last<best_result) {
-                        best_result = curr_mean_squared_error_last
-                        best_j = j
-                        best_k = k
-                    }
-                }
-
-            }
-        }
 
         # save the results
         curr_results = list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations)
@@ -364,7 +332,7 @@
 #' @param verbose boolean; Shall I print all messages?
 #' @return A list of starting beta values for each configuration of K.
 #' @export starting.betas.estimation
-#' @import NMF
+#' @importFrom NMF basis nmf
 #' @import nnls
 #' @import parallel
 #'

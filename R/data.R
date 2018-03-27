@@ -36,3 +36,30 @@ NULL
 #' @source Nik-Zainal, Serena, et al. "Landscape of somatic mutations in 560 breast cancer whole-genome sequences." Nature 534.7605 (2016): 47. 
 #' @return reduced versione of the counts of point mutations for 560 tumors and 96 trinucleotides in the format compatible with the import function 
 NULL
+
+#' @name starting_betas_example 
+#' @title example of results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @description example of results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @docType data 
+#' @usage data(starting_betas_example) 
+#' @format results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016) 
+#' @return results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016) 
+NULL
+
+#' @name lambda_range_example 
+#' @title example of results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @description example of results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @docType data 
+#' @usage data(lambda_range_example) 
+#' @format results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016) 
+#' @return results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016) 
+NULL
+
+#' @name cv_example 
+#' @title example of results obtained with the function enmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @description example of results obtained with the function nmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016). 
+#' @docType data 
+#' @usage data(cv_example) 
+#' @format results obtained with the function nmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016) 
+#' @return results obtained with the function nmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016) 
+NULL
