@@ -190,6 +190,17 @@ plot(res)
 \caption{Example of good value of lambda: the log-likelihood is increasing across the iterations.}
 \end{figure*}
 
+Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
+
+<<cross_validation,eval=FALSE>>=
+cv = nmf.LassoCV(x=patients,K=3:10)
+@
+
+We notice that the computations for this task can be very time consuming, expecially when a lot of iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the executions, we suggest to use the parallel execution options. Also, to reduce the memory requirements, we advice to split the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest to make 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross_validation_entries = 0.10, cross_validation_iterations = 5, lambda_values = c(0.05,0.10,0.15), num_iterations_cv = 3. 
+
+<<example_data_cv>>=
+data(cv_example)
+@
 
 \section{\Rcode{sessionInfo()}}
 
