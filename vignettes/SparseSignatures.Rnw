@@ -2,28 +2,244 @@
 
 \documentclass[a4paper,9pt]{article}
 
-<<style-knitr,eval=TRUE,echo=FALSE,results="asis">>=
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
 BiocStyle::latex()
 @
 
-%% \VignetteIndexEntry{SOME TEXT HERE}
+%\VignetteIndexEntry{SparseSignatures}
 
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{placeins}
 \usepackage{url}
+\usepackage{tcolorbox}
+\usepackage{authblk}
 
 \begin{document}
 
-\title{SOME TITLE HERE}
+\title{Extracting sparse mutational signatures via LASSO}
 
-\author{
-Authors here. 
-}
+\author[1,2]{Daniele Ramazzotti}
+\author[1]{Avantika Lal}
+\author[3]{Keli Liu}
+\author[4]{Luca De Sano}
+\author[3]{Robert Tibshirani}
+\author[1,5]{Arend Sidow}
+
+\affil[1]{Department of Pathology, Stanford University, Stanford, CA , USA.}
+\affil[2]{Department of Computer Science, Stanford University, Stanford, CA , USA.}
+\affil[3]{Department of Statistics, Stanford University, Stanford, CA , USA.}
+\affil[4]{Dipartimento di Informatica Sistemistica e Comunicazione, Università degli Studi Milano Bicocca Milano, Italy.}
+\affil[5]{Department of Genetics, Stanford University, Stanford, CA , USA.}
 
 \date{\today}
 \maketitle
 
-ALL THE CONTENTS HERE. 
+\begin{tcolorbox}{\bf Overview.} Point mutations occurring in a genome can be divided into 96 categories based on the base being 
+mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the 
+point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations 
+for a given category in the patient. 
+
+A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each 
+signature can also be represented by a vector of length 96, where each element represents the probability that this particular 
+mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to 
+extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients. 
+
+\vspace{1.0cm}
+
+{\em In this vignette, we give an overview of the package by presenting some of its main functions.}
+
+\vspace{1.0cm}
+
+\renewcommand{\arraystretch}{1.5}
+
+\end{tcolorbox}
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+concordance = TRUE,
+background = "#f3f3ff"
+)
+@
+
+\newpage
+
+\tableofcontents
+
+\section{Changelog} 
+
+\begin{itemize}
+\item[1.0.0] package released on Bioconductor in May 2018. 
+\end{itemize}
+
+\section{Using the SparseSignatures R package}
+
+We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package. 
+
+<<req>>=
+library("SparseSignatures")
+data(ssm560_reduced)
+head(ssm560_reduced)
+@
+
+Those data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follow, where in the example we use hs37d5 as our reference genome. 
+
+<<example_import>>=
+library("BSgenome.Hsapiens.1000genomes.hs37d5")
+bsg = BSgenome.Hsapiens.1000genomes.hs37d5
+data(mutation_categories)
+head(mutation_categories)
+imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+head(imported_data)
+@
+
+The function import.data can also take a file as input with the same format as the one shown above. Now, we show an example of visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
+
+<<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
+patient.plot(countMatrix=imported_data,patientName="PD10010a")
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{figure/image-1-1}
+\end{center}
+\caption{Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al.}
+\end{figure*}
+
+After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation. 
+
+First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda rate) to be considered. In particular, the latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also they should not be to high in order to still perform a good fit of the observed counts. 
+
+Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We now show how to do this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016). 
+
+<<patients_data>>=
+data(patients)
+head(patients)
+@
+
+First, we can estimate the initial values of beta as follow. 
+
+<<starting_betas,eval=FALSE>>=
+starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signature=background)
+@
+
+Then, we also need to explore the search space of values for LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
+
+<<lambda_range,eval=FALSE>>=
+lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],
+                                     lambda_values=c(0.05,0.10))
+@
+
+As the executions of these functions can be very time consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
+
+<<example_data>>=
+data(starting_betas_example)
+data(lambda_range_example)
+@
+
+To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here some examples. 
+
+<<example_small>>=
+# example of too small value of lambda
+# the log-likelihood is very unstable across the iterations
+res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
+@
+
+<<image-2, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(res)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-2-1}
+\end{center}
+\caption{Example of too small value of lambda: the log-likelihood is very unstable across the iterations.}
+\end{figure*}
+
+<<example_big>>=
+# example of too high value of lambda
+# the log-likelihood drops after the first iteration
+res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
+@
+
+<<image-3, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(res)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-3-1}
+\end{center}
+\caption{Example of too high value of lambda: the log-likelihood drops after the first iteration.}
+\end{figure*}
+
+<<example_good>>=
+# example of good value of lambda
+# the log-likelihood is increasing across the iterations
+res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
+@
+
+<<image-4, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+plot(res)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figure/image-4-1}
+\end{center}
+\caption{Example of good value of lambda: the log-likelihood is increasing across the iterations.}
+\end{figure*}
+
+Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
+
+<<cross_validation,eval=FALSE>>=
+cv = nmf.LassoCV(x=patients,K=3:10)
+@
+
+We notice that the computations for this task can be very time consuming, expecially when a lot of iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the executions, we suggest to use the parallel execution options. Also, to reduce the memory requirements, we advice to split the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest to make 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, cross validation iterations = 5, lambda values = c(0.05,0.10,0.15), num iterations cv = 2. 
+
+<<example_data_cv>>=
+data(cv_example)
+@
+
+We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lower error. 
+
+<<best_configuation>>=
+res = as.mean.squared.error(cv_example)$median
+res_best = which(res==res[which.min(res)],arr.ind=TRUE)
+best_K = rownames(res)[res_best[1]]
+best_lambda = colnames(res)[res_best[2]]
+best_K
+best_lambda
+@
+
+Finally, we can now compute the signeture for the best configuration, i.e., K = 5 and lamnda = 0.10. 
+
+<<best_configuation_signatures>>=
+beta = starting_betas_example[["5_signatures","Value"]]
+res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,
+                 iterations=5,num_processes=NA)
+@
+
+We conclude this vignette by plotting the discovered signatures. 
+
+<<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
+signatures = as.beta(res)
+signatures.plot(beta=signatures)
+@
+
+\begin{figure*}[ht]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{figure/image-5-1}
+\end{center}
+\caption{Visualization of the discovered signatures.}
+\end{figure*}
+
+\section{\Rcode{sessionInfo()}}
+
+<<sessioninfo,results='asis',echo=FALSE>>=
+toLatex(sessionInfo())
+@
 
 \end{document}
