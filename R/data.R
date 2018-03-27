@@ -37,7 +37,6 @@ NULL
 #' @return reduced versione of the counts of point mutations for 560 tumors and 96 trinucleotides in the format compatible with the import function 
 NULL
 
-
 #' @name starting_betas_example 
 #' @title example of results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016). 
 #' @description example of results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016). 
