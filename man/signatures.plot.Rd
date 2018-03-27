@@ -25,3 +25,9 @@ A ggplot2 object
 \description{
 Plot the discovered signatures.
 }
+\examples{
+data(nmf_LassoK_example)
+beta = as.beta(nmf_LassoK_example)
+signatures.plot(beta=beta)
+
+}
