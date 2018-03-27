@@ -21,3 +21,8 @@ A ggplot2 object
 \description{
 Plot the counts for a patient.
 }
+\examples{
+data(patients)
+patient.plot(countMatrix=patients,patientName="PD18775a")
+
+}

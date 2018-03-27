@@ -1,4 +1,12 @@
 #' Import point mutations data to build the count matrix to extract mutatational signatues.
+#'
+#' @examples
+#' data(ssm560_reduced)
+#' library("BSgenome.Hsapiens.1000genomes.hs37d5")
+#' bsg = BSgenome.Hsapiens.1000genomes.hs37d5
+#' data(mutation_categories)
+#' imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+#'
 #' @title import.data
 #' @param input either a data.frame/data.table object or a file with 5 columns: sample name, chromosome, position, ref, alt.
 #' @param bsg a BSgenome object for the reference genome. Chromosome names have to match the input table.

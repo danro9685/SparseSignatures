@@ -102,7 +102,7 @@ patient.plot(countMatrix=imported_data,patientName="PD10010a")
 
 \begin{figure*}[ht]
 \begin{center}
-\includegraphics[width=0.8\textwidth]{figure/image-1-1}
+\includegraphics[width=1.0\textwidth]{figure/image-1-1}
 \end{center}
 \caption{Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al.}
 \end{figure*}
@@ -127,7 +127,8 @@ starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signatur
 Then, we also need to explore the search space of values for LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
 
 <<lambda_range,eval=FALSE>>=
-lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],lambda_values=c(0.05,0.10))
+lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],
+                                     lambda_values=c(0.05,0.10))
 @
 
 As the executions of these functions can be very time consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
@@ -217,7 +218,8 @@ Finally, we can now compute the signeture for the best configuration, i.e., K = 
 
 <<best_configuation_signatures>>=
 beta = starting_betas_example[["5_signatures","Value"]]
-res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,iterations=5,num_processes=NA)
+res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,
+                 iterations=5,num_processes=NA)
 @
 
 We conclude this vignette by plotting the discovered signatures. 
@@ -229,7 +231,7 @@ signatures.plot(beta=signatures)
 
 \begin{figure*}[ht]
 \begin{center}
-\includegraphics[width=0.8\textwidth]{figure/image-5-1}
+\includegraphics[width=1.0\textwidth]{figure/image-5-1}
 \end{center}
 \caption{Visualization of the discovered signatures.}
 \end{figure*}

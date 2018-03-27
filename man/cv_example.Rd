@@ -3,7 +3,7 @@
 \docType{data}
 \name{cv_example}
 \alias{cv_example}
-\title{example of results obtained with the function enmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016).}
+\title{example of results obtained with the function nmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016).}
 \format{results obtained with the function nmf.LassoCV on the counts input from Nik-Zainal, Serena, et al. (2016)}
 \usage{
 data(cv_example)
