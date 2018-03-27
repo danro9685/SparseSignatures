@@ -109,7 +109,7 @@ patient.plot(countMatrix=imported_data,patientName="PD10010a")
 
 After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation. 
 
-First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda_rate) to be considered. The latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also should not be to high in order to still perform a good fit of the observed counts. 
+First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda rate) to be considered. The latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also should not be to high in order to still perform a good fit of the observed counts. 
 
 Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We now show how to do this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016). 
 
