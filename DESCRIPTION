@@ -10,7 +10,7 @@ Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.
     person("Arend", "Sidow", role=c("aut")))
 Maintainer: Daniele Ramazzotti <daniele.ramazzotti@yahoo.com>
 Depends:
-    R (>= 3.4),
+    R (>= 3.5),
 Imports:
     NMF,
     nnlasso,
