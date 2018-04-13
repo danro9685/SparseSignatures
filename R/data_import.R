@@ -5,15 +5,15 @@
 #' library("BSgenome.Hsapiens.1000genomes.hs37d5")
 #' bsg = BSgenome.Hsapiens.1000genomes.hs37d5
 #' data(mutation_categories)
-#' imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+#' imported_data = import.counts.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
 #'
-#' @title import.data
+#' @title import.counts.data
 #' @param input either a data.frame/data.table object or a file with 5 columns: sample name, chromosome, position, ref, alt.
 #' @param bsg a BSgenome object for the reference genome. Chromosome names have to match the input table.
 #' @param mutation_categories array with the 96 mutational categories to be considered. It is provided along with the package 
 #' by data(mutation_categories).
 #' @return A count matrix to extract mutatational signatues
-#' @export import.data
+#' @export import.counts.data
 #' @importFrom data.table data.table as.data.table fread dcast .N
 #' @importFrom Biostrings DNAStringSet complement reverseComplement subseq
 #' @import GenomicRanges
@@ -22,7 +22,7 @@
 #' @import BSgenome.Hsapiens.1000genomes.hs37d5
 #' @importFrom BSgenome getSeq
 #'
-"import.data" <- function(input, bsg, mutation_categories) 
+"import.counts.data" <- function(input, bsg, mutation_categories) 
 {
   # check that input is a data frame or data table
   if (!("data.frame" %in% class(input))) {
