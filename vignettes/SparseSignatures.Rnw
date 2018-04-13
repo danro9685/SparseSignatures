@@ -83,18 +83,18 @@ data(ssm560_reduced)
 head(ssm560_reduced)
 @
 
-These data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follows, where in the example we use hs37d5 as our reference genome. 
+These data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.counts.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follows, where in the example we use hs37d5 as our reference genome. 
 
 <<example_import>>=
 library("BSgenome.Hsapiens.1000genomes.hs37d5")
 bsg = BSgenome.Hsapiens.1000genomes.hs37d5
 data(mutation_categories)
 head(mutation_categories)
-imported_data = import.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+imported_data = import.counts.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
 head(imported_data)
 @
 
-The function import.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
+The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
 
 <<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
 patient.plot(countMatrix=imported_data,patientName="PD10010a")
