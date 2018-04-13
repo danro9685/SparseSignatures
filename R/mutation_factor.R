@@ -155,11 +155,11 @@
                             }
                             
                             # compute the starting beta given these initial values
-                            curr_starting_beta_estimation <- tryCatch({
+                            curr_starting_beta_estimation = tryCatch({
                                 res <- nmfLassoDecomposition(x,curr_beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
                                 mse <- sum((x-round(res$alpha%*%res$curr_beta))^2)/nrow(x)
                                 list(curr_beta=res$curr_beta,mse=mse)
-                            }, error <- function(e) {
+                            }, error = function(e) {
                                 list(curr_beta=NA,mse=NA)
                             })
                             
@@ -426,11 +426,11 @@
                     }
                     
                     # compute the starting beta given these initial values
-                    curr_starting_beta_estimation <- tryCatch({
+                    curr_starting_beta_estimation = tryCatch({
                         res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
                         mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                         list(beta=res$beta,mse=mse)
-                    }, error <- function(e) {
+                    }, error = function(e) {
                         list(beta=NA,mse=NA)
                     })
                     
@@ -594,11 +594,11 @@
                 }
                 
                 # compute the starting beta given these initial values
-                curr_starting_beta_estimation <- tryCatch({
+                curr_starting_beta_estimation = tryCatch({
                     res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
                     mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                     list(beta=res$beta,mse=mse)
-                }, error <- function(e) {
+                }, error = function(e) {
                     list(beta=NA,mse=NA)
                 })
                 
@@ -795,11 +795,11 @@
                 }
                 
                 # compute the starting beta given these initial values
-                curr_starting_beta_estimation <- tryCatch({
+                curr_starting_beta_estimation = tryCatch({
                     res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
                     mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                     list(beta=res$beta,mse=mse)
-                }, error <- function(e) {
+                }, error = function(e) {
                     list(beta=NA,mse=NA)
                 })
                 
@@ -846,9 +846,9 @@
     }
     
     # perform the discovery of the signatures
-    results <- tryCatch({
+    results = tryCatch({
         nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
-    }, error <- function(e) {
+    }, error = function(e) {
         warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
         list(alpha=NA,beta=NA,starting_beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations))
     })
