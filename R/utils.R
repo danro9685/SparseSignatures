@@ -13,42 +13,42 @@
 #'
 "as.mean.squared.error" <- function( nmf.LassoCV.result ) {
 
-    mean_squared_error_distribution = array(list(),dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
-    rownames(mean_squared_error_distribution) = rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
-    colnames(mean_squared_error_distribution) = colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    mean_squared_error_distribution <- array(list(),dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
+    rownames(mean_squared_error_distribution) <- rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    colnames(mean_squared_error_distribution) <- colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
 
     for(i in 1:length(nmf.LassoCV.result)) {
-        curr_mse = nmf.LassoCV.result[[i]][["mean_squared_error"]]
-        curr_mse_best = curr_mse[[length(curr_mse)]]
-        invalid = which(is.na(curr_mse_best),arr.ind=TRUE)
+        curr_mse <- nmf.LassoCV.result[[i]][["mean_squared_error"]]
+        curr_mse_best <- curr_mse[[length(curr_mse)]]
+        invalid <- which(is.na(curr_mse_best),arr.ind=TRUE)
         if(dim(invalid)[1]>0) {
             for(j in 1:dim(invalid)[1]) {
-                curr_conf_k = invalid[j,"row"]
-                curr_conf_l = invalid[j,"col"]
+                curr_conf_k <- invalid[j,"row"]
+                curr_conf_l <- invalid[j,"col"]
                 for(j in 1:(length(curr_mse)-1)) {
                     if(!is.na(curr_mse[[j]][curr_conf_k,curr_conf_l])) {
-                        curr_mse_best[curr_conf_k,curr_conf_l] = curr_mse[[j]][curr_conf_k,curr_conf_l]
+                        curr_mse_best[curr_conf_k,curr_conf_l] <- curr_mse[[j]][curr_conf_k,curr_conf_l]
                     }
                 }
             }
         }
         for(a in 1:dim(mean_squared_error_distribution)[1]) {
             for(b in 1:dim(mean_squared_error_distribution)[2]) {
-                mean_squared_error_distribution[[a,b]] = c(unlist(mean_squared_error_distribution[[a,b]]),curr_mse_best[a,b])
+                mean_squared_error_distribution[[a,b]] <- c(unlist(mean_squared_error_distribution[[a,b]]),curr_mse_best[a,b])
             }
         }
     }
     
-    mean_squared_error_median = array(NA,dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
-    rownames(mean_squared_error_median) = rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
-    colnames(mean_squared_error_median) = colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    mean_squared_error_median <- array(NA,dim(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]]))
+    rownames(mean_squared_error_median) <- rownames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
+    colnames(mean_squared_error_median) <- colnames(nmf.LassoCV.result[[1]][["mean_squared_error"]][[1]])
     for(a in 1:dim(mean_squared_error_distribution)[1]) {
         for(b in 1:dim(mean_squared_error_distribution)[2]) {
-            mean_squared_error_median[a,b] = median(mean_squared_error_distribution[[a,b]],na.rm=TRUE)
+            mean_squared_error_median[a,b] <- median(mean_squared_error_distribution[[a,b]],na.rm=TRUE)
         }
     }
     
-    mean_squared_error_results = list(distribution=mean_squared_error_distribution,median=mean_squared_error_median)
+    mean_squared_error_results <- list(distribution=mean_squared_error_distribution,median=mean_squared_error_median)
 
     return(mean_squared_error_results)
     
@@ -68,7 +68,7 @@
 #'
 "as.alpha.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    nmf.LassoK.result <- lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$alpha)
     
 }
@@ -87,7 +87,7 @@
 #'
 "as.beta.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    nmf.LassoK.result <- lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$beta)
     
 }
@@ -107,7 +107,7 @@
 #'
 "as.starting.beta.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    nmf.LassoK.result <- lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$starting_beta)
     
 }
@@ -127,7 +127,7 @@
 #'
 "as.loglik.progression.in.range" <- function( lambda.range.result, lambda_value = 0.20 ) {
 
-    nmf.LassoK.result = lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
+    nmf.LassoK.result <- lambda.range.result[[1,paste0(as.character(lambda_value),"_lambda")]]
     return(nmf.LassoK.result$loglik_progression)
     
 }

@@ -39,7 +39,7 @@
     # set the seed
     set.seed(seed)
 
-    nmf_method = "nmf_standard"
+    nmf_method <- "nmf_standard"
     
     # perform a grid search to estimate the best values of K and lambda
     if(verbose) {
@@ -48,21 +48,21 @@
     
     # setting up parallel execution
     if(is.na(num_processes) || is.null(num_processes)) {
-        parallel = NULL
+        parallel <- NULL
     }
     else if(num_processes==Inf) {
-        cores = as.integer((detectCores()-1))
+        cores <- as.integer((detectCores()-1))
         if(cores < 2) {
-            parallel = NULL
+            parallel <- NULL
         }
         else {
-            num_processes = cores
-            parallel = makeCluster(num_processes,outfile="")
+            num_processes <- cores
+            parallel <- makeCluster(num_processes,outfile="")
             clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
         }
     }
     else {
-        parallel = makeCluster(num_processes,outfile="")
+        parallel <- makeCluster(num_processes,outfile="")
         clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
     }
     
@@ -75,7 +75,7 @@
     }
 
     # now starting cross validations
-    results = list()
+    results <- list()
     for(cv_repetitions in 1:cross_validation_repetitions) {
 
         if(verbose) {
@@ -83,7 +83,7 @@
         }
     
         # structure to save the results of the grid search for all the cross_validation_iterations
-        grid_search_iterations = list()
+        grid_search_iterations <- list()
 
         # repeat the estimation for a number of cross_validation_iterations
         for(cv_iteration in 1:cross_validation_iterations) {
@@ -94,31 +94,31 @@
 
             # set a percentage of cross_validation_entries entries to 0 in order to perform cross validation
             if(cv_iteration==1) {
-                x_cv = x
-                valid_entries = which(x_cv>0,arr.ind=TRUE)
-                cv_entries = valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
-                x_cv[cv_entries] = 0
+                x_cv <- x
+                valid_entries <- which(x_cv>0,arr.ind=TRUE)
+                cv_entries <- valid_entries[sample(1:nrow(valid_entries),size=round(nrow(valid_entries)*cross_validation_entries),replace=FALSE),]
+                x_cv[cv_entries] <- 0
             }
             
             # structure to save the results of the grid search
-            grid_search = array(list(),c(length(K),length(lambda_values)))
-            rownames(grid_search) = paste0(as.character(K),"_signatures")
-            colnames(grid_search) = paste0(as.character(lambda_values),"_lambda")
+            grid_search <- array(list(),c(length(K),length(lambda_values)))
+            rownames(grid_search) <- paste0(as.character(K),"_signatures")
+            colnames(grid_search) <- paste0(as.character(lambda_values),"_lambda")
             
             # structure to save the starting values of beta for each K
             if(is.null(starting_beta)) {
-                starting_beta = array(list(),c(length(K),1))
-                rownames(starting_beta) = paste0(as.character(K),"_signatures")
-                colnames(starting_beta) = "Value"
+                starting_beta <- array(list(),c(length(K),1))
+                rownames(starting_beta) <- paste0(as.character(K),"_signatures")
+                colnames(starting_beta) <- "Value"
             }
 
             # consider all the values for K
-            cont = 0
-            pos_k = 0
+            cont <- 0
+            pos_k <- 0
             for(k in K) {
                     
                 # get the first k signatures to be used for the current configuration
-                pos_k = pos_k + 1
+                pos_k <- pos_k + 1
                 if(is.null(starting_beta[[pos_k,1]])) {
                     if(nmf_method=="nmf_lasso") {
                         
@@ -132,41 +132,41 @@
                         }
                         
                         # compute the starting points nmf_runs times
-                        beta_estimation = list()
-                        beta_mse = NULL
+                        beta_estimation <- list()
+                        beta_mse <- NULL
                         for(i in 1:nmf_runs) {
                             
                             # set the initial random values for beta
                             if(is.null(background_signature)) {
-                                curr_beta = matrix(0,nrow=K,ncol=dim(x)[2])
+                                curr_beta <- matrix(0,nrow=K,ncol=dim(x)[2])
                                 for(i in 1:K) {
-                                    curr_beta[i,] = runif(dim(x)[2])
+                                    curr_beta[i,] <- runif(dim(x)[2])
                                 }
-                                colnames(curr_beta) = colnames(x)
+                                colnames(curr_beta) <- colnames(x)
                             }
                             else {
-                                curr_beta = matrix(0,nrow=(K+1),ncol=dim(x)[2])
-                                curr_beta[1,] = background_signature
+                                curr_beta <- matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                                curr_beta[1,] <- background_signature
                                 for(i in 2:(K+1)) {
-                                    curr_beta[i,] = runif(dim(x)[2])
+                                    curr_beta[i,] <- runif(dim(x)[2])
                                 }
-                                rownames(curr_beta) = c("background_signature",rep("",K))
-                                colnames(curr_beta) = colnames(x)
+                                rownames(curr_beta) <- c("background_signature",rep("",K))
+                                colnames(curr_beta) <- colnames(x)
                             }
                             
                             # compute the starting beta given these initial values
-                            curr_starting_beta_estimation = tryCatch({
-                                res = nmfLassoDecomposition(x,curr_beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
-                                mse = sum((x-round(res$alpha%*%res$curr_beta))^2)/nrow(x)
+                            curr_starting_beta_estimation <- tryCatch({
+                                res <- nmfLassoDecomposition(x,curr_beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                                mse <- sum((x-round(res$alpha%*%res$curr_beta))^2)/nrow(x)
                                 list(curr_beta=res$curr_beta,mse=mse)
-                            }, error = function(e) {
+                            }, error <- function(e) {
                                 list(curr_beta=NA,mse=NA)
                             })
                             
                             # save the results at the current step if not NA
                             if(!is.na(curr_starting_beta_estimation$mse)) {
-                                beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$curr_beta
-                                beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                                beta_estimation[[(length(beta_estimation)+1)]] <- curr_starting_beta_estimation$curr_beta
+                                beta_mse <- c(beta_mse,curr_starting_beta_estimation$mse)
                             }
                             
                         }
@@ -176,7 +176,7 @@
                             stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
                         }
                         else {
-                            curr_beta = beta_estimation[[which.min(beta_mse)]]
+                            curr_beta <- beta_estimation[[which.min(beta_mse)]]
                         }
                         
                     }
@@ -185,40 +185,40 @@
                         if(verbose) {
                             cat("Computing the initial values of beta by standard NMF...","\n")
                         }
-                        curr_beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
-                        curr_beta = t(curr_beta)
+                        curr_beta <- basis(nmf(t(x),rank=K,nrun=nmf_runs))
+                        curr_beta <- t(curr_beta)
                         
                         # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
                         if(is.null(background_signature)) {
                             warning("No background signature has been specified...")
                         }
                         else {
-                            curr_beta = rbind(background_signature,curr_beta)
+                            curr_beta <- rbind(background_signature,curr_beta)
                         }
                         
                     }
-                    curr_beta = curr_beta / rowSums(curr_beta)
-                    starting_beta[[pos_k,1]] = curr_beta
+                    curr_beta <- curr_beta / rowSums(curr_beta)
+                    starting_beta[[pos_k,1]] <- curr_beta
                 }
                 else {
-                    curr_beta = starting_beta[[pos_k,1]]
+                    curr_beta <- starting_beta[[pos_k,1]]
                 }
                 
                 # consider all the values for lambda
-                pos_l = 0
+                pos_l <- 0
                 for(l in lambda_values) {
                     
                     # set the predicted values for the cross validation entries
-                    pos_l = pos_l + 1
+                    pos_l <- pos_l + 1
                     if(cv_iteration>1 && !is.na(grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]])) {
-                        best_alpha = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["alpha"]]
-                        best_beta = grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["beta"]]
-                        predicted_counts = best_alpha %*% best_beta
-                        x_cv[cv_entries] = predicted_counts[cv_entries]
+                        best_alpha <- grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["alpha"]]
+                        best_beta <- grid_search_iterations[[(cv_iteration-1)]][[pos_k,pos_l]][["beta"]]
+                        predicted_counts <- best_alpha %*% best_beta
+                        x_cv[cv_entries] <- predicted_counts[cv_entries]
                     }
                     
                     # perform the inference
-                    curr_results = nmf.LassoK(x = x_cv, 
+                    curr_results <- nmf.LassoK(x = x_cv, 
                                              K = k, 
                                              beta = curr_beta, 
                                              background_signature = background_signature, 
@@ -232,10 +232,10 @@
                                              verbose = FALSE)
                     
                     # save the results for the current configuration
-                    grid_search[[pos_k,pos_l]] = curr_results
+                    grid_search[[pos_k,pos_l]] <- curr_results
                     
                     if(verbose) {
-                        cont = cont + 1
+                        cont <- cont + 1
                         cat("Progress",paste0(round((cont/(length(K)*length(lambda_values)))*100,digits=3),"%..."),"\n")
                     }
                     
@@ -244,7 +244,7 @@
             }
             
             # save the results for the current iteration
-            grid_search_iterations[[cv_iteration]] = grid_search
+            grid_search_iterations[[cv_iteration]] <- grid_search
 
         }
         
@@ -253,50 +253,50 @@
         }
 
         # structure to save the mean squared errors for all the cross_validation_iterations
-        mean_squared_error_iterations = list()
+        mean_squared_error_iterations <- list()
 
         # repeat the estimation for a number of cross_validation_iterations
         for(cv_iteration in 1:cross_validation_iterations) {
         
             # structure to save the mean squared errors
-            mean_squared_error = array(NA,c(length(K),length(lambda_values)))
-            rownames(mean_squared_error) = paste0(as.character(K),"_signatures")
-            colnames(mean_squared_error) = paste0(as.character(lambda_values),"_lambda")
+            mean_squared_error <- array(NA,c(length(K),length(lambda_values)))
+            rownames(mean_squared_error) <- paste0(as.character(K),"_signatures")
+            colnames(mean_squared_error) <- paste0(as.character(lambda_values),"_lambda")
             
             # assess the results of the cross validation by mean squared error
-            J = dim(x)[2]
-            pos_k = 0
+            J <- dim(x)[2]
+            pos_k <- 0
             for(k in K) {
-                pos_k = pos_k + 1
-                pos_l = 0
+                pos_k <- pos_k + 1
+                pos_l <- 0
                 for(l in lambda_values) {
                     
                     # consider the current configuration
-                    pos_l = pos_l + 1
-                    curr_alpha = grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["alpha"]]
-                    curr_beta = grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["beta"]]
+                    pos_l <- pos_l + 1
+                    curr_alpha <- grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["alpha"]]
+                    curr_beta <- grid_search_iterations[[cv_iteration]][[pos_k,pos_l]][["beta"]]
                     
                     # compute the mean squared error
                     if(!is.na(curr_alpha)&&!is.na(curr_beta)) {
-                        error = 0
+                        error <- 0
                         for(i in 1:J) {
                             # compute for each trinucleotide the error between the observed counts, i.e., x, and the predicted ones
-                            curr_error = mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
-                            error = error + curr_error
+                            curr_error <- mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
+                            error <- error + curr_error
                         }
-                        error = error / J
+                        error <- error / J
                     }
                     else {
-                        error = NA
+                        error <- NA
                     }
 
-                    mean_squared_error[pos_k,pos_l] = error
+                    mean_squared_error[pos_k,pos_l] <- error
                     
                 }
             }
 
             # save the results for the current iteration
-            mean_squared_error_iterations[[cv_iteration]] = mean_squared_error
+            mean_squared_error_iterations[[cv_iteration]] <- mean_squared_error
 
         }
         
@@ -305,8 +305,8 @@
         }
 
         # save the results
-        curr_results = list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations)
-        results[[cv_repetitions]] = curr_results
+        curr_results <- list(grid_search=grid_search_iterations,starting_beta=starting_beta,mean_squared_error=mean_squared_error_iterations)
+        results[[cv_repetitions]] <- curr_results
 
     }
     
@@ -341,30 +341,30 @@
     # set the seed
     set.seed(seed)
 
-    nmf_method = "nmf_standard"
+    nmf_method <- "nmf_standard"
     
     # setting up parallel execution
-    close_parallel = FALSE
+    close_parallel <- FALSE
     if(nmf_method=="nmf_lasso") {
         if(is.na(num_processes) || is.null(num_processes)) {
-            parallel = NULL
+            parallel <- NULL
         }
         else if(num_processes==Inf) {
-            cores = as.integer((detectCores()-1))
+            cores <- as.integer((detectCores()-1))
             if(cores < 2) {
-                parallel = NULL
+                parallel <- NULL
             }
             else {
-                num_processes = cores
-                parallel = makeCluster(num_processes,outfile="")
-                clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-                close_parallel = TRUE
+                num_processes <- cores
+                parallel <- makeCluster(num_processes,outfile="")
+                clusterSetRNGStream(parallel,iseed<-round(runif(1)*100000))
+                close_parallel <- TRUE
             }
         }
         else {
-            parallel = makeCluster(num_processes,outfile="")
+            parallel <- makeCluster(num_processes,outfile="")
             clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-            close_parallel = TRUE
+            close_parallel <- TRUE
         }
         
         if(verbose && !is.null(parallel)) {
@@ -378,17 +378,17 @@
     }
 
     # structure to save the starting values of beta for each K
-    starting_beta = array(list(),c(length(K),1))
-    rownames(starting_beta) = paste0(as.character(K),"_signatures")
-    colnames(starting_beta) = "Value"
+    starting_beta <- array(list(),c(length(K),1))
+    rownames(starting_beta) <- paste0(as.character(K),"_signatures")
+    colnames(starting_beta) <- "Value"
 
     # consider all the values for K
-    pos_k = 0
+    pos_k <- 0
     for(k in K) {
     
         # compute the initial values of beta
-        pos_k = pos_k + 1
-        beta = NULL
+        pos_k <- pos_k + 1
+        beta <- NULL
         if(is.null(beta)) {
             
             if(nmf_method=="nmf_lasso") {
@@ -403,41 +403,41 @@
                 }
                 
                 # compute the starting points nmf_runs times
-                beta_estimation = list()
-                beta_mse = NULL
+                beta_estimation <- list()
+                beta_mse <- NULL
                 for(i in 1:nmf_runs) {
                     
                     # set the initial random values for beta
                     if(is.null(background_signature)) {
-                        beta = matrix(0,nrow=k,ncol=dim(x)[2])
+                        beta <- matrix(0,nrow=k,ncol=dim(x)[2])
                         for(i in 1:k) {
-                            beta[i,] = runif(dim(x)[2])
+                            beta[i,] <- runif(dim(x)[2])
                         }
-                        colnames(beta) = colnames(x)
+                        colnames(beta) <- colnames(x)
                     }
                     else {
-                        beta = matrix(0,nrow=(k+1),ncol=dim(x)[2])
-                        beta[1,] = background_signature
+                        beta <- matrix(0,nrow=(k+1),ncol=dim(x)[2])
+                        beta[1,] <- background_signature
                         for(i in 2:(k+1)) {
-                            beta[i,] = runif(dim(x)[2])
+                            beta[i,] <- runif(dim(x)[2])
                         }
-                        rownames(beta) = c("background_signature",rep("",k))
-                        colnames(beta) = colnames(x)
+                        rownames(beta) <- c("background_signature",rep("",k))
+                        colnames(beta) <- colnames(x)
                     }
                     
                     # compute the starting beta given these initial values
-                    curr_starting_beta_estimation = tryCatch({
-                        res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
-                        mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                    curr_starting_beta_estimation <- tryCatch({
+                        res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                        mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                         list(beta=res$beta,mse=mse)
-                    }, error = function(e) {
+                    }, error <- function(e) {
                         list(beta=NA,mse=NA)
                     })
                     
                     # save the results at the current step if not NA
                     if(!is.na(curr_starting_beta_estimation$mse)) {
-                        beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
-                        beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                        beta_estimation[[(length(beta_estimation)+1)]] <- curr_starting_beta_estimation$beta
+                        beta_mse <- c(beta_mse,curr_starting_beta_estimation$mse)
                     }
                     
                 }
@@ -449,7 +449,7 @@
                     stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
                 }
                 else {
-                    beta = beta_estimation[[which.min(beta_mse)]]
+                    beta <- beta_estimation[[which.min(beta_mse)]]
                 }
                 
             }
@@ -458,22 +458,22 @@
                 if(verbose) {
                     cat("Computing the initial values of beta by standard NMF...","\n")
                 }
-                beta = basis(nmf(t(x),rank=k,nrun=nmf_runs))
-                beta = t(beta)
+                beta <- basis(nmf(t(x),rank=k,nrun=nmf_runs))
+                beta <- t(beta)
                 
                 # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
                 if(is.null(background_signature)) {
                     warning("No background signature has been specified...")
                 }
                 else {
-                    beta = rbind(background_signature,beta)
+                    beta <- rbind(background_signature,beta)
                 }
                 
             }
 
         }
-        beta = beta / rowSums(beta)
-        starting_beta[[pos_k,1]] = beta
+        beta <- beta / rowSums(beta)
+        starting_beta[[pos_k,1]] <- beta
 
         if(verbose) {
             cat("Progress",paste0(round((pos_k/length(K))*100,digits=3),"%..."),"\n")
@@ -525,31 +525,31 @@
     # set the seed
     set.seed(seed)
 
-    nmf_method = "nmf_standard"
+    nmf_method <- "nmf_standard"
     
     # setting up parallel execution
-    parallel = NULL
-    close_parallel = FALSE
+    parallel <- NULL
+    close_parallel <- FALSE
     if(is.null(parallel)) {
         if(is.na(num_processes) || is.null(num_processes)) {
-            parallel = NULL
+            parallel <- NULL
         }
         else if(num_processes==Inf) {
-            cores = as.integer((detectCores()-1))
+            cores <- as.integer((detectCores()-1))
             if(cores < 2) {
-                parallel = NULL
+                parallel <- NULL
             }
             else {
-                num_processes = cores
-                parallel = makeCluster(num_processes,outfile="")
+                num_processes <- cores
+                parallel <- makeCluster(num_processes,outfile="")
                 clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-                close_parallel = TRUE
+                close_parallel <- TRUE
             }
         }
         else {
-            parallel = makeCluster(num_processes,outfile="")
+            parallel <- makeCluster(num_processes,outfile="")
             clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-            close_parallel = TRUE
+            close_parallel <- TRUE
         }
         
         if(verbose && !is.null(parallel)) {
@@ -571,41 +571,41 @@
             }
             
             # compute the starting points nmf_runs times
-            beta_estimation = list()
-            beta_mse = NULL
+            beta_estimation <- list()
+            beta_mse <- NULL
             for(i in 1:nmf_runs) {
                 
                 # set the initial random values for beta
                 if(is.null(background_signature)) {
-                    beta = matrix(0,nrow=K,ncol=dim(x)[2])
+                    beta <- matrix(0,nrow=K,ncol=dim(x)[2])
                     for(i in 1:K) {
-                        beta[i,] = runif(dim(x)[2])
+                        beta[i,] <- runif(dim(x)[2])
                     }
-                    colnames(beta) = colnames(x)
+                    colnames(beta) <- colnames(x)
                 }
                 else {
-                    beta = matrix(0,nrow=(K+1),ncol=dim(x)[2])
-                    beta[1,] = background_signature
+                    beta <- matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                    beta[1,] <- background_signature
                     for(i in 2:(K+1)) {
-                        beta[i,] = runif(dim(x)[2])
+                        beta[i,] <- runif(dim(x)[2])
                     }
-                    rownames(beta) = c("background_signature",rep("",K))
-                    colnames(beta) = colnames(x)
+                    rownames(beta) <- c("background_signature",rep("",K))
+                    colnames(beta) <- colnames(x)
                 }
                 
                 # compute the starting beta given these initial values
-                curr_starting_beta_estimation = tryCatch({
-                    res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
-                    mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                curr_starting_beta_estimation <- tryCatch({
+                    res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                    mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                     list(beta=res$beta,mse=mse)
-                }, error = function(e) {
+                }, error <- function(e) {
                     list(beta=NA,mse=NA)
                 })
                 
                 # save the results at the current step if not NA
                 if(!is.na(curr_starting_beta_estimation$mse)) {
-                    beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
-                    beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                    beta_estimation[[(length(beta_estimation)+1)]] <- curr_starting_beta_estimation$beta
+                    beta_mse <- c(beta_mse,curr_starting_beta_estimation$mse)
                 }
                 
             }
@@ -617,7 +617,7 @@
                 stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
             }
             else {
-                beta = beta_estimation[[which.min(beta_mse)]]
+                beta <- beta_estimation[[which.min(beta_mse)]]
             }
             
         }
@@ -626,31 +626,31 @@
             if(verbose) {
                 cat("Computing the initial values of beta by standard NMF...","\n")
             }
-            beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
-            beta = t(beta)
+            beta <- basis(nmf(t(x),rank=K,nrun=nmf_runs))
+            beta <- t(beta)
             
             # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
             if(is.null(background_signature)) {
                 warning("No background signature has been specified...")
             }
             else {
-                beta = rbind(background_signature,beta)
+                beta <- rbind(background_signature,beta)
             }
             
         }
     }
     
     # structure to save the estimated signatures
-    lambda_results = array(list(),c(length(K),length(lambda_values)))
-    rownames(lambda_results) = paste0(as.character(K),"_signatures")
-    colnames(lambda_results) = paste0(as.character(lambda_values),"_lambda")
+    lambda_results <- array(list(),c(length(K),length(lambda_values)))
+    rownames(lambda_results) <- paste0(as.character(K),"_signatures")
+    colnames(lambda_results) <- paste0(as.character(lambda_values),"_lambda")
     
     # perform signature discovery for all the values of lambda
-    cont = 0
+    cont <- 0
     for(l in lambda_values) {
             
         # perform the inference
-        curr_results = nmf.LassoK(x = x, 
+        curr_results <- nmf.LassoK(x = x, 
                                  K = K, 
                                  beta = beta, 
                                  background_signature = background_signature, 
@@ -664,8 +664,8 @@
                                  verbose = FALSE)
                                  
         # save the results for the current configuration
-        cont = cont + 1
-        lambda_results[[1,cont]] = curr_results
+        cont <- cont + 1
+        lambda_results[[1,cont]] <- curr_results
             
         if(verbose) {
             cat("Progress",paste0(round((cont/(length(K)*length(lambda_values)))*100,digits=3),"%..."),"\n")
@@ -679,7 +679,7 @@
     }
     
     # save the results
-    results = lambda_results
+    results <- lambda_results
     
     return(results)
     
@@ -727,30 +727,30 @@
     # set the seed
     set.seed(seed)
 
-    nmf_method = "nmf_standard"
+    nmf_method <- "nmf_standard"
     
     # setting up parallel execution
-    close_parallel = FALSE
+    close_parallel <- FALSE
     if(is.null(parallel)) {
         if(is.na(num_processes) || is.null(num_processes)) {
-            parallel = NULL
+            parallel <- NULL
         }
         else if(num_processes==Inf) {
-            cores = as.integer((detectCores()-1))
+            cores <- as.integer((detectCores()-1))
             if(cores < 2) {
-                parallel = NULL
+                parallel <- NULL
             }
             else {
-                num_processes = cores
-                parallel = makeCluster(num_processes,outfile="")
+                num_processes <- cores
+                parallel <- makeCluster(num_processes,outfile="")
                 clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-                close_parallel = TRUE
+                close_parallel <- TRUE
             }
         }
         else {
-            parallel = makeCluster(num_processes,outfile="")
+            parallel <- makeCluster(num_processes,outfile="")
             clusterSetRNGStream(parallel,iseed=round(runif(1)*100000))
-            close_parallel = TRUE
+            close_parallel <- TRUE
         }
         
         if(verbose && !is.null(parallel)) {
@@ -772,41 +772,41 @@
             }
             
             # compute the starting points nmf_runs times
-            beta_estimation = list()
-            beta_mse = NULL
+            beta_estimation <- list()
+            beta_mse <- NULL
             for(i in 1:nmf_runs) {
                 
                 # set the initial random values for beta
                 if(is.null(background_signature)) {
-                    beta = matrix(0,nrow=K,ncol=dim(x)[2])
+                    beta <- matrix(0,nrow=K,ncol=dim(x)[2])
                     for(i in 1:K) {
-                        beta[i,] = runif(dim(x)[2])
+                        beta[i,] <- runif(dim(x)[2])
                     }
-                    colnames(beta) = colnames(x)
+                    colnames(beta) <- colnames(x)
                 }
                 else {
-                    beta = matrix(0,nrow=(K+1),ncol=dim(x)[2])
-                    beta[1,] = background_signature
+                    beta <- matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                    beta[1,] <- background_signature
                     for(i in 2:(K+1)) {
-                        beta[i,] = runif(dim(x)[2])
+                        beta[i,] <- runif(dim(x)[2])
                     }
-                    rownames(beta) = c("background_signature",rep("",K))
-                    colnames(beta) = colnames(x)
+                    rownames(beta) <- c("background_signature",rep("",K))
+                    colnames(beta) <- colnames(x)
                 }
                 
                 # compute the starting beta given these initial values
-                curr_starting_beta_estimation = tryCatch({
-                    res = nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
-                    mse = sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
+                curr_starting_beta_estimation <- tryCatch({
+                    res <- nmfLassoDecomposition(x,beta,lambda_rate=0.01,iterations=20,max_iterations_lasso=10000,parallel=parallel,verbose=FALSE)
+                    mse <- sum((x-round(res$alpha%*%res$beta))^2)/nrow(x)
                     list(beta=res$beta,mse=mse)
-                }, error = function(e) {
+                }, error <- function(e) {
                     list(beta=NA,mse=NA)
                 })
                 
                 # save the results at the current step if not NA
                 if(!is.na(curr_starting_beta_estimation$mse)) {
-                    beta_estimation[[(length(beta_estimation)+1)]] = curr_starting_beta_estimation$beta
-                    beta_mse = c(beta_mse,curr_starting_beta_estimation$mse)
+                    beta_estimation[[(length(beta_estimation)+1)]] <- curr_starting_beta_estimation$beta
+                    beta_mse <- c(beta_mse,curr_starting_beta_estimation$mse)
                 }
                 
             }
@@ -818,7 +818,7 @@
                 stop("Something went wrong while estimating the starting beta values, you may try again or consider to use nmf_standard initialization...")
             }
             else {
-                beta = beta_estimation[[which.min(beta_mse)]]
+                beta <- beta_estimation[[which.min(beta_mse)]]
             }
             
         }
@@ -827,15 +827,15 @@
             if(verbose) {
                 cat("Computing the initial values of beta by standard NMF...","\n")
             }
-            beta = basis(nmf(t(x),rank=K,nrun=nmf_runs))
-            beta = t(beta)
+            beta <- basis(nmf(t(x),rank=K,nrun=nmf_runs))
+            beta <- t(beta)
             
             # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
             if(is.null(background_signature)) {
                 warning("No background signature has been specified...")
             }
             else {
-                beta = rbind(background_signature,beta)
+                beta <- rbind(background_signature,beta)
             }
             
         }
@@ -846,9 +846,9 @@
     }
     
     # perform the discovery of the signatures
-    results = tryCatch({
+    results <- tryCatch({
         nmfLassoDecomposition(x,beta,lambda_rate,iterations,max_iterations_lasso,parallel,verbose)
-    }, error = function(e) {
+    }, error <- function(e) {
         warning("Lasso did not converge, you should try a lower value of lambda! Current settings: K = ",K,", lambda_rate = ",lambda_rate,"...")
         list(alpha=NA,beta=NA,starting_beta=NA,best_loglik=NA,loglik_progression=rep(NA,iterations))
     })
@@ -866,28 +866,28 @@
 "nmfLassoDecomposition" <- function( x, beta, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, parallel = NULL, verbose = TRUE ) {
     
     # n is the number of observations in x, i.e., the patients
-    n = dim(x)[1]
+    n <- dim(x)[1]
     
     # J is the number of trinucleotides, i.e., 96 categories
-    J = dim(x)[2]
+    J <- dim(x)[2]
     
     # K is the number of signatures to be called
-    K = dim(beta)[1]
+    K <- dim(beta)[1]
     
     # initialize alpha
-    alpha = matrix(0,nrow=n,ncol=K)
-    rownames(alpha) = 1:nrow(alpha)
-    colnames(alpha) = rownames(beta)
+    alpha <- matrix(0,nrow=n,ncol=K)
+    rownames(alpha) <- 1:nrow(alpha)
+    colnames(alpha) <- rownames(beta)
     
     # starting beta
-    starting_beta = beta / rowSums(beta)
-    beta = starting_beta * 1000
+    starting_beta <- beta / rowSums(beta)
+    beta <- starting_beta * 1000
     
     # structure where to save the log-likelihood at each iteration 
-    loglik = rep(NA,iterations)
+    loglik <- rep(NA,iterations)
     
     # structure where to save the lambda values for each J
-    lambda_values = rep(NA,J)
+    lambda_values <- rep(NA,J)
     
     if(verbose) {
         cat("Performing a total of",iterations,"iterations...","\n")
@@ -895,33 +895,33 @@
     
     # repeat a 2 step algorithm iteratively, where first alpha is estimated by Non-Negative Linear Least Squares 
     # and, then, beta is estimated by Non-Negative Lasso
-    best_loglik = -Inf
-    best_alpha = NA
-    best_beta = NA
+    best_loglik <- -Inf
+    best_alpha <- NA
+    best_beta <- NA
     for(i in 1:iterations) {
         
         # initialize the value of the log-likelihood for the current iteration
-        loglik[i] = 0
+        loglik[i] <- 0
         
         # update alpha independently for each patient by Non-Negative Linear Least Squares
         if(is.null(parallel)) {
             for(j in 1:n) {
-                alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+                alpha[j,] <- nnls(t(beta),as.vector(x[j,]))$x
             }
         }
         else {
             
             # compute alpha in parallel
-            j = 1:n
-            res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
+            j <- 1:n
+            res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
             clusterExport(parallel,varlist=c("x","beta"),envir=environment())
-            alpha_res = parLapply(parallel,j,function(j) {
+            alpha_res <- parLapply(parallel,j,function(j) {
                 return(nnls(t(beta),as.vector(x[j,]))$x)
             })
             
             # reduce the results
             for(j in 1:n) {
-                alpha[j,] = alpha_res[[j]]
+                alpha[j,] <- alpha_res[[j]]
             }
             
         }
@@ -933,14 +933,14 @@
                 
                 # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
                 # and the ones predicted by the first signature (i.e., which represents the noise model)
-                error = x[,k] - alpha[,1] * beta[1,k]
+                error <- x[,k] - alpha[,1] * beta[1,k]
                 
                 # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
                 if(is.na(lambda_values[k])) {
-                    max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
-                    lambda_values[k] = max_lambda_value * lambda_rate
+                    max_lambda_value <- max(abs(t(alpha[,2:K]) %*% error))
+                    lambda_values[k] <- max_lambda_value * lambda_rate
                 }
-                beta[2:K,k] = as.vector(nnlasso(x = alpha[,2:K], 
+                beta[2:K,k] <- as.vector(nnlasso(x = alpha[,2:K], 
                                                 y = error, 
                                                 family = "normal", 
                                                 lambda = lambda_values[k], 
@@ -950,8 +950,8 @@
                                                 path = FALSE)$coef[2,])
                 
                 # update the log-likelihood for the current iteration
-                curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
-                loglik[i] = loglik[i] + curr_loglik
+                curr_loglik <- -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
+                loglik[i] <- loglik[i] + curr_loglik
                 
             }
             
@@ -962,25 +962,25 @@
             if(is.na(lambda_values[1])) {
                 
                 for(k in 1:J) {
-                    error = x[,k] - alpha[,1] * beta[1,k]
-                    max_lambda_value = max(abs(t(alpha[,2:K]) %*% error))
-                    lambda_values[k] = max_lambda_value * lambda_rate
+                    error <- x[,k] - alpha[,1] * beta[1,k]
+                    max_lambda_value <- max(abs(t(alpha[,2:K]) %*% error))
+                    lambda_values[k] <- max_lambda_value * lambda_rate
                 }
                 
             }
             
             # perform the computations of beta in parallel
-            k = 1:J
-            res_clusterEvalQ = clusterEvalQ(parallel,library("nnlasso"))
-            clusterExport(parallel,varlist=c("x","alpha","beta","lambda_values","K","max_iterations_lasso"),envir=environment())
-            beta_res = parLapply(parallel,1:J,function(k) {
+            k <- 1:J
+            res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
+            clusterExport(parallel,varlist=c("x","alpha","beta","lambda_values","K","max_iterations_lasso"),envir<-environment())
+            beta_res <- parLapply(parallel,1:J,function(k) {
                 
                 # compute independently for each trinucleotide the error between the observed counts, i.e., x, 
                 # and the ones predicted by the first signature (i.e., which represents the noise model)
-                error = x[,k] - alpha[,1] * beta[1,k]
+                error <- x[,k] - alpha[,1] * beta[1,k]
                 
                 # estimate beta for the remaining signatues by Non-Negative Lasso to ensure sparsity
-                beta[2:K,k] = as.vector(nnlasso(x = alpha[,2:K], 
+                beta[2:K,k] <- as.vector(nnlasso(x = alpha[,2:K], 
                                                 y = error, 
                                                 family = "normal", 
                                                 lambda = lambda_values[k], 
@@ -990,7 +990,7 @@
                                                 path = FALSE)$coef[2,])
                 
                 # compute the log-likelihood for the current iteration
-                curr_loglik = -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
+                curr_loglik <- -sum((x[,k] - alpha %*% beta[,k])^2) - lambda_values[k] * sum(beta[2:K,k])
                 
                 return(list(beta=beta[2:K,k],loglik=curr_loglik))
                 
@@ -999,8 +999,8 @@
             # reduce the results
             for(k in 1:J) {
                 
-                beta[2:K,k] = beta_res[[k]][["beta"]]
-                loglik[i] = loglik[i] + beta_res[[k]][["loglik"]]
+                beta[2:K,k] <- beta_res[[k]][["beta"]]
+                loglik[i] <- loglik[i] + beta_res[[k]][["loglik"]]
                 
             }
             
@@ -1008,9 +1008,9 @@
         
         # save the grid_search at maximum log-likelihood
         if(loglik[i]>best_loglik) {
-            best_loglik = loglik[i]
-            best_alpha = alpha
-            best_beta = beta
+            best_loglik <- loglik[i]
+            best_alpha <- alpha
+            best_beta <- beta
         }
         
         if(verbose) {
@@ -1018,15 +1018,15 @@
         }
         
     }
-    alpha = best_alpha
-    beta = best_beta
+    alpha <- best_alpha
+    beta <- best_beta
     
     # check if the likelihood is increasing
     if(length(loglik)>1) {
-        cont = 1
+        cont <- 1
         for(i in 2:length(loglik)) {
             if(loglik[i]>loglik[(i-1)]) {
-                cont = cont + 1
+                cont <- cont + 1
             }
         }
         if(cont/iterations<0.5) {
@@ -1035,33 +1035,33 @@
     }
     
     # normalize the rate of the signatures to sum to 1
-    beta = beta / rowSums(beta)
+    beta <- beta / rowSums(beta)
         
     # final computation of alpha by Non-Negative Linear Least Squares using the normalized version o the best beta
     if(is.null(parallel)) {
         for(j in 1:n) {
-            alpha[j,] = nnls(t(beta),as.vector(x[j,]))$x
+            alpha[j,] <- nnls(t(beta),as.vector(x[j,]))$x
         }
     }
     else {
         
         # compute alpha in parallel
-        j = 1:n
-        res_clusterEvalQ = clusterEvalQ(parallel,library("nnls"))
+        j <- 1:n
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
         clusterExport(parallel,varlist=c("x","beta"),envir=environment())
-        alpha_res = parLapply(parallel,j,function(j) {
+        alpha_res <- parLapply(parallel,j,function(j) {
             return(nnls(t(beta),as.vector(x[j,]))$x)
         })
         
         # reduce the results
         for(j in 1:n) {
-            alpha[j,] = alpha_res[[j]]
+            alpha[j,] <- alpha_res[[j]]
         }
         
     }
     
     # save the results
-    results = list(alpha=alpha,beta=beta,starting_beta=starting_beta,best_loglik=best_loglik,loglik_progression=loglik)
+    results <- list(alpha=alpha,beta=beta,starting_beta=starting_beta,best_loglik=best_loglik,loglik_progression=loglik)
     
     return(results)
     
