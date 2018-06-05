@@ -34,7 +34,7 @@
 #' @import nnls
 #' @import parallel
 #'
-"nmf.LassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.10, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
+"nmf.LassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.05, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
     
     # set the seed
     set.seed(seed)
@@ -278,13 +278,10 @@
                     
                     # compute the mean squared error
                     if(!is.na(curr_alpha)&&!is.na(curr_beta)) {
-                        error <- 0
-                        for(i in 1:J) {
-                            # compute for each trinucleotide the error between the observed counts, i.e., x, and the predicted ones
-                            curr_error <- mean((x[,i] - as.vector(curr_alpha %*% curr_beta[,i]))^2)
-                            error <- error + curr_error
-                        }
-                        error <- error / J
+                        curr_predicted_counts = round(curr_alpha%*%curr_beta)
+                        curr_true_considered_counts = as.vector(x[cv_entries])
+                        curr_predicted_considered_counts = as.vector(curr_predicted_counts[cv_entries])
+                        error = mean((curr_true_considered_counts-curr_predicted_considered_counts)^2)
                     }
                     else {
                         error <- NA
