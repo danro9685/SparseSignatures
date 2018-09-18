@@ -1,6 +1,6 @@
 Package: SparseSignatures
-Version: 1.1.2
-Date: 2018-07-18
+Version: 1.1.3
+Date: 2018-09-18
 Title: SparseSignatures
 Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
     person("Avantika", "Lal", role=c("aut")),
@@ -31,7 +31,7 @@ Suggests:
     testthat,
     knitr,
 Name:
-    An R package for the extraction sparse mutational signatures from whole genome sequencing data
+    An R package for the extraction of sparse mutational signatures from whole genome sequencing data
 Description:
     Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each signature can also be represented by a vector of length 96, where each element represents the probability that this particular mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients.
 Encoding: UTF-8
