@@ -5,11 +5,11 @@
 \title{nmf.LassoCV}
 \usage{
 nmf.LassoCV(x, K = 3:10, starting_beta = NULL,
-  background_signature = NULL, nmf_runs = 10, lambda_values = c(0.1, 0.2,
-  0.3), cross_validation_entries = 0.05, cross_validation_iterations = 5,
-  cross_validation_repetitions = 10, iterations = 20,
-  max_iterations_lasso = 10000, num_processes = Inf, seed = NULL,
-  verbose = TRUE)
+  background_signature = NULL, nmf_runs = 10, lambda_values = c(0.1,
+  0.2, 0.3), cross_validation_entries = 0.05,
+  cross_validation_iterations = 5, cross_validation_repetitions = 10,
+  iterations = 20, max_iterations_lasso = 10000, num_processes = Inf,
+  seed = NULL, verbose = TRUE)
 }
 \arguments{
 \item{x}{count matrix.}

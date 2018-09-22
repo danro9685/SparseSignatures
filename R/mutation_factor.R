@@ -138,19 +138,19 @@
                             
                             # set the initial random values for beta
                             if(is.null(background_signature)) {
-                                curr_beta <- matrix(0,nrow=K,ncol=dim(x)[2])
-                                for(i in 1:K) {
+                                curr_beta <- matrix(0,nrow=k,ncol=dim(x)[2])
+                                for(i in 1:k) {
                                     curr_beta[i,] <- runif(dim(x)[2])
                                 }
                                 colnames(curr_beta) <- colnames(x)
                             }
                             else {
-                                curr_beta <- matrix(0,nrow=(K+1),ncol=dim(x)[2])
+                                curr_beta <- matrix(0,nrow=(k+1),ncol=dim(x)[2])
                                 curr_beta[1,] <- background_signature
-                                for(i in 2:(K+1)) {
+                                for(i in 2:(k+1)) {
                                     curr_beta[i,] <- runif(dim(x)[2])
                                 }
-                                rownames(curr_beta) <- c("background_signature",rep("",K))
+                                rownames(curr_beta) <- c("background_signature",rep("",k))
                                 colnames(curr_beta) <- colnames(x)
                             }
                             
@@ -185,7 +185,7 @@
                         if(verbose) {
                             cat("Computing the initial values of beta by standard NMF...","\n")
                         }
-                        curr_beta <- basis(nmf(t(x),rank=K,nrun=nmf_runs))
+                        curr_beta <- basis(nmf(t(x),rank=k,nrun=nmf_runs))
                         curr_beta <- t(curr_beta)
                         
                         # add a signature to beta (leading to K+1 signatures in total) to explicitly model noise
