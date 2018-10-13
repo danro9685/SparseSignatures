@@ -73,6 +73,19 @@ background = "#f3f3ff"
 \item[1.0.0] package released on Bioconductor in May 2018. 
 \end{itemize}
 
+\section{Algorithms and useful links} \label{sec:stuff}
+
+\renewcommand{\arraystretch}{2}
+
+\begin{center}
+\begin{tabular}{| l | p{6.0cm} | l |}
+{\bf Acronym} & {\bf Extended name} & {\bf Reference}\\ \hline
+
+SparseSignatures & De Novo Mutational Signature Discovery in Tumor Genomes using SparseSignatures & \href{https://www.biorxiv.org/content/early/2018/08/04/384834}{Publication}\\ \hline
+
+\end{tabular}
+\end{center}
+
 \section{Using the SparseSignatures R package}
 
 We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package. 
