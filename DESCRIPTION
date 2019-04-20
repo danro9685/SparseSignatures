@@ -41,5 +41,5 @@ URL: https://github.com/danro9685/SparseSignatures
 BugReports: https://github.com/danro9685/SparseSignatures
 biocViews: BiomedicalInformatics, 
            SomaticMutation
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
