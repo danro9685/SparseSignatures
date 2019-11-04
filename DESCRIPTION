@@ -1,6 +1,6 @@
 Package: SparseSignatures
-Version: 1.5.1
-Date: 2019-10-12
+Version: 1.6.0
+Date: 2019-11-04
 Title: SparseSignatures
 Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
     person("Avantika", "Lal", role=c("aut")),
@@ -10,7 +10,7 @@ Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.
     person("Arend", "Sidow", role=c("aut")))
 Maintainer: Luca De Sano <luca.desano@gmail.com>
 Depends:
-    R (>= 3.6),
+    R (>= 3.6.1),
     NMF
 Imports:
     nnlasso,
