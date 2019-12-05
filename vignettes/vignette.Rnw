@@ -103,7 +103,14 @@ library("BSgenome.Hsapiens.1000genomes.hs37d5")
 bsg = BSgenome.Hsapiens.1000genomes.hs37d5
 data(mutation_categories)
 head(mutation_categories)
+@
+
+<<example_import_not_eval,eval=FALSE>>=
 imported_data = import.counts.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+@
+
+<<example_import_final_eveal>>=
+data(imported_data)
 head(imported_data)
 @
 

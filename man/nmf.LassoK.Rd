@@ -4,10 +4,20 @@
 \alias{nmf.LassoK}
 \title{nmf.LassoK}
 \usage{
-nmf.LassoK(x, K, beta = NULL, background_signature = NULL,
-  nmf_runs = 10, lambda_rate = 0.2, iterations = 20,
-  max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL,
-  seed = NULL, verbose = TRUE)
+nmf.LassoK(
+  x,
+  K,
+  beta = NULL,
+  background_signature = NULL,
+  nmf_runs = 10,
+  lambda_rate = 0.2,
+  iterations = 20,
+  max_iterations_lasso = 10000,
+  num_processes = Inf,
+  parallel = NULL,
+  seed = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{count matrix.}
