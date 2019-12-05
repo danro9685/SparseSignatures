@@ -4,8 +4,15 @@
 \alias{starting.betas.estimation}
 \title{starting.betas.estimation}
 \usage{
-starting.betas.estimation(x, K = 3:10, background_signature = NULL,
-  nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE)
+starting.betas.estimation(
+  x,
+  K = 3:10,
+  background_signature = NULL,
+  nmf_runs = 10,
+  num_processes = Inf,
+  seed = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{count matrix.}

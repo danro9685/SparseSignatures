@@ -4,10 +4,19 @@
 \alias{evaluate.lambda.range}
 \title{evaluate.lambda.range}
 \usage{
-evaluate.lambda.range(x, K = 6, beta = NULL,
-  background_signature = NULL, nmf_runs = 10, lambda_values = c(0.1,
-  0.2, 0.3, 0.4, 0.5), iterations = 20, max_iterations_lasso = 10000,
-  num_processes = Inf, seed = NULL, verbose = TRUE)
+evaluate.lambda.range(
+  x,
+  K = 6,
+  beta = NULL,
+  background_signature = NULL,
+  nmf_runs = 10,
+  lambda_values = c(0.1, 0.2, 0.3, 0.4, 0.5),
+  iterations = 20,
+  max_iterations_lasso = 10000,
+  num_processes = Inf,
+  seed = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{count matrix.}

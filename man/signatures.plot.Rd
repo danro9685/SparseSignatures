@@ -4,8 +4,13 @@
 \alias{signatures.plot}
 \title{signatures.plot}
 \usage{
-signatures.plot(beta, useColNames = TRUE, mutation_categories = NULL,
-  firstBackground = TRUE, xlabels = TRUE)
+signatures.plot(
+  beta,
+  useColNames = TRUE,
+  mutation_categories = NULL,
+  firstBackground = TRUE,
+  xlabels = TRUE
+)
 }
 \arguments{
 \item{beta}{discovered signatures}

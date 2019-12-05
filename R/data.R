@@ -72,3 +72,12 @@ NULL
 #' @format results obtained with the function nmf.LassoK on the counts input from Nik-Zainal, Serena, et al. (2016) 
 #' @return results obtained with the function nmf.LassoK on the counts input from Nik-Zainal, Serena, et al. (2016) 
 NULL
+
+#' @name imported_data 
+#' @title example of imported data from Nik-Zainal, Serena, et al. (2016). 
+#' @description example of imported data from Nik-Zainal, Serena, et al. (2016). 
+#' @docType data 
+#' @usage data(imported_data) 
+#' @format results obtained with the function import.counts.data on the data from Nik-Zainal, Serena, et al. (2016) 
+#' @return results obtained with the function import.counts.data on the data from Nik-Zainal, Serena, et al. (2016) 
+NULL
