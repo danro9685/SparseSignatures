@@ -1,5 +1,5 @@
 Package: SparseSignatures
-Version: 1.8.0
+Version: 1.9.0
 Date: 2020-04-29
 Title: SparseSignatures
 Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
