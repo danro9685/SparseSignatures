@@ -1,8 +1,8 @@
 data(starting_betas_example)
 beta = starting_betas_example[["5_signatures","Value"]]
 
-context("nmf.LassoK")
+context("nmfLasso")
 
-test_that("nmf.LassoK produces correct output", {
-    expect_equal(names(nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,iterations=5,num_processes=NA)),c("alpha","beta","starting_beta","best_loglik","loglik_progression"))
+test_that("nmfLasso produces correct output", {
+    expect_equal(names(nmfLasso(x=patients,K=5,beta=beta,background_signature=background,lambda_rate_alpha=0.00,lambda_rate_beta=0.05,iterations=5,num_processes=NA)),c("alpha","beta","starting_alpha","starting_beta","loglik_progression"))
 })

@@ -1,4 +1,4 @@
-#' Make trinucleotides counts matrix from input data for a provided reference genome.
+#' Make trinucleotides counts matrix from input data for a given reference genome.
 #'
 #' @examples
 #' data(ssm560_reduced)
@@ -8,7 +8,7 @@
 #' @title import.trinucleotides.counts
 #' @param data a data.frame with variants having 6 columns: sample name, chromosome, start position, end position, ref, alt.
 #' @param reference a BSgenome object with the reference genome to be used to retrieve flanking bases.
-#' @return A matrix with Single Base Substitutions (SBS) counts per patient.
+#' @return A matrix with trinucleotides counts per patient.
 #' @export import.trinucleotides.counts
 #' @importFrom data.table data.table dcast .N
 #' @importFrom Biostrings DNAStringSet complement reverseComplement subseq
