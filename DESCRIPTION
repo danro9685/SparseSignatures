@@ -1,6 +1,6 @@
 Package: SparseSignatures
-Version: 1.9.0
-Date: 2020-04-29
+Version: 2.1.0
+Date: 2020-07-27
 Title: SparseSignatures
 Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
     person("Avantika", "Lal", role=c("aut")),
@@ -10,7 +10,7 @@ Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.
     person("Arend", "Sidow", role=c("aut")))
 Maintainer: Luca De Sano <luca.desano@gmail.com>
 Depends:
-    R (>= 3.6.0),
+    R (>= 4.0.0),
     NMF
 Imports:
     nnlasso,
@@ -33,7 +33,7 @@ Suggests:
 Name:
     An R package for the extraction of sparse mutational signatures from whole genome sequencing data
 Description:
-    Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each signature can also be represented by a vector of length 96, where each element represents the probability that this particular mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients.
+    Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient's tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each signature can also be represented by a vector of length 96, where each element represents the probability that this particular mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients.
 Encoding: UTF-8
 LazyData: TRUE
 License: file LICENSE

@@ -2,15 +2,21 @@
 \title{News for the package \pkg{SparseSignatures}}
 \encoding{UTF-8}
 
+\section{Changes in Version 2.1.0}{
+    \itemize{
+        \item Major refactoring and migration from Travis-CI to Github Actions. 
+    }
+}
+
 \section{Changes in Version 1.1.4}{
     \itemize{
-        \item Move NMF to Depends section
+        \item Move NMF to Depends section. 
     }
 }
 
 \section{Changes in Version 1.1.3}{
     \itemize{
-        \item Issue with the basis function solved
+        \item Issue with the basis function solved. 
     }
 }
 
