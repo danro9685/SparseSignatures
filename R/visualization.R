@@ -11,9 +11,10 @@
 #' @param xlabels boolean value; shall I display x labels?
 #' @return A ggplot2 object.
 #' @export patients.plot
-#' @importFrom data.table as.data.table melt :=
 #' @import ggplot2
 #' @import gridExtra
+#' @importFrom data.table as.data.table :=
+#' @importFrom reshape2 melt
 #'
 "patients.plot" <- function( trinucleotides_counts, samples = rownames(trinucleotides_counts), freq = FALSE, xlabels = FALSE ) {
 
@@ -68,9 +69,10 @@
 #' @param xlabels boolean value; shall I display x labels?
 #' @return A ggplot2 object.
 #' @export signatures.plot
-#' @importFrom data.table as.data.table melt :=
 #' @import ggplot2
 #' @import gridExtra
+#' @importFrom data.table as.data.table :=
+#' @importFrom reshape2 melt
 #'
 "signatures.plot" <- function( beta, useRowNames = FALSE, xlabels = FALSE ) {
 

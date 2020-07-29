@@ -14,11 +14,11 @@ patients.plot(
 \arguments{
 \item{trinucleotides_counts}{trinucleotides counts matrix.}
 
+\item{samples}{name of the samples. This should match a rownames in trinucleotides_counts.}
+
 \item{freq}{boolean value; shall I display rates instead of counts?}
 
 \item{xlabels}{boolean value; shall I display x labels?}
-
-\item{patientName}{name of the patients. This should match a rownames in trinucleotides_counts.}
 }
 \value{
 A ggplot2 object.
