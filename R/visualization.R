@@ -6,7 +6,7 @@
 #'
 #' @title patients.plot
 #' @param trinucleotides_counts trinucleotides counts matrix.
-#' @param patientName name of the patients. This should match a rownames in trinucleotides_counts.
+#' @param samples name of the samples. This should match a rownames in trinucleotides_counts.
 #' @param freq boolean value; shall I display rates instead of counts?
 #' @param xlabels boolean value; shall I display x labels?
 #' @return A ggplot2 object.
