@@ -117,7 +117,7 @@ head(imported_data)
 The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
 
 <<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-patient.plot(countMatrix=imported_data,patientName="PD10010a")
+patient.plots(countMatrix=imported_data,patientName="PD10010a")
 @
 
 \begin{figure*}[ht]
