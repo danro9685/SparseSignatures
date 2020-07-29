@@ -4,7 +4,8 @@
 
 \section{Changes in Version 2.1.0}{
     \itemize{
-        \item Major refactoring and migration from Travis-CI to Github Actions. 
+        \item Migration from Travis-CI to Github Actions. 
+        \item Major refactoring. 
     }
 }
 
@@ -20,7 +21,7 @@
     }
 }
 
-\section{Changes in Version 1.0.0}{
+\section{Changes in Version 1.1.0}{
     \itemize{
         \item Package released on Bioconductor in May 2018. 
     }
