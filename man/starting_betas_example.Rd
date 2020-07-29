@@ -4,7 +4,9 @@
 \name{starting_betas_example}
 \alias{starting_betas_example}
 \title{example of results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016).}
-\format{results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016)}
+\format{
+results obtained with the function starting.betas.estimation on the counts input from Nik-Zainal, Serena, et al. (2016)
+}
 \usage{
 data(starting_betas_example)
 }
