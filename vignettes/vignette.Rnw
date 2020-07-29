@@ -245,7 +245,8 @@ res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10
 We conclude this vignette by plotting the discovered signatures. 
 
 <<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-signatures = as.beta(res)
+data(nmf_LassoK_example)
+signatures = nmf_LassoK_example$beta
 signatures.plot(beta=signatures, xlabels=FALSE)
 @
 
