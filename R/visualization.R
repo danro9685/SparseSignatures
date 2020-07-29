@@ -14,7 +14,6 @@
 #' @import ggplot2
 #' @import gridExtra
 #' @importFrom data.table as.data.table :=
-#' @importFrom reshape2 melt
 #'
 "patients.plot" <- function( trinucleotides_counts, samples = rownames(trinucleotides_counts), freq = FALSE, xlabels = FALSE ) {
 
@@ -72,7 +71,6 @@
 #' @import ggplot2
 #' @import gridExtra
 #' @importFrom data.table as.data.table :=
-#' @importFrom reshape2 melt
 #'
 "signatures.plot" <- function( beta, useRowNames = FALSE, xlabels = FALSE ) {
 
