@@ -1,5 +1,8 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^nobuild/.*$
 ^README.md$
-^LICENSE.md$
-^.gitignore$
-^.travis.yml$
 ^.git/.*$
+^LICENSE.md$
+^\.github$

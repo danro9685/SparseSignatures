@@ -4,7 +4,9 @@
 \name{ssm560_reduced}
 \alias{ssm560_reduced}
 \title{a reduced version of the point mutations for 560 breast tumors in the format compatible with the import function}
-\format{reduced versione of the counts of the point mutations in the format compatible with the import function}
+\format{
+reduced versione of the counts of the point mutations in the format compatible with the import function
+}
 \source{
 Nik-Zainal, Serena, et al. "Landscape of somatic mutations in 560 breast cancer whole-genome sequences." Nature 534.7605 (2016): 47.
 }

@@ -4,7 +4,9 @@
 \name{patients}
 \alias{patients}
 \title{point mutations for 560 breast tumors}
-\format{counts of the point mutations}
+\format{
+counts of the point mutations
+}
 \source{
 Nik-Zainal, Serena, et al. "Landscape of somatic mutations in 560 breast cancer whole-genome sequences." Nature 534.7605 (2016): 47.
 }

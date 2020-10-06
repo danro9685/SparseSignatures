@@ -4,7 +4,9 @@
 \name{background}
 \alias{background}
 \title{germline replication error}
-\format{vector of rates}
+\format{
+vector of rates
+}
 \source{
 Rahbari, Raheleh, et al. "Timing, rates and spectra of human germline mutation." Nature genetics 48.2 (2016): 126.
 }
