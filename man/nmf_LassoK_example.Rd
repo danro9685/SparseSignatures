@@ -4,7 +4,9 @@
 \name{nmf_LassoK_example}
 \alias{nmf_LassoK_example}
 \title{example of results obtained with the function nmf.LassoK on the counts input from Nik-Zainal, Serena, et al. (2016).}
-\format{results obtained with the function nmf.LassoK on the counts input from Nik-Zainal, Serena, et al. (2016)}
+\format{
+results obtained with the function nmf.LassoK on the counts input from Nik-Zainal, Serena, et al. (2016)
+}
 \usage{
 data(nmf_LassoK_example)
 }

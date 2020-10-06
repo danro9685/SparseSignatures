@@ -4,7 +4,9 @@
 \name{mutation_categories}
 \alias{mutation_categories}
 \title{trinucleotides mutation categories}
-\format{matrix of 96 trinucleotides mutation categories}
+\format{
+matrix of 96 trinucleotides mutation categories
+}
 \usage{
 data(mutation_categories)
 }
