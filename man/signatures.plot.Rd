@@ -4,35 +4,23 @@
 \alias{signatures.plot}
 \title{signatures.plot}
 \usage{
-signatures.plot(
-  beta,
-  useColNames = TRUE,
-  mutation_categories = NULL,
-  firstBackground = TRUE,
-  xlabels = TRUE
-)
+signatures.plot(beta, useRowNames = FALSE, xlabels = FALSE)
 }
 \arguments{
-\item{beta}{discovered signatures}
+\item{beta}{matrix with the inferred mutational signatures.}
 
-\item{useColNames}{boolean value; shall I use the colnames from beta as names for the signatures?}
-
-\item{mutation_categories}{if useColNames is FALSE, the trinucleotides categories to be considered can be specified. 
-An example is provided in the package and can be loaded by data(mutation_categories)}
-
-\item{firstBackground}{boolean value; shall I display the background signature as the first element?}
+\item{useRowNames}{boolean value; shall I use the rownames from beta as names for the signatures?}
 
 \item{xlabels}{boolean value; shall I display x labels?}
 }
 \value{
-A ggplot2 object
+A ggplot2 object.
 }
 \description{
-Plot the discovered signatures.
+Plot the inferred mutational signatures.
 }
 \examples{
 data(nmf_LassoK_example)
-beta = as.beta(nmf_LassoK_example)
-signatures.plot(beta=beta)
+signatures.plot(beta=nmf_LassoK_example$beta)
 
 }

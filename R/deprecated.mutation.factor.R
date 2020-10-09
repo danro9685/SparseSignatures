@@ -684,10 +684,10 @@
 
 #' Perform the discovery of K somatic mutational signatures given a set of observed counts x.
 #'
-#' @examples
-#' data(starting_betas_example)
-#' beta = starting_betas_example[["5_signatures","Value"]]
-#' res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,iterations=5,num_processes=NA)
+### @examples
+### data(starting_betas_example)
+### beta = starting_betas_example[["5_signatures","Value"]]
+### res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,iterations=5,num_processes=NA)
 #'
 #' @title nmf.LassoK
 #' @param x count matrix.

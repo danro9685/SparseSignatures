@@ -117,7 +117,7 @@ head(imported_data)
 The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
 
 <<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-patient.plot(countMatrix=imported_data,patientName="PD10010a")
+patients.plot(trinucleotides_counts=imported_data,samples="PD10010a")
 @
 
 \begin{figure*}[ht]
@@ -245,7 +245,8 @@ res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10
 We conclude this vignette by plotting the discovered signatures. 
 
 <<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-signatures = as.beta(res)
+data(nmf_LassoK_example)
+signatures = nmf_LassoK_example$beta
 signatures.plot(beta=signatures, xlabels=FALSE)
 @
 
