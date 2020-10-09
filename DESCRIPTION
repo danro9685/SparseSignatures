@@ -1,11 +1,13 @@
 Package: SparseSignatures
 Version: 2.1.0
-Date: 2020-07-29
+Date: 2020-10-06
 Title: SparseSignatures
-Authors@R: c(person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
+Authors@R: c(
+    person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com"),
     person("Avantika", "Lal", role=c("aut")),
     person("Keli", "Liu", role=c("ctb")),
-    person("Luca", "De Sano", role=c("ctb"),email="luca.desano@gmail.com"),
+    person("Luca", "De Sano", role=c("aut"), email="luca.desano@gmail.com",
+                comment = c(ORCID = "0000-0002-9618-3774")),
     person("Robert", "Tibshirani", role=c("ctb")),
     person("Arend", "Sidow", role=c("aut")))
 Maintainer: Luca De Sano <luca.desano@gmail.com>
