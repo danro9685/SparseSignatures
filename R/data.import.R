@@ -2,8 +2,10 @@
 #'
 #' @examples
 #' data(ssm560_reduced)
-#' data("BSgenome.Hsapiens.1000genomes.hs37d5")
-#' trinucleotides_counts = import.trinucleotides.counts(data=ssm560_reduced,reference=BSgenome.Hsapiens.1000genomes.hs37d5)
+#' library("BSgenome.Hsapiens.1000genomes.hs37d5")
+#' trinucleotides_counts = import.trinucleotides.counts(
+#'      data=ssm560_reduced,
+#'      reference=BSgenome.Hsapiens.1000genomes.hs37d5)
 #'
 #' @title import.trinucleotides.counts
 #' @param data a data.frame with variants having 6 columns: sample name, chromosome, start position, end position, ref, alt.

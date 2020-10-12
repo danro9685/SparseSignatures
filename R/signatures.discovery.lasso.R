@@ -5,7 +5,15 @@
 #' @examples
 #' data(background)
 #' data(patients)
-#' res = nmfLassoCV(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,lambda_values_alpha=c(0.00),lambda_values_beta=c(0.00),cross_validation_repetitions=2,num_processes=NA,seed=12345)
+#' res = nmfLassoCV(x=patients[1:100,],
+#'      K=3:5,
+#'      background_signature=background,
+#'      nmf_runs=1,
+#'      lambda_values_alpha=c(0.00),
+#'      lambda_values_beta=c(0.00),
+#'      cross_validation_repetitions=2,
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title nmfLassoCV
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -411,7 +419,13 @@
 #' @examples
 #' data(background)
 #' data(patients)
-#' res = nmfLassoBootstrap(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,bootstrap_repetitions=2,num_processes=NA,seed=12345)
+#' res = nmfLassoBootstrap(x=patients[1:100,],
+#'      K=3:5,
+#'      background_signature=background,
+#'      nmf_runs=1,
+#'      bootstrap_repetitions=2,
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title nmfLassoBootstrap
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -951,7 +965,11 @@
 #' @examples
 #' data(background)
 #' data(patients)
-#' res = startingBetaEstimation(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,seed=12345)
+#' res = startingBetaEstimation(x=patients[1:100,],
+#'      K=3:5,
+#'      background_signature=background,
+#'      nmf_runs=1,
+#'      seed=12345)
 #'
 #' @title startingBetaEstimation
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -1069,7 +1087,11 @@
 #' @examples
 #' data(background)
 #' data(patients)
-#' res = lambdaRangeAlphaEvaluation(x=patients[1:100,],K=5,background_signature=background,nmf_runs=1,lambda_values=c(0.01,0.05),num_processes=NA,seed=12345)
+#' res = lambdaRangeAlphaEvaluation(x=patients[1:100,],
+#'      K=5,background_signature=background,
+#'      nmf_runs=1,lambda_values=c(0.01,0.05),
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title lambdaRangeAlphaEvaluation
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -1290,7 +1312,13 @@
 #' @examples
 #' data(background)
 #' data(patients)
-#' res = lambdaRangeBetaEvaluation(x=patients[1:100,],K=5,background_signature=background,nmf_runs=1,lambda_values=c(0.01,0.05),num_processes=NA,seed=12345)
+#' res = lambdaRangeBetaEvaluation(x=patients[1:100,],
+#'      K=5,
+#'      background_signature=background,
+#'      nmf_runs=1,
+#'      lambda_values=c(0.01,0.05),
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title lambdaRangeBetaEvaluation
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -1511,7 +1539,13 @@
 #' data(patients)
 #' data(starting_betas_example)
 #' beta = starting_betas_example[["5_signatures","Value"]]
-#' res = nmfLasso(x=patients[1:100,],K=5,beta=beta,lambda_rate_alpha=0.05,lambda_rate_beta=0.05,iterations=5,seed=12345)
+#' res = nmfLasso(x=patients[1:100,],
+#'      K=5,
+#'      beta=beta,
+#'      lambda_rate_alpha=0.05,
+#'      lambda_rate_beta=0.05,
+#'      iterations=5,
+#'      seed=12345)
 #'
 #' @title nmfLasso
 #' @param x count matrix for a set of n patients and 96 trinucleotides.

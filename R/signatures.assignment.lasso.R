@@ -6,7 +6,12 @@
 #' data(patients)
 #' data(starting_betas_example)
 #' beta = starting_betas_example[["5_signatures","Value"]]
-#' res = sigAssignmentCV(x=patients[1:100,],beta=beta,lambda_values_alpha=c(0.00),cross_validation_repetitions=2,num_processes=NA,seed=12345)
+#' res = sigAssignmentCV(x=patients[1:100,],
+#'      beta=beta,
+#'      lambda_values_alpha=c(0.00),
+#'      cross_validation_repetitions=2,
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title sigAssignmentCV
 #' @param x count matrix for a set of n patients and 96 trinucleotides.
@@ -312,7 +317,11 @@
 #' data(patients)
 #' data(starting_betas_example)
 #' beta = starting_betas_example[["5_signatures","Value"]]
-#' res = sigAssignmentEvaluation(x=patients[1:100,],beta=beta,lambda_values=c(0.01,0.05),num_processes=NA,seed=12345)
+#' res = sigAssignmentEvaluation(x=patients[1:100,],
+#'      beta=beta,
+#'      lambda_values=c(0.01,0.05),
+#'      num_processes=NA,
+#'      seed=12345)
 #'
 #' @title sigAssignmentEvaluation
 #' @param x count matrix for a set of n patients and 96 trinucleotides.

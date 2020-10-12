@@ -67,6 +67,10 @@ result in dense exposures, but too large values lead to bad fit of the counts.
 \examples{
 data(background)
 data(patients)
-res = lambdaRangeAlphaEvaluation(x=patients[1:100,],K=5,background_signature=background,nmf_runs=1,lambda_values=c(0.01,0.05),num_processes=NA,seed=12345)
+res = lambdaRangeAlphaEvaluation(x=patients[1:100,],
+     K=5,background_signature=background,
+     nmf_runs=1,lambda_values=c(0.01,0.05),
+     num_processes=NA,
+     seed=12345)
 
 }

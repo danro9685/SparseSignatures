@@ -158,58 +158,60 @@ data(starting_betas_example)
 data(lambda_range_example)
 @
 
-To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
 
-<<example_small>>=
-# example of using too small a value of lambda
-# the log-likelihood is very unstable across the iterations
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
-@
 
-<<image-2, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
+%To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
 
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-2-1}
-\end{center}
-\caption{Example of using too small a value of lambda: the log-likelihood is very unstable across the iterations.}
-\end{figure*}
-
-<<example_big>>=
-# example of using too high a value of lambda
-# the log-likelihood drops after the first iteration
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
-@
-
-<<image-3, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
-
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-3-1}
-\end{center}
-\caption{Example of using too high a value of lambda: the log-likelihood drops after the first iteration.}
-\end{figure*}
-
-<<example_good>>=
-# example of using a good value of lambda
-# the log-likelihood is increasing across the iterations
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
-@
-
-<<image-4, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
-
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-4-1}
-\end{center}
-\caption{Example of using a good value of lambda: the log-likelihood is increasing across the iterations.}
-\end{figure*}
+%<<example_small>>=
+%# example of using too small a value of lambda
+%# the log-likelihood is very unstable across the iterations
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
+%@
+%
+%<<image-2, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-2-1}
+%\end{center}
+%\caption{Example of using too small a value of lambda: the log-likelihood is very unstable across the iterations.}
+%\end{figure*}
+%
+%<<example_big>>=
+%# example of using too high a value of lambda
+%# the log-likelihood drops after the first iteration
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
+%@
+%
+%<<image-3, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-3-1}
+%\end{center}
+%\caption{Example of using too high a value of lambda: the log-likelihood drops after the first %iteration.}
+%\end{figure*}
+%
+%<<example_good>>=
+%# example of using a good value of lambda
+%# the log-likelihood is increasing across the iterations
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
+%@
+%
+%<<image-4, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-4-1}
+%\end{center}
+%\caption{Example of using a good value of lambda: the log-likelihood is increasing across the iterations.}
+%\end{figure*}
 
 Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
 
@@ -223,24 +225,24 @@ We notice that the computations for this task can be very time consuming, expeci
 data(cv_example)
 @
 
-We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lowest error. 
+%We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lowest error. 
 
-<<best_configuation>>=
-res = as.mean.squared.error(cv_example)$median
-res_best = which(res==res[which.min(res)],arr.ind=TRUE)
-best_K = rownames(res)[res_best[1]]
-best_lambda = colnames(res)[res_best[2]]
-best_K
-best_lambda
-@
+%<<best_configuation>>=
+%res = as.mean.squared.error(cv_example)$median
+%res_best = which(res==res[which.min(res)],arr.ind=TRUE)
+%best_K = rownames(res)[res_best[1]]
+%best_lambda = colnames(res)[res_best[2]]
+%best_K
+%best_lambda
+%@
 
-Finally, we can compute the signatures for the best configuration, i.e., K = 5 and lamnda = 0.10. 
+Finally, we can compute the signatures for the best configuration, i.e., K = 5. 
 
 <<best_configuation_signatures>>=
 beta = starting_betas_example[["5_signatures","Value"]]
-res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,
-                 iterations=5,num_processes=NA)
+res = nmfLasso(x = patients, K = 5, beta = beta, background_signature = background, seed = 12345)
 @
+
 
 We conclude this vignette by plotting the discovered signatures. 
 

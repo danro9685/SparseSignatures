@@ -67,6 +67,12 @@ Perform the discovery of K somatic mutational signatures given a set of observed
 data(patients)
 data(starting_betas_example)
 beta = starting_betas_example[["5_signatures","Value"]]
-res = nmfLasso(x=patients[1:100,],K=5,beta=beta,lambda_rate_alpha=0.05,lambda_rate_beta=0.05,iterations=5,seed=12345)
+res = nmfLasso(x=patients[1:100,],
+     K=5,
+     beta=beta,
+     lambda_rate_alpha=0.05,
+     lambda_rate_beta=0.05,
+     iterations=5,
+     seed=12345)
 
 }

@@ -13,6 +13,7 @@
 #' @export patients.plot
 #' @import ggplot2
 #' @import gridExtra
+#' @importFrom reshape2 melt
 #' @importFrom data.table as.data.table :=
 #'
 "patients.plot" <- function( trinucleotides_counts, samples = rownames(trinucleotides_counts), freq = FALSE, xlabels = FALSE ) {
