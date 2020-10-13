@@ -1,10 +1,10 @@
 #' Make trinucleotides counts matrix from input data for a given reference genome.
 #'
-#### @examples
-#### data(ssm560_reduced)
-#### library("BSgenome.Hsapiens.1000genomes.hs37d5")
-#### trinucleotides_counts = import.trinucleotides.counts(data=ssm560_reduced, 
-####      reference=BSgenome.Hsapiens.1000genomes.hs37d5)
+#' @examples
+#' data(ssm560_reduced)
+#' library("BSgenome.Hsapiens.1000genomes.hs37d5")
+#' trinucleotides_counts = import.trinucleotides.counts(data=ssm560_reduced, 
+#'      reference=BSgenome.Hsapiens.1000genomes.hs37d5)
 #'
 #' @title import.trinucleotides.counts
 #' @param data a data.frame with variants having 6 columns: sample name, chromosome, start position, end position, ref, alt.
@@ -80,6 +80,7 @@
     mutation_categories <- data.table(context=categories_context,alt=categories_alt,cat=categories_cat)
     
     # count number of mutations per sample for each category
+    print("CIAOA")
     data <- merge(mutation_categories[,.(cat)],data.table(sample=data$sample,cat=data$cat)[,.N,by=.(sample,cat)],by="cat",all=TRUE)
     data <- dcast(data,sample~cat,value.var="N")
     data <- data[!is.na(sample),drop=FALSE]
