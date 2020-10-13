@@ -77,11 +77,11 @@
             }
         }
     }
-    mutation_categories <- data.table(context=categories_context,alt=categories_alt,cat=categories_cat)
+    mutation_categories <- data.table::data.table(context=categories_context,alt=categories_alt,cat=categories_cat)
     
     # count number of mutations per sample for each category
-    input1 <- data.table(mutation_categories[,"cat"])
-    input2 <- data.table(sample=data$sample,cat=data$cat)
+    input1 <- data.table::data.table(mutation_categories[,"cat"])
+    input2 <- data.table::data.table(sample=data$sample,cat=data$cat)
     input2 <- input2[,.N,by=.(sample,cat)]
     data <- merge(input1,input2,by="cat",all=TRUE)
     data <- data.table::dcast(data,sample~cat,value.var="N")
