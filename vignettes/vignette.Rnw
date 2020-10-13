@@ -109,7 +109,7 @@ head(mutation_categories)
 @
 
 <<example_import_not_eval,eval=FALSE>>=
-imported_data = import.counts.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg,mutation_categories=mutation_categories)
 @
 
 <<example_import_final_eveal>>=
@@ -144,14 +144,14 @@ head(patients)
 First, we can estimate the initial values of beta as follows. 
 
 <<starting_betas,eval=FALSE>>=
-starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signature=background)
+starting_betas = startingBetaEstimation(x=patients,K=3:12,background_signature=background)
 @
 
 Then, we also need to explore the search space of values for the LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
 
 <<lambda_range,eval=FALSE>>=
-lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],
-                                     lambda_values=c(0.05,0.10))
+lambda_range = lambdaRangeBetaEvaluation(x=patients,K=10,beta=starting_betas[[8,1]],
+                                         lambda_values=c(0.05,0.10))
 @
 
 As the executions of these functions can be very time-consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
@@ -160,8 +160,6 @@ As the executions of these functions can be very time-consuming, we also provide
 data(starting_betas_example)
 data(lambda_range_example)
 @
-
-
 
 %To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
 
@@ -219,7 +217,7 @@ data(lambda_range_example)
 Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
 
 <<cross_validation,eval=FALSE>>=
-cv = nmf.LassoCV(x=patients,K=3:10)
+cv = nmfLassoCV(x=patients,K=3:10)
 @
 
 We notice that the computations for this task can be very time consuming, expecially when many iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the execution, we suggest using the parallel execution options. Also, to reduce the memory requirements, we advise splitting the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest making 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, lambda values = c(0.05,0.10,0.15), number of iterations of cross-validation = 2. 
