@@ -70,6 +70,9 @@ background = "#f3f3ff"
 \section{Changelog} 
 
 \begin{itemize}
+\item[2.0.0] Migration from Travis-CI to Github Actions and Major refactoring. 
+\item[1.0.4] Move NMF to Depends section. 
+\item[1.0.3] Issue with the basis function solved. 
 \item[1.0.0] package released on Bioconductor in May 2018. 
 \end{itemize}
 
@@ -81,7 +84,7 @@ background = "#f3f3ff"
 \begin{tabular}{| l | p{6.0cm} | l |}
 {\bf Acronym} & {\bf Extended name} & {\bf Reference}\\ \hline
 
-SparseSignatures & De Novo Mutational Signature Discovery in Tumor Genomes using SparseSignatures & \href{https://www.biorxiv.org/content/early/2018/08/04/384834}{Publication}\\ \hline
+SparseSignatures & De Novo Mutational Signature Discovery in Tumor Genomes using SparseSignatures & \href{https://www.biorxiv.org/content/10.1101/384834v3}{Publication}\\ \hline
 
 \end{tabular}
 \end{center}
@@ -106,7 +109,7 @@ head(mutation_categories)
 @
 
 <<example_import_not_eval,eval=FALSE>>=
-imported_data = import.counts.data(input=ssm560_reduced,bsg=bsg,mutation_categories=mutation_categories)
+imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg,mutation_categories=mutation_categories)
 @
 
 <<example_import_final_eveal>>=
@@ -117,7 +120,7 @@ head(imported_data)
 The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
 
 <<image-1, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-patient.plot(countMatrix=imported_data,patientName="PD10010a")
+patients.plot(trinucleotides_counts=imported_data,samples="PD10010a")
 @
 
 \begin{figure*}[ht]
@@ -141,14 +144,14 @@ head(patients)
 First, we can estimate the initial values of beta as follows. 
 
 <<starting_betas,eval=FALSE>>=
-starting_betas = starting.betas.estimation(x=patients,K=3:12,background_signature=background)
+starting_betas = startingBetaEstimation(x=patients,K=3:12,background_signature=background)
 @
 
 Then, we also need to explore the search space of values for the LASSO penalty in order to make a good choice. To do so, we can use the function evaluate.lambda.range to test different values as follows. 
 
 <<lambda_range,eval=FALSE>>=
-lambda_range = evaluate.lambda.range(x=patients,K=10,beta=starting_betas[[8,1]],
-                                     lambda_values=c(0.05,0.10))
+lambda_range = lambdaRangeBetaEvaluation(x=patients,K=10,beta=starting_betas[[8,1]],
+                                         lambda_values=c(0.05,0.10))
 @
 
 As the executions of these functions can be very time-consuming, we also provide as examples together with the package a set of pre-computed results by the two functions starting.betas.estimation and evaluate.lambda.range obtained with the commands above. 
@@ -158,63 +161,63 @@ data(starting_betas_example)
 data(lambda_range_example)
 @
 
-To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
+%To evaluate the best lambda range, we need to carefully consider the log-likelihood of the solutions at each iteration of our method. This can be done by exploiting the as. functions that we provide. Here are some examples. 
 
-<<example_small>>=
-# example of using too small a value of lambda
-# the log-likelihood is very unstable across the iterations
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
-@
-
-<<image-2, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
-
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-2-1}
-\end{center}
-\caption{Example of using too small a value of lambda: the log-likelihood is very unstable across the iterations.}
-\end{figure*}
-
-<<example_big>>=
-# example of using too high a value of lambda
-# the log-likelihood drops after the first iteration
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
-@
-
-<<image-3, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
-
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-3-1}
-\end{center}
-\caption{Example of using too high a value of lambda: the log-likelihood drops after the first iteration.}
-\end{figure*}
-
-<<example_good>>=
-# example of using a good value of lambda
-# the log-likelihood is increasing across the iterations
-res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
-@
-
-<<image-4, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
-plot(res)
-@
-
-\begin{figure*}[ht]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figure/image-4-1}
-\end{center}
-\caption{Example of using a good value of lambda: the log-likelihood is increasing across the iterations.}
-\end{figure*}
+%<<example_small>>=
+%# example of using too small a value of lambda
+%# the log-likelihood is very unstable across the iterations
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.01)
+%@
+%
+%<<image-2, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-2-1}
+%\end{center}
+%\caption{Example of using too small a value of lambda: the log-likelihood is very unstable across the iterations.}
+%\end{figure*}
+%
+%<<example_big>>=
+%# example of using too high a value of lambda
+%# the log-likelihood drops after the first iteration
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.30)
+%@
+%
+%<<image-3, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-3-1}
+%\end{center}
+%\caption{Example of using too high a value of lambda: the log-likelihood drops after the first %iteration.}
+%\end{figure*}
+%
+%<<example_good>>=
+%# example of using a good value of lambda
+%# the log-likelihood is increasing across the iterations
+%res = as.loglik.progression.in.range(lambda.range.result=lambda_range_example,lambda_value=0.15)
+%@
+%
+%<<image-4, fig.show='hide', fig.width=5, fig.height=5,results='hide'>>=
+%plot(res)
+%@
+%
+%\begin{figure*}[ht]
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{figure/image-4-1}
+%\end{center}
+%\caption{Example of using a good value of lambda: the log-likelihood is increasing across the iterations.}
+%\end{figure*}
 
 Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
 
 <<cross_validation,eval=FALSE>>=
-cv = nmf.LassoCV(x=patients,K=3:10)
+cv = nmfLassoCV(x=patients,K=3:10)
 @
 
 We notice that the computations for this task can be very time consuming, expecially when many iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the execution, we suggest using the parallel execution options. Also, to reduce the memory requirements, we advise splitting the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest making 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, lambda values = c(0.05,0.10,0.15), number of iterations of cross-validation = 2. 
@@ -223,29 +226,30 @@ We notice that the computations for this task can be very time consuming, expeci
 data(cv_example)
 @
 
-We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lowest error. 
+%We can now estimate the best configuration of the parameters in terms of median mean squared error by cross validation, where the best configuration is the one with lowest error. 
 
-<<best_configuation>>=
-res = as.mean.squared.error(cv_example)$median
-res_best = which(res==res[which.min(res)],arr.ind=TRUE)
-best_K = rownames(res)[res_best[1]]
-best_lambda = colnames(res)[res_best[2]]
-best_K
-best_lambda
-@
+%<<best_configuation>>=
+%res = as.mean.squared.error(cv_example)$median
+%res_best = which(res==res[which.min(res)],arr.ind=TRUE)
+%best_K = rownames(res)[res_best[1]]
+%best_lambda = colnames(res)[res_best[2]]
+%best_K
+%best_lambda
+%@
 
-Finally, we can compute the signatures for the best configuration, i.e., K = 5 and lamnda = 0.10. 
+Finally, we can compute the signatures for the best configuration, i.e., K = 5. 
 
 <<best_configuation_signatures>>=
 beta = starting_betas_example[["5_signatures","Value"]]
-res = nmf.LassoK(x=patients,K=5,beta=beta,background=background,lambda_rate=0.10,
-                 iterations=5,num_processes=NA)
+res = nmfLasso(x = patients, K = 5, beta = beta, background_signature = background, seed = 12345)
 @
+
 
 We conclude this vignette by plotting the discovered signatures. 
 
 <<image-5, fig.show='hide', fig.width=5, fig.height=5, results='hide'>>=
-signatures = as.beta(res)
+data(nmf_LassoK_example)
+signatures = nmf_LassoK_example$beta
 signatures.plot(beta=signatures, xlabels=FALSE)
 @
 
