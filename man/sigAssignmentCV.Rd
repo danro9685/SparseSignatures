@@ -62,6 +62,11 @@ an advice may be to split the computation into multiple smaller sets.
 data(patients)
 data(starting_betas_example)
 beta = starting_betas_example[["5_signatures","Value"]]
-res = sigAssignmentCV(x=patients[1:100,],beta=beta,lambda_values_alpha=c(0.00),cross_validation_repetitions=2,num_processes=NA,seed=12345)
+res = sigAssignmentCV(x=patients[1:100,],
+     beta=beta,
+     lambda_values_alpha=c(0.00),
+     cross_validation_repetitions=2,
+     num_processes=NA,
+     seed=12345)
 
 }

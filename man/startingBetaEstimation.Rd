@@ -40,6 +40,10 @@ Perform a robust estimation of the starting betas for the nmfLasso method
 \examples{
 data(background)
 data(patients)
-res = startingBetaEstimation(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,seed=12345)
+res = startingBetaEstimation(x=patients[1:100,],
+     K=3:5,
+     background_signature=background,
+     nmf_runs=1,
+     seed=12345)
 
 }

@@ -53,6 +53,10 @@ result in dense exposures, but too large values lead to bad fit of the counts.
 data(patients)
 data(starting_betas_example)
 beta = starting_betas_example[["5_signatures","Value"]]
-res = sigAssignmentEvaluation(x=patients[1:100,],beta=beta,lambda_values=c(0.01,0.05),num_processes=NA,seed=12345)
+res = sigAssignmentEvaluation(x=patients[1:100,],
+     beta=beta,
+     lambda_values=c(0.01,0.05),
+     num_processes=NA,
+     seed=12345)
 
 }

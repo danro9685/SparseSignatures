@@ -82,6 +82,14 @@ an advice may be to split the computation into multiple smaller sets.
 \examples{
 data(background)
 data(patients)
-res = nmfLassoCV(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,lambda_values_alpha=c(0.00),lambda_values_beta=c(0.00),cross_validation_repetitions=2,num_processes=NA,seed=12345)
+res = nmfLassoCV(x=patients[1:100,],
+     K=3:5,
+     background_signature=background,
+     nmf_runs=1,
+     lambda_values_alpha=c(0.00),
+     lambda_values_beta=c(0.00),
+     cross_validation_repetitions=2,
+     num_processes=NA,
+     seed=12345)
 
 }

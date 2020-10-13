@@ -64,6 +64,12 @@ an advice may be to split the computation into multiple smaller sets.
 \examples{
 data(background)
 data(patients)
-res = nmfLassoBootstrap(x=patients[1:100,],K=3:5,background_signature=background,nmf_runs=1,bootstrap_repetitions=2,num_processes=NA,seed=12345)
+res = nmfLassoBootstrap(x=patients[1:100,],
+     K=3:5,
+     background_signature=background,
+     nmf_runs=1,
+     bootstrap_repetitions=2,
+     num_processes=NA,
+     seed=12345)
 
 }

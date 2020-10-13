@@ -35,8 +35,9 @@
 # @import parallel
 #
 "nmf.LassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30), cross_validation_entries = 0.05, cross_validation_iterations = 5, cross_validation_repetitions = 10, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
-    
+
     .Deprecated("nmfLassoCV")
+
 #    # set the seed
 #    set.seed(seed)
 #
@@ -315,6 +316,7 @@
 #    
 #    return(results)
 #    
+
 }
 
 # Perform a robust estimation of the starting beta for the nmfLasso method 
@@ -335,8 +337,9 @@
 # @import parallel
 #
 "starting.betas.estimation" <- function( x, K = 3:10, background_signature = NULL, nmf_runs = 10, num_processes = Inf, seed = NULL, verbose = TRUE ) {
-    
+
     .Deprecated("startingBetaEstimation")
+
 #    # set the seed
 #    set.seed(seed)
 #
@@ -487,6 +490,7 @@
 #
 #    return(starting_beta)
 #    
+
 }
 
 # Estimate the range of lambda values to be considered in the signature inference. Note that too small values of lambda 
@@ -520,8 +524,9 @@
 # @import parallel
 #
 "evaluate.lambda.range" <- function( x, K = 6, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_values = c(0.10, 0.20, 0.30, 0.40, 0.50), iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE ) {
-    
+
     .Deprecated("lambdaRangeBetaEvaluation")
+
 #    # set the seed
 #    set.seed(seed)
 #
@@ -683,6 +688,7 @@
 #    
 #    return(results)
 #    
+
 }
 
 # Perform the discovery of K somatic mutational signatures given a set of observed counts x.
@@ -723,7 +729,7 @@
 # @import parallel
 #
 "nmf.LassoK" <- function( x, K, beta = NULL, background_signature = NULL, nmf_runs = 10, lambda_rate = 0.20, iterations = 20, max_iterations_lasso = 10000, num_processes = Inf, parallel = NULL, seed = NULL, verbose = TRUE ) {
-    
+
     .Deprecated("nmfLasso")
 
 #    # set the seed
@@ -860,7 +866,8 @@
 #        stopCluster(parallel)
 #    }
 #    
-#    return(results)   
+#    return(results)
+
 }
 
 # perform de novo discovery of somatic mutational signatures using NMF with Lasso to ensure sparsity

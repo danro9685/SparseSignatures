@@ -24,10 +24,10 @@
 # @import BSgenome.Hsapiens.1000genomes.hs37d5
 # @importFrom BSgenome getSeq
 #
-"import.counts.data" <- function(input, bsg, mutation_categories) 
-{
-  # This function has been deprecated
-  .Deprecated("import.trinucleotides.counts")
+"import.counts.data" <- function(input, bsg, mutation_categories) {
+
+    .Deprecated("import.trinucleotides.counts")
+
 #  # check that input is a data frame or data table
 #  if (!("data.frame" %in% class(input))) {
 #    if (file.exists(input)) {
@@ -105,4 +105,5 @@
 #  # return matrix
 #  return(countMatrix)
 #
+
 }
