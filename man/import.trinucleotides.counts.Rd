@@ -17,3 +17,10 @@ A matrix with trinucleotides counts per patient.
 \description{
 Make trinucleotides counts matrix from input data for a given reference genome.
 }
+\examples{
+data(ssm560_reduced)
+library("BSgenome.Hsapiens.1000genomes.hs37d5")
+trinucleotides_counts = import.trinucleotides.counts(data=ssm560_reduced, 
+     reference=BSgenome.Hsapiens.1000genomes.hs37d5)
+
+}
