@@ -1,0 +1,95 @@
+---
+title: Using the package
+output: html_document
+---
+
+We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package. 
+
+```{r}
+library("SparseSignatures")
+data(ssm560_reduced)
+head(ssm560_reduced)
+```
+
+These data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.counts.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follows, where in the example we use hs37d5 as our reference genome. 
+
+```{r}
+library("BSgenome.Hsapiens.1000genomes.hs37d5")
+bsg = BSgenome.Hsapiens.1000genomes.hs37d5
+data(mutation_categories)
+head(mutation_categories)
+```
+
+```{r eval=FALSE}
+imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg,mutation_categories=mutation_categories)
+```
+
+```{r}
+data(imported_data)
+head(imported_data)
+```
+
+The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot. 
+
+```{r fig.width=7, fig.height=7, fig.cap="Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al."}
+patients.plot(trinucleotides_counts=imported_data,samples="PD10010a")
+```
+
+After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation. 
+
+First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda rate) to be considered. The latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also should not be to high in order to still perform a good fit of the observed counts. 
+
+Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We now show how to do this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016). 
+
+```{r}
+data(patients)
+head(patients)
+```
+
+First, we can estimate the initial values of beta as follows. 
+
+```{r eval=FALSE}
+starting_betas = startingBetaEstimation(x=patients,K=3:12,background_signature=background)
+```
+
+Then, we also need to explore the search space of values for the LASSO penalty in order to make a good choice. To do so, we can use the function lambdaRangeBetaEvaluation to test different values to sparsify beta as follows. Notice that the package also provides the option to sparsify alpha and, in this case, we may use the function lambdaRangeAlphaEvaluation to explore the search space of values. 
+
+```{r eval=FALSE}
+lambda_range = lambdaRangeBetaEvaluation(x=patients,K=10,beta=starting_betas[[8,1]],
+                                         lambda_values=c(0.05,0.10))
+```
+
+As the executions of these functions can be very time-consuming, we also provide as examples together with the package a set of pre-computed results by the two functions startingBetaEstimation and lambdaRangeBetaEvaluation obtained with the commands above. 
+
+```{r}
+data(starting_betas_example)
+data(lambda_range_example)
+```
+
+Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation. 
+
+```{r eval=FALSE}
+cv = nmfLassoCV(x=patients,K=3:10)
+```
+
+We notice that the computations for this task can be very time consuming, expecially when many iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the execution, we suggest using the parallel execution options. Also, to reduce the memory requirements, we advise splitting the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest making 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, lambda values = c(0.05,0.10,0.15), number of iterations of cross-validation = 2. 
+
+```{r}
+data(cv_example)
+```
+
+Finally, we can compute the signatures for the best configuration, i.e., K = 5. 
+
+```{r}
+beta = starting_betas_example[["5_signatures","Value"]]
+res = nmfLasso(x = patients, K = 5, beta = beta, background_signature = background, seed = 12345)
+```
+
+
+We conclude this vignette by plotting the discovered signatures. 
+
+```{r fig.width=7, fig.height=7, fig.cap="Visualization of the discovered signatures"}
+data(nmf_LassoK_example)
+signatures = nmf_LassoK_example$beta
+signatures.plot(beta=signatures, xlabels=FALSE)
+```

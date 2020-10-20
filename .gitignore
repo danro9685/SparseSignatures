@@ -35,4 +35,5 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
+# pkgdown local
 docs
