@@ -88,7 +88,7 @@ res = nmfLasso(x = patients, K = 5, beta = beta, background_signature = backgrou
 
 We conclude this vignette by plotting the discovered signatures. 
 
-```{r fig.width=7, fig.height=7, fig.cap="Visualization of the discovered signatures"}
+```{r fig.width=7, fig.height=7, fig.cap="Visualization of the discovered signatures."}
 data(nmf_LassoK_example)
 signatures = nmf_LassoK_example$beta
 signatures.plot(beta=signatures, xlabels=FALSE)

@@ -11,7 +11,7 @@ A mutational signature represents the pattern of mutations produced by a mutagen
 ## Changelog
 
 
-- *2.1.0* Migration from Travis-CI to Github Actions and Major refactoring. 
+- *2.0.0* Migration from Travis-CI to Github Actions and Major refactoring. 
 - *1.0.4* Move NMF to Depends section. 
 - *1.0.3* Issue with the basis function solved. 
 - *1.0.0* package released on Bioconductor in May 2018. 
