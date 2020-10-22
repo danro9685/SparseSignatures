@@ -329,7 +329,7 @@
                                 x_cv[cv_entries] <- 0
                             }
                             else {
-                                if(!is.na(curr_iter_alpha)&&!is.na(curr_iter_beta)) {
+                                if(!is.na(curr_iter_alpha[1])&&!is.na(curr_iter_beta[1])) {
                                     predicted_counts <- curr_iter_alpha %*% curr_iter_beta
                                     x_cv[cv_entries] <- predicted_counts[cv_entries]
                                 }
