@@ -225,7 +225,7 @@
                                 x_cv[cv_entries] <- 0
                             }
                             else {
-                                if(!is.na(curr_iter_alpha)&&!is.na(curr_iter_beta)) {
+                                if(!is.na(curr_iter_alpha[1])&&!is.na(curr_iter_beta[1])) {
                                     predicted_counts <- curr_iter_alpha %*% curr_iter_beta
                                     x_cv[cv_entries] <- predicted_counts[cv_entries]
                                 }
@@ -252,7 +252,7 @@
                         }
                         
                         # save an estimate of mean squared error and stability of the solution
-                        if(!is.na(curr_iter_alpha)&&!is.na(curr_iter_beta)) {
+                        if(!is.na(curr_iter_alpha[1])&&!is.na(curr_iter_beta[1])) {
                             curr_predicted_counts <- round(curr_iter_alpha%*%curr_iter_beta)
                             curr_true_considered_counts <- as.vector(x[cv_entries])
                             curr_predicted_considered_counts <- as.vector(curr_predicted_counts[cv_entries])
@@ -356,7 +356,7 @@
                         }
                         
                         # save an estimate of mean squared error and stability of the solution
-                        if(!is.na(curr_iter_alpha)&&!is.na(curr_iter_beta)) {
+                        if(!is.na(curr_iter_alpha[1])&&!is.na(curr_iter_beta[1])) {
                             curr_predicted_counts <- round(curr_iter_alpha%*%curr_iter_beta)
                             curr_true_considered_counts <- as.vector(x[cv_entries])
                             curr_predicted_considered_counts <- as.vector(curr_predicted_counts[cv_entries])
