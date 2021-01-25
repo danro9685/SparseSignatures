@@ -18,6 +18,16 @@ NULL
 #' @return vector of rates for the 96 trinucleotides 
 NULL
 
+#' @name background2 
+#' @title COSMIC replication error 
+#' @description background replication error signature derived from COSMIC SBS5. 
+#' @docType data 
+#' @usage data(background2) 
+#' @format vector of rates 
+#' @source COSMIC database (https://cancer.sanger.ac.uk/cosmic/signatures) v3. 
+#' @return vector of rates for the 96 trinucleotides 
+NULL
+
 #' @name mutation_categories 
 #' @title trinucleotides mutation categories 
 #' @description 96 trinucleotides mutation categories 
