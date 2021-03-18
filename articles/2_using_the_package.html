@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
       </span>
     </div>
 
@@ -58,8 +60,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -73,14 +75,13 @@
 
       
 
-      </header><script src="2_using_the_package_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="2_using_the_package_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="2_using_the_package_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="2_using_the_package_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using the package</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/vignettes/2_using_the_package.rmd"><code>vignettes/2_using_the_package.rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/vignettes/2_using_the_package.rmd" class="external-link"><code>vignettes/2_using_the_package.rmd</code></a></small>
       <div class="hidden name"><code>2_using_the_package.rmd</code></div>
 
     </div>
@@ -88,8 +89,8 @@
     
     
 <p>We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/danro9685/SparseSignatures">"SparseSignatures"</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/danro9685/SparseSignatures" class="external-link">"SparseSignatures"</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: NMF</code></pre>
 <pre><code>## Loading required package: pkgmaker</code></pre>
 <pre><code>## Loading required package: registry</code></pre>
@@ -99,9 +100,9 @@
 <pre><code>##   To enable shared memory capabilities, try: install.extras('
 ## NMF
 ## ')</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">ssm560_reduced</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ssm560_reduced</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ssm560_reduced</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ssm560_reduced</span><span class="op">)</span></code></pre></div>
 <pre><code>##      sample chrom     start       end ref alt
 ## 1: PD10014a     1 186484577 186484577   A   C
 ## 2: PD10014a     7 141761948 141761948   G   A
@@ -110,8 +111,8 @@
 ## 5: PD10014a     3 191275626 191275626   T   A
 ## 6: PD10014a     4 135265376 135265376   C   T</code></pre>
 <p>These data are a reduced version with only 3 patients of the 560 breast tumors provided by Nik-Zainal, Serena, et al. (2016). We can transform such input data to a count matrix to perform the signatures discovery with the function import.counts.data. To do so, we also need to specify the reference genome as a BSgenome object and the format of the 96 nucleotides to be considered. This can be done as follows, where in the example we use hs37d5 as our reference genome.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"BSgenome.Hsapiens.1000genomes.hs37d5"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"BSgenome.Hsapiens.1000genomes.hs37d5"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Loading required package: BSgenome</code></pre>
 <pre><code>## Loading required package: S4Vectors</code></pre>
 <pre><code>## Loading required package: stats4</code></pre>
@@ -137,10 +138,10 @@
 ## 
 ##     strsplit</code></pre>
 <pre><code>## Loading required package: rtracklayer</code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit">
-<span class="va">bsg</span> <span class="op">=</span> <span class="va">BSgenome.Hsapiens.1000genomes.hs37d5</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">mutation_categories</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mutation_categories</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">bsg</span> <span class="op">=</span> <span class="va">BSgenome.Hsapiens.1000genomes.hs37d5</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mutation_categories</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mutation_categories</span><span class="op">)</span></code></pre></div>
 <pre><code>##    context alt     cat
 ## 1:     A:A C&gt;A A[C&gt;A]A
 ## 2:     C:A C&gt;A C[C&gt;A]A
@@ -148,11 +149,11 @@
 ## 4:     T:A C&gt;A T[C&gt;A]A
 ## 5:     A:A C&gt;G A[C&gt;G]A
 ## 6:     C:A C&gt;G C[C&gt;G]A</code></pre>
-<div class="sourceCode" id="cb29"><pre class="downlit">
-<span class="va">imported_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/import.trinucleotides.counts.html">import.trinucleotides.counts</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">ssm560_reduced</span>,reference<span class="op">=</span><span class="va">bsg</span>,mutation_categories<span class="op">=</span><span class="va">mutation_categories</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb30"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">imported_data</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">imported_data</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">imported_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/import.trinucleotides.counts.html">import.trinucleotides.counts</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">ssm560_reduced</span>,reference<span class="op">=</span><span class="va">bsg</span>,mutation_categories<span class="op">=</span><span class="va">mutation_categories</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">imported_data</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">imported_data</span><span class="op">)</span></code></pre></div>
 <pre><code>##          A[C&gt;A]A A[C&gt;A]C A[C&gt;A]G A[C&gt;A]T A[C&gt;G]A A[C&gt;G]C A[C&gt;G]G A[C&gt;G]T
 ## PD10010a      37      25       8      24      35       5      16      25
 ## PD10011a     103      59      16      73     113      54      31     102
@@ -202,8 +203,8 @@
 ## PD10011a     125      79      83     113      68      90     140     251
 ## PD10014a     143     118      75     148      71      54      76     160</code></pre>
 <p>The function import.counts.data can also take a text file as input with the same format as the one shown above. Now, we show an example of a visualization feature provided by the package, and we show the counts for the first patient PD10010a in the following plot.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit">
-<span class="fu"><a href="../reference/patients.plot.html">patients.plot</a></span><span class="op">(</span>trinucleotides_counts<span class="op">=</span><span class="va">imported_data</span>,samples<span class="op">=</span><span class="st">"PD10010a"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/patients.plot.html">patients.plot</a></span><span class="op">(</span>trinucleotides_counts<span class="op">=</span><span class="va">imported_data</span>,samples<span class="op">=</span><span class="st">"PD10010a"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="2_using_the_package_files/figure-html/unnamed-chunk-5-1.png" alt="Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al." width="672"><p class="caption">
 Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al.
@@ -212,9 +213,9 @@ Visualization of the counts from patient PD10010a from the dataset published in 
 <p>After the data are loaded, signatures can be discovered. To do so, we need to define a set of parameters on which to perform the estimation.</p>
 <p>First of all, we need to specify the ranges for the number of signatures (variable K) and the LASSO penalty value (variable lambda rate) to be considered. The latter is more complicated to estimate, as it requires that the values in the range not to be too small in order to avoid dense signatures, but also should not be to high in order to still perform a good fit of the observed counts.</p>
 <p>Besides these parameters, we also need to estimate the initial values of beta to be used during the estimation. We now show how to do this on the set of counts from 560 tumors provided in Nik-Zainal, Serena, et al. (2016).</p>
-<div class="sourceCode" id="cb33"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></code></pre></div>
 <pre><code>##         A[C&gt;A]A A[C&gt;A]C A[C&gt;A]G A[C&gt;A]T A[C&gt;G]A A[C&gt;G]C A[C&gt;G]G A[C&gt;G]T A[C&gt;T]A
 ## PD8623a      24      23       4      20      10      19       2      11      43
 ## PD8618a      29      19       2      15      11      12       2       8      31
@@ -293,26 +294,26 @@ Visualization of the counts from patient PD10010a from the dataset published in 
 ## PD4968a      23      44      15       8      15      38
 ## PD4954a      30      57      40      29      37      62</code></pre>
 <p>First, we can estimate the initial values of beta as follows.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit">
-<span class="va">starting_betas</span> <span class="op">=</span> <span class="fu"><a href="../reference/startingBetaEstimation.html">startingBetaEstimation</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">12</span>,background_signature<span class="op">=</span><span class="va">background</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">starting_betas</span> <span class="op">=</span> <span class="fu"><a href="../reference/startingBetaEstimation.html">startingBetaEstimation</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">12</span>,background_signature<span class="op">=</span><span class="va">background</span><span class="op">)</span></code></pre></div>
 <p>Then, we also need to explore the search space of values for the LASSO penalty in order to make a good choice. To do so, we can use the function lambdaRangeBetaEvaluation to test different values to sparsify beta as follows. Notice that the package also provides the option to sparsify alpha and, in this case, we may use the function lambdaRangeAlphaEvaluation to explore the search space of values.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit">
-<span class="va">lambda_range</span> <span class="op">=</span> <span class="fu"><a href="../reference/lambdaRangeBetaEvaluation.html">lambdaRangeBetaEvaluation</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">10</span>,beta<span class="op">=</span><span class="va">starting_betas</span><span class="op">[[</span><span class="fl">8</span>,<span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
-                                         lambda_values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>,<span class="fl">0.10</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">lambda_range</span> <span class="op">=</span> <span class="fu"><a href="../reference/lambdaRangeBetaEvaluation.html">lambdaRangeBetaEvaluation</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">10</span>,beta<span class="op">=</span><span class="va">starting_betas</span><span class="op">[[</span><span class="fl">8</span>,<span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
+                                         lambda_values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>,<span class="fl">0.10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>As the executions of these functions can be very time-consuming, we also provide as examples together with the package a set of pre-computed results by the two functions startingBetaEstimation and lambdaRangeBetaEvaluation obtained with the commands above.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lambda_range_example</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lambda_range_example</span><span class="op">)</span></code></pre></div>
 <p>Now that we have evaluated all the required parameters, we need to decide which configuration of number of signatures and lambda value is the best. To do so, we rely on cross-validation.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit">
-<span class="va">cv</span> <span class="op">=</span> <span class="fu"><a href="../reference/nmfLassoCV.html">nmfLassoCV</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cv</span> <span class="op">=</span> <span class="fu"><a href="../reference/nmfLassoCV.html">nmfLassoCV</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span>,K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>We notice that the computations for this task can be very time consuming, expecially when many iterations of cross validations are specified (see manual) and a large set of configurations of the parameters are tested. To speed up the execution, we suggest using the parallel execution options. Also, to reduce the memory requirements, we advise splitting the cross validation in different runs, e.g., if one wants to perform 100 iterations, we would suggest making 10 independent runs of 10 iterations each. Also in this case, we provide as examples together with the package a set of pre-computed results obtained with the above command and the following settings: K = 3:10, cross validation entries = 0.10, lambda values = c(0.05,0.10,0.15), number of iterations of cross-validation = 2.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cv_example</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cv_example</span><span class="op">)</span></code></pre></div>
 <p>Finally, we can compute the signatures for the best configuration, i.e., K = 5.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit">
-<span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span>
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/nmfLasso.html">nmfLasso</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">patients</span>, K <span class="op">=</span> <span class="fl">5</span>, beta <span class="op">=</span> <span class="va">beta</span>, background_signature <span class="op">=</span> <span class="va">background</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span>
+<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/nmfLasso.html">nmfLasso</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">patients</span>, K <span class="op">=</span> <span class="fl">5</span>, beta <span class="op">=</span> <span class="va">beta</span>, background_signature <span class="op">=</span> <span class="va">background</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
 <pre><code>## Performing the discovery of the signatures by NMF with Lasso... 
 ## Performing a total of 30 iterations... 
 ## Progress 3.33333333333333%... 
@@ -349,10 +350,10 @@ Visualization of the counts from patient PD10010a from the dataset published in 
 ## The likelihood is not increasing, you should try a lower value of lambda!
 ## Current settings: K = 6, lambda_rate_alpha = 0.05, lambda_rate_beta = 0.05...</code></pre>
 <p>We conclude this vignette by plotting the discovered signatures.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">nmf_LassoK_example</span><span class="op">)</span>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nmf_LassoK_example</span><span class="op">)</span>
 <span class="va">signatures</span> <span class="op">=</span> <span class="va">nmf_LassoK_example</span><span class="op">$</span><span class="va">beta</span>
-<span class="fu"><a href="../reference/signatures.plot.html">signatures.plot</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">signatures</span>, xlabels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="../reference/signatures.plot.html">signatures.plot</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">signatures</span>, xlabels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="2_using_the_package_files/figure-html/unnamed-chunk-13-1.png" alt="Visualization of the discovered signatures." width="672"><p class="caption">
 Visualization of the discovered signatures.
@@ -369,11 +370,13 @@ Visualization of the discovered signatures.
 
 
       <footer><div class="copyright">
-  <p>Developed by Daniele Ramazzotti, Avantika Lal, Luca De Sano, Arend Sidow.</p>
+  <p></p>
+<p>Developed by Daniele Ramazzotti, Avantika Lal, Luca De Sano, Arend Sidow.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
@@ -381,6 +384,8 @@ Visualization of the discovered signatures.
 
   
 
+
+  
 
   </body>
 </html>

@@ -1,8 +1,8 @@
 pandoc: 2.7.3
 pkgdown: 1.6.1.9000
-pkgdown_sha: e1e46f2e13c7efdb17bc4eae40bc3779c2b0b517
+pkgdown_sha: 1ec304b0002d0483f386e5a9b66cc0cde24b335f
 articles:
   1_introduction: 1_introduction.html
   2_using_the_package: 2_using_the_package.html
-last_built: 2020-10-27T18:20Z
+last_built: 2021-03-18T14:00Z
 
