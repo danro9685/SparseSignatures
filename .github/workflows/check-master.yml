@@ -152,7 +152,7 @@ jobs:
           'marginfix', 'titlesec', 'fancyhdr', 'enumitem', 'parskip', 'preprint',
           'soul', 'placeins', 'ragged2e', 'ms', 'footmisc', 'changepage',
           'caption', 'xstring', 'mathtools', 'pgf', 'environ', 'trimspaces',
-          'pdfcrop', 'everysel'))
+          'pdfcrop', 'everysel', 'beramono'))
         shell: Rscript {0}
 
       - name: Install R packages
