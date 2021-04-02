@@ -139,6 +139,7 @@ jobs:
           sudo apt-get install libgsl-dev
           sudo apt-get install libharfbuzz-dev
           sudo apt-get install libfribidi-dev
+          sudo apt-get install texlive-fonts-extra
       - uses: r-lib/actions/setup-tinytex@master
 
       - uses: r-lib/actions/setup-r@master
@@ -148,11 +149,12 @@ jobs:
       - name: Install latex packages
         run: |
           install.packages('tinytex')
+          tinytex::install_tinytex()
           tinytex::tlmgr_install(c('tcolorbox', 'bera', 'nowidow', 'parnotes',
           'marginfix', 'titlesec', 'fancyhdr', 'enumitem', 'parskip', 'preprint',
           'soul', 'placeins', 'ragged2e', 'ms', 'footmisc', 'changepage',
           'caption', 'xstring', 'mathtools', 'pgf', 'environ', 'trimspaces',
-          'pdfcrop', 'everysel', 'beramono'))
+          'pdfcrop', 'everysel'))
         shell: Rscript {0}
 
       - name: Install R packages
