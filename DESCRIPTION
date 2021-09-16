@@ -1,6 +1,6 @@
 Package: SparseSignatures
-Version: 2.3.0
-Date: 2021-04-19
+Version: 2.3.1
+Date: 2021-09-16
 Title: SparseSignatures
 Authors@R: c(
     person("Daniele", "Ramazzotti", role=c("cre","aut"),email="daniele.ramazzotti@yahoo.com",
@@ -13,7 +13,7 @@ Authors@R: c(
     person("Arend", "Sidow", role=c("aut")))
 Maintainer: Luca De Sano <luca.desano@gmail.com>
 Depends:
-    R (>= 4.0.0),
+    R (>= 4.1.0),
     NMF
 Imports:
     nnlasso,
@@ -39,11 +39,10 @@ Name:
 Description:
     Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient's tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each signature can also be represented by a vector of length 96, where each element represents the probability that this particular mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients.
 Encoding: UTF-8
-LazyData: TRUE
 License: file LICENSE
 URL: https://github.com/danro9685/SparseSignatures
 BugReports: https://github.com/danro9685/SparseSignatures
 biocViews: BiomedicalInformatics, 
            SomaticMutation
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
