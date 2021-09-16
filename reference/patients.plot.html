@@ -58,9 +58,6 @@
 
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -83,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
       </span>
     </div>
 
@@ -137,12 +134,12 @@
     <p>Plot trinucleotides counts for a set of given patients.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>patients.plot</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>patients.plot</span><span class='op'>(</span>
   <span class='va'>trinucleotides_counts</span>,
   samples <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>trinucleotides_counts</span><span class='op'>)</span>,
   freq <span class='op'>=</span> <span class='cn'>FALSE</span>,
   xlabels <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,10 +167,11 @@
     <p>A ggplot2 object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span>
-<span class='fu'>patients.plot</span><span class='op'>(</span>trinucleotides_counts<span class='op'>=</span><span class='va'>patients</span>,samples<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PD10010a"</span>,<span class='st'>"PD10011a"</span>,<span class='st'>"PD10014a"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='patients.plot-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>patients.plot</span><span class='op'>(</span>trinucleotides_counts<span class='op'>=</span><span class='va'>patients</span>,samples<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PD10010a"</span>,<span class='st'>"PD10011a"</span>,<span class='st'>"PD10014a"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt'><img src='patients.plot-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

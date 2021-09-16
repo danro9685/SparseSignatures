@@ -59,9 +59,6 @@ result in dense exposures, but too large values lead to bad fit of the counts." 
 
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -84,7 +81,7 @@ result in dense exposures, but too large values lead to bad fit of the counts." 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
       </span>
     </div>
 
@@ -139,7 +136,7 @@ result in dense exposures, but too large values lead to bad fit of the counts." 
 result in dense exposures, but too large values lead to bad fit of the counts.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lambdaRangeAlphaEvaluation</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>lambdaRangeAlphaEvaluation</span><span class='op'>(</span>
   <span class='va'>x</span>,
   K <span class='op'>=</span> <span class='fl'>5</span>,
   beta <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -153,7 +150,7 @@ result in dense exposures, but too large values lead to bad fit of the counts.</
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   log_file <span class='op'>=</span> <span class='st'>""</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -227,18 +224,19 @@ too small values of lambda results in unstable log-likelihood through the iterat
 drop.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>background</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span>
-<span class='va'>res</span> <span class='op'>=</span> <span class='fu'>lambdaRangeAlphaEvaluation</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>patients</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>,<span class='op'>]</span>,
-     K<span class='op'>=</span><span class='fl'>5</span>,background_signature<span class='op'>=</span><span class='va'>background</span>,
-     nmf_runs<span class='op'>=</span><span class='fl'>1</span>,lambda_values<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>,<span class='fl'>0.05</span><span class='op'>)</span>,
-     num_processes<span class='op'>=</span><span class='cn'>NA</span>,
-     seed<span class='op'>=</span><span class='fl'>12345</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Computing the initial values of beta by standard NMF... 
-#&gt; Performing estimation of lambda range for alpha... 
-#&gt; Progress 50%... 
-#&gt; Progress 100%... </div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>background</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>lambdaRangeAlphaEvaluation</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>patients</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>,<span class='op'>]</span>,</span>
+<span class='r-in'>     K<span class='op'>=</span><span class='fl'>5</span>,background_signature<span class='op'>=</span><span class='va'>background</span>,</span>
+<span class='r-in'>     nmf_runs<span class='op'>=</span><span class='fl'>1</span>,lambda_values<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>,<span class='fl'>0.05</span><span class='op'>)</span>,</span>
+<span class='r-in'>     num_processes<span class='op'>=</span><span class='cn'>NA</span>,</span>
+<span class='r-in'>     seed<span class='op'>=</span><span class='fl'>12345</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Computing the initial values of beta by standard NMF... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing estimation of lambda range for alpha... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Progress 50%... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Progress 100%... </span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

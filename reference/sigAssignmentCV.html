@@ -60,9 +60,6 @@ an advice may be to split the computation into multiple smaller sets." />
 
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -85,7 +82,7 @@ an advice may be to split the computation into multiple smaller sets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
       </span>
     </div>
 
@@ -141,7 +138,7 @@ memory usage and intensive computations, when a big number of cross validation r
 an advice may be to split the computation into multiple smaller sets.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sigAssignmentCV</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>sigAssignmentCV</span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>beta</span>,
   normalize_counts <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -154,7 +151,7 @@ an advice may be to split the computation into multiple smaller sets.</p>
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   log_file <span class='op'>=</span> <span class='st'>""</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -220,31 +217,32 @@ this parameter needs to be set to either NA or NULL.</p></td>
 cross validation; grid_search_loglik reports for each configuration the number of times the algorithm converged.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>starting_betas_example</span><span class='op'>)</span>
-<span class='va'>beta</span> <span class='op'>=</span> <span class='va'>starting_betas_example</span><span class='op'>[[</span><span class='st'>"5_signatures"</span>,<span class='st'>"Value"</span><span class='op'>]</span><span class='op'>]</span>
-<span class='va'>res</span> <span class='op'>=</span> <span class='fu'>sigAssignmentCV</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>patients</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>,<span class='op'>]</span>,
-     beta<span class='op'>=</span><span class='va'>beta</span>,
-     lambda_values_alpha<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.00</span><span class='op'>)</span>,
-     cross_validation_repetitions<span class='op'>=</span><span class='fl'>2</span>,
-     num_processes<span class='op'>=</span><span class='cn'>NA</span>,
-     seed<span class='op'>=</span><span class='fl'>12345</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Performing a search to estimate the best values of lambda with a total of 2 cross validation repetitions... 
-#&gt; Performing repetition 1 out of 2... 
-#&gt; Performing cross validation iteration 1 out of 5... 
-#&gt; Performing cross validation iteration 2 out of 5... 
-#&gt; Performing cross validation iteration 3 out of 5... 
-#&gt; Performing cross validation iteration 4 out of 5... 
-#&gt; Performing cross validation iteration 5 out of 5... 
-#&gt; Progress 100%... 
-#&gt; Performing repetition 2 out of 2... 
-#&gt; Performing cross validation iteration 1 out of 5... 
-#&gt; Performing cross validation iteration 2 out of 5... 
-#&gt; Performing cross validation iteration 3 out of 5... 
-#&gt; Performing cross validation iteration 4 out of 5... 
-#&gt; Performing cross validation iteration 5 out of 5... 
-#&gt; Progress 100%... </div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>patients</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>starting_betas_example</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>beta</span> <span class='op'>=</span> <span class='va'>starting_betas_example</span><span class='op'>[[</span><span class='st'>"5_signatures"</span>,<span class='st'>"Value"</span><span class='op'>]</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>sigAssignmentCV</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>patients</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>,<span class='op'>]</span>,</span>
+<span class='r-in'>     beta<span class='op'>=</span><span class='va'>beta</span>,</span>
+<span class='r-in'>     lambda_values_alpha<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.00</span><span class='op'>)</span>,</span>
+<span class='r-in'>     cross_validation_repetitions<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>     num_processes<span class='op'>=</span><span class='cn'>NA</span>,</span>
+<span class='r-in'>     seed<span class='op'>=</span><span class='fl'>12345</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing a search to estimate the best values of lambda with a total of 2 cross validation repetitions... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing repetition 1 out of 2... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 1 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 2 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 3 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 4 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 5 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Progress 100%... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing repetition 2 out of 2... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 1 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 2 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 3 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 4 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Performing cross validation iteration 5 out of 5... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Progress 100%... </span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
