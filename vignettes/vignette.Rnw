@@ -109,12 +109,8 @@ data(mutation_categories)
 head(mutation_categories)
 @
 
-<<example_import_not_eval,eval=FALSE>>=
-imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg,mutation_categories=mutation_categories)
-@
-
-<<example_import_final_eveal>>=
-data(imported_data)
+<<example_import_final_eval>>=
+imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg)
 head(imported_data)
 @
 

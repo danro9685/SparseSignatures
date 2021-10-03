@@ -20,12 +20,8 @@ data(mutation_categories)
 head(mutation_categories)
 ```
 
-```{r eval=FALSE}
-imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg,mutation_categories=mutation_categories)
-```
-
 ```{r}
-data(imported_data)
+imported_data = import.trinucleotides.counts(data=ssm560_reduced,reference=bsg)
 head(imported_data)
 ```
 
