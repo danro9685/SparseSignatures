@@ -1,12 +1,11 @@
 #' Make trinucleotides counts matrix from input data for a given reference genome.
 #'
 #' @examples
-#' \dontrun{
 #' data(ssm560_reduced)
 #' library("BSgenome.Hsapiens.1000genomes.hs37d5")
 #' trinucleotides_counts = import.trinucleotides.counts(data=ssm560_reduced, 
 #'      reference=BSgenome.Hsapiens.1000genomes.hs37d5)
-#' }
+#' 
 #'
 #' @title import.trinucleotides.counts
 #' @param data a data.frame with variants having 6 columns: sample name, chromosome, start position, end position, ref, alt.
@@ -31,6 +30,7 @@
     data <- as.data.frame(data)
     colnames(data) <- c("sample","chrom","start","end","ref","alt")
 
+
     # consider only single nucleotide variants involving (A,C,G,T) bases
     data <- data[which(data[,"start"]==data[,"end"]),,drop=FALSE]
     data <- data[which(as.matrix(data[,"ref"])%in%c("A","C","G","T")),,drop=FALSE]
@@ -40,6 +40,7 @@
     data <- unique(data)
     data <- data[order(data[,"sample"],data[,"chrom"],data[,"pos"]),,drop=FALSE]
 
+    
     # convert data to GRanges
     data <- GRanges(data$chrom,IRanges(start=(data$pos-1),width=3),ref=DNAStringSet(data$ref),alt=DNAStringSet(data$alt),sample=data$sample)
 
@@ -62,7 +63,7 @@
     data$rccontext <- reverseComplement(data$context)
 
     # identify trinucleotides motif
-    data$cat <- ifelse(data$ref%in%c("C","T"),paste0(subseq(data$context,1,1),"[",data$ref,">",data$alt,"]",subseq(data$context,3,3)), 
+    data$cat <- ifelse(as.vector(data$ref) %in% c("C","T"),paste0(subseq(data$context,1,1),"[",data$ref,">",data$alt,"]",subseq(data$context,3,3)), 
                        paste0(subseq(data$rccontext,1,1),"[",data$cref,">",data$calt,"]",subseq(data$rccontext,3,3)))
 
     # create 96 trinucleotides mutation categories
