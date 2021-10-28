@@ -18,7 +18,7 @@ result in dense exposures, but too large values lead to bad fit of the counts.">
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -40,7 +40,7 @@ result in dense exposures, but too large values lead to bad fit of the counts.">
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -55,7 +55,7 @@ result in dense exposures, but too large values lead to bad fit of the counts.">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>sigAssignmentEvaluation</h1>
-    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/R/signatures.assignment.lasso.R"><code>R/signatures.assignment.lasso.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/HEAD/R/signatures.assignment.lasso.R" class="external-link"><code>R/signatures.assignment.lasso.R</code></a></small>
     <div class="hidden name"><code>sigAssignmentEvaluation.Rd</code></div>
     </div>
 
@@ -68,7 +68,7 @@ result in dense exposures, but too large values lead to bad fit of the counts.</
   <span class="va">x</span>,
   <span class="va">beta</span>,
   normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,
-  lambda_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span><span class="op">)</span>,
+  lambda_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span><span class="op">)</span>,
   max_iterations_lasso <span class="op">=</span> <span class="fl">10000</span>,
   num_processes <span class="op">=</span> <span class="cn">Inf</span>,
   seed <span class="op">=</span> <span class="cn">NULL</span>,
@@ -76,43 +76,49 @@ result in dense exposures, but too large values lead to bad fit of the counts.</
   log_file <span class="op">=</span> <span class="st">""</span>
 <span class="op">)</span></code></pre></div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>x</th>
-      <td><p>count matrix for a set of n patients and 96 trinucleotides.</p></td>
-    </tr><tr><th>beta</th>
-      <td><p>beta to be fixed during the estimation of alpha.</p></td>
-    </tr><tr><th>normalize_counts</th>
-      <td><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></td>
-    </tr><tr><th>lambda_values</th>
-      <td><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+    <div id="ref-sections">
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>x</dt>
+<dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+<dt>beta</dt>
+<dd><p>beta to be fixed during the estimation of alpha.</p></dd>
+<dt>normalize_counts</dt>
+<dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+<dt>lambda_values</dt>
+<dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the signatures to 0 within one step. The higher lambda_values is, the sparser are the resulting exposures, 
-but too large values may result in a reduced fit of the observed counts.</p></td>
-    </tr><tr><th>max_iterations_lasso</th>
-      <td><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></td>
-    </tr><tr><th>num_processes</th>
-      <td><p>Number of processes to be used during parallel execution. To execute in single process mode, 
-this parameter needs to be set to either NA or NULL.</p></td>
-    </tr><tr><th>seed</th>
-      <td><p>Seed for reproducibility.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>boolean; Shall I print all messages?</p></td>
-    </tr><tr><th>log_file</th>
-      <td><p>log file where to print outputs when using parallel. If parallel execution is disabled, this parameter is ignored.</p></td>
-    </tr></table><h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
+but too large values may result in a reduced fit of the observed counts.</p></dd>
+<dt>max_iterations_lasso</dt>
+<dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
+<dt>num_processes</dt>
+<dd><p>Number of processes to be used during parallel execution. To execute in single process mode, 
+this parameter needs to be set to either NA or NULL.</p></dd>
+<dt>seed</dt>
+<dd><p>Seed for reproducibility.</p></dd>
+<dt>verbose</dt>
+<dd><p>boolean; Shall I print all messages?</p></dd>
+<dt>log_file</dt>
+<dd><p>log file where to print outputs when using parallel. If parallel execution is disabled, this parameter is ignored.</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
     <p>A list corresponding to results of the function sigAssignmentLasso for each value of lambda to be tested. This function allows 
 to test a good range of lambda values for alpha to be considered. One should keep in mind that too small values generate dense solution, 
 while too high ones leads to poor fit. This behavior is resampled in the values of loglik_progression, which should be increasing: 
 too small values of lambda results in unstable log-likelihood through the iterations, while too large values make log-likelihood 
 drop.</p>
+    </div>
+    </div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
+    <div id="examples">
+    <h2>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">sigAssignmentEvaluation</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
 <span class="r-in">     beta<span class="op">=</span><span class="va">beta</span>,</span>
-<span class="r-in">     lambda_values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">0.05</span><span class="op">)</span>,</span>
+<span class="r-in">     lambda_values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">0.05</span><span class="op">)</span>,</span>
 <span class="r-in">     num_processes<span class="op">=</span><span class="cn">NA</span>,</span>
 <span class="r-in">     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Performing estimation of lambda range for alpha... </span>
@@ -120,6 +126,7 @@ drop.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
 <span class="r-in"></span>
 </code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

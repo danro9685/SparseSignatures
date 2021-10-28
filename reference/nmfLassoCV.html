@@ -19,7 +19,7 @@ an advice may be to split the computation into multiple smaller sets."><!-- math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@ an advice may be to split the computation into multiple smaller sets."><!-- math
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -56,7 +56,7 @@ an advice may be to split the computation into multiple smaller sets."><!-- math
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>nmfLassoCV</h1>
-    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/R/signatures.discovery.lasso.R"><code>R/signatures.discovery.lasso.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/HEAD/R/signatures.discovery.lasso.R" class="external-link"><code>R/signatures.discovery.lasso.R</code></a></small>
     <div class="hidden name"><code>nmfLassoCV.Rd</code></div>
     </div>
 
@@ -73,8 +73,8 @@ an advice may be to split the computation into multiple smaller sets.</p>
   background_signature <span class="op">=</span> <span class="cn">NULL</span>,
   normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,
   nmf_runs <span class="op">=</span> <span class="fl">10</span>,
-  lambda_values_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
-  lambda_values_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
+  lambda_values_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
+  lambda_values_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
   cross_validation_entries <span class="op">=</span> <span class="fl">0.01</span>,
   cross_validation_iterations <span class="op">=</span> <span class="fl">5</span>,
   cross_validation_repetitions <span class="op">=</span> <span class="fl">50</span>,
@@ -86,66 +86,72 @@ an advice may be to split the computation into multiple smaller sets.</p>
   log_file <span class="op">=</span> <span class="st">""</span>
 <span class="op">)</span></code></pre></div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>x</th>
-      <td><p>count matrix for a set of n patients and 96 trinucleotides.</p></td>
-    </tr><tr><th>K</th>
-      <td><p>a range of numeric value (each of them greater than 1) indicating the number of signatures to be discovered.</p></td>
-    </tr><tr><th>starting_beta</th>
-      <td><p>a list of starting beta value for each configuration of K. If it is NULL, starting betas are estimated by 
-NMF.</p></td>
-    </tr><tr><th>background_signature</th>
-      <td><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
-estimated by NMF. If beta is not NULL, this parameter is ignored.</p></td>
-    </tr><tr><th>normalize_counts</th>
-      <td><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></td>
-    </tr><tr><th>nmf_runs</th>
-      <td><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
-this parameter is ignored.</p></td>
-    </tr><tr><th>lambda_values_alpha</th>
-      <td><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+    <div id="ref-sections">
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>x</dt>
+<dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+<dt>K</dt>
+<dd><p>a range of numeric value (each of them greater than 1) indicating the number of signatures to be discovered.</p></dd>
+<dt>starting_beta</dt>
+<dd><p>a list of starting beta value for each configuration of K. If it is NULL, starting betas are estimated by 
+NMF.</p></dd>
+<dt>background_signature</dt>
+<dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
+estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
+<dt>normalize_counts</dt>
+<dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+<dt>nmf_runs</dt>
+<dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+this parameter is ignored.</p></dd>
+<dt>lambda_values_alpha</dt>
+<dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the signatures to 0 within one step. The higher lambda_rate_alpha is, the sparser are the resulting exposures, 
-but too large values may result in a reduced fit of the observed counts.</p></td>
-    </tr><tr><th>lambda_values_beta</th>
-      <td><p>value of LASSO to be used for beta between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+but too large values may result in a reduced fit of the observed counts.</p></dd>
+<dt>lambda_values_beta</dt>
+<dd><p>value of LASSO to be used for beta between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the signatures to 0 within one step. The higher lambda_rate_beta is, the sparser are the resulting exposures, 
-but too large values may result in a reduced fit of the observed counts.</p></td>
-    </tr><tr><th>cross_validation_entries</th>
-      <td><p>Percentage of cells in the count matrix to be replaced by 0s during cross validation.</p></td>
-    </tr><tr><th>cross_validation_iterations</th>
-      <td><p>For each configuration, the first time the signatures are discovered form a matrix with a 
+but too large values may result in a reduced fit of the observed counts.</p></dd>
+<dt>cross_validation_entries</dt>
+<dd><p>Percentage of cells in the count matrix to be replaced by 0s during cross validation.</p></dd>
+<dt>cross_validation_iterations</dt>
+<dd><p>For each configuration, the first time the signatures are discovered form a matrix with a 
 percentage of values replaced by 0s. This may result in poor fit/results. Then, we perform predictions of these entries and replace them with 
-such predicted values. This parameter is the number of restarts to be performed to improve this estimate and obtain more stable solutions.</p></td>
-    </tr><tr><th>cross_validation_repetitions</th>
-      <td><p>Number of time cross-validation should be repeated. Higher values result in better estimate, but are computationally more expensive.</p></td>
-    </tr><tr><th>iterations</th>
-      <td><p>Number of iterations to be performed. Each iteration corresponds to a first step where beta is fitted 
-and a second step where alpha is fitted.</p></td>
-    </tr><tr><th>max_iterations_lasso</th>
-      <td><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></td>
-    </tr><tr><th>num_processes</th>
-      <td><p>Number of processes to be used during parallel execution. To execute in single process mode, 
-this parameter needs to be set to either NA or NULL.</p></td>
-    </tr><tr><th>seed</th>
-      <td><p>Seed for reproducibility.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>boolean; Shall I print all messages?</p></td>
-    </tr><tr><th>log_file</th>
-      <td><p>log file where to print outputs when using parallel. If parallel execution is disabled, this parameter is ignored.</p></td>
-    </tr></table><h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
+such predicted values. This parameter is the number of restarts to be performed to improve this estimate and obtain more stable solutions.</p></dd>
+<dt>cross_validation_repetitions</dt>
+<dd><p>Number of time cross-validation should be repeated. Higher values result in better estimate, but are computationally more expensive.</p></dd>
+<dt>iterations</dt>
+<dd><p>Number of iterations to be performed. Each iteration corresponds to a first step where beta is fitted 
+and a second step where alpha is fitted.</p></dd>
+<dt>max_iterations_lasso</dt>
+<dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
+<dt>num_processes</dt>
+<dd><p>Number of processes to be used during parallel execution. To execute in single process mode, 
+this parameter needs to be set to either NA or NULL.</p></dd>
+<dt>seed</dt>
+<dd><p>Seed for reproducibility.</p></dd>
+<dt>verbose</dt>
+<dd><p>boolean; Shall I print all messages?</p></dd>
+<dt>log_file</dt>
+<dd><p>log file where to print outputs when using parallel. If parallel execution is disabled, this parameter is ignored.</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
     <p>A list of 2 elements: grid_search_mse and and grid_search_loglik. Here, grid_search_mse reports the mean squared error for each configuration of performed 
 cross validation; grid_search_loglik reports for each configuration the number of times the algorithm converged.</p>
+    </div>
+    </div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
+    <div id="examples">
+    <h2>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">nmfLassoCV</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
 <span class="r-in">     K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>,</span>
 <span class="r-in">     background_signature<span class="op">=</span><span class="va">background</span>,</span>
 <span class="r-in">     nmf_runs<span class="op">=</span><span class="fl">1</span>,</span>
-<span class="r-in">     lambda_values_alpha<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.00</span><span class="op">)</span>,</span>
-<span class="r-in">     lambda_values_beta<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.00</span><span class="op">)</span>,</span>
+<span class="r-in">     lambda_values_alpha<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.00</span><span class="op">)</span>,</span>
+<span class="r-in">     lambda_values_beta<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.00</span><span class="op">)</span>,</span>
 <span class="r-in">     cross_validation_repetitions<span class="op">=</span><span class="fl">2</span>,</span>
 <span class="r-in">     num_processes<span class="op">=</span><span class="cn">NA</span>,</span>
 <span class="r-in">     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span>
@@ -194,6 +200,7 @@ cross validation; grid_search_loglik reports for each configuration the number o
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
 <span class="r-in"></span>
 </code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -54,7 +54,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>startingBetaEstimation</h1>
-    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/R/signatures.discovery.lasso.R"><code>R/signatures.discovery.lasso.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/HEAD/R/signatures.discovery.lasso.R" class="external-link"><code>R/signatures.discovery.lasso.R</code></a></small>
     <div class="hidden name"><code>startingBetaEstimation.Rd</code></div>
     </div>
 
@@ -72,30 +72,36 @@
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>x</th>
-      <td><p>count matrix for a set of n patients and 96 trinucleotides.</p></td>
-    </tr><tr><th>K</th>
-      <td><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></td>
-    </tr><tr><th>background_signature</th>
-      <td><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
-estimated by NMF. If beta is not NULL, this parameter is ignored.</p></td>
-    </tr><tr><th>normalize_counts</th>
-      <td><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></td>
-    </tr><tr><th>nmf_runs</th>
-      <td><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
-this parameter is ignored.</p></td>
-    </tr><tr><th>seed</th>
-      <td><p>Seed for reproducibility.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>boolean; Shall I print all messages?</p></td>
-    </tr></table><h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
+    <div id="ref-sections">
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>x</dt>
+<dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+<dt>K</dt>
+<dd><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></dd>
+<dt>background_signature</dt>
+<dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
+estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
+<dt>normalize_counts</dt>
+<dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+<dt>nmf_runs</dt>
+<dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+this parameter is ignored.</p></dd>
+<dt>seed</dt>
+<dd><p>Seed for reproducibility.</p></dd>
+<dt>verbose</dt>
+<dd><p>boolean; Shall I print all messages?</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
     <p>A list containing the starting beta values for each configuration of K.</p>
+    </div>
+    </div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
+    <div id="examples">
+    <h2>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">startingBetaEstimation</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
 <span class="r-in">     K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>,</span>
 <span class="r-in">     background_signature<span class="op">=</span><span class="va">background</span>,</span>
@@ -110,6 +116,7 @@ this parameter is ignored.</p></td>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
 <span class="r-in"></span>
 </code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

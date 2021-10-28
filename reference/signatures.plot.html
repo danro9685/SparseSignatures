@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -54,7 +54,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>signatures.plot</h1>
-    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/R/visualization.R"><code>R/visualization.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/HEAD/R/visualization.R" class="external-link"><code>R/visualization.R</code></a></small>
     <div class="hidden name"><code>signatures.plot.Rd</code></div>
     </div>
 
@@ -64,23 +64,30 @@
 
     <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">signatures.plot</span><span class="op">(</span><span class="va">beta</span>, useRowNames <span class="op">=</span> <span class="cn">FALSE</span>, xlabels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>beta</th>
-      <td><p>matrix with the inferred mutational signatures.</p></td>
-    </tr><tr><th>useRowNames</th>
-      <td><p>boolean value; shall I use the rownames from beta as names for the signatures?</p></td>
-    </tr><tr><th>xlabels</th>
-      <td><p>boolean value; shall I display x labels?</p></td>
-    </tr></table><h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
+    <div id="ref-sections">
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>beta</dt>
+<dd><p>matrix with the inferred mutational signatures.</p></dd>
+<dt>useRowNames</dt>
+<dd><p>boolean value; shall I use the rownames from beta as names for the signatures?</p></dd>
+<dt>xlabels</dt>
+<dd><p>boolean value; shall I display x labels?</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
     <p>A ggplot2 object.</p>
+    </div>
+    </div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">nmf_LassoK_example</span><span class="op">)</span></span>
+    <div id="examples">
+    <h2>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nmf_LassoK_example</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">signatures.plot</span><span class="op">(</span>beta<span class="op">=</span><span class="va">nmf_LassoK_example</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span></span>
 <span class="r-plt"><img src="signatures.plot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 </code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

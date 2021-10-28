@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/danro9685/SparseSignatures/">
+  <a href="https://github.com/danro9685/SparseSignatures/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -54,7 +54,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>nmfLasso</h1>
-    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/R/signatures.discovery.lasso.R"><code>R/signatures.discovery.lasso.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/HEAD/R/signatures.discovery.lasso.R" class="external-link"><code>R/signatures.discovery.lasso.R</code></a></small>
     <div class="hidden name"><code>nmfLasso.Rd</code></div>
     </div>
 
@@ -77,40 +77,43 @@
   verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>x</th>
-      <td><p>count matrix for a set of n patients and 96 trinucleotides.</p></td>
-    </tr><tr><th>K</th>
-      <td><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></td>
-    </tr><tr><th>beta</th>
-      <td><p>starting beta for the estimation. If it is NULL, starting beta is estimated by NMF.</p></td>
-    </tr><tr><th>background_signature</th>
-      <td><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
-estimated by NMF. If beta is not NULL, this parameter is ignored.</p></td>
-    </tr><tr><th>normalize_counts</th>
-      <td><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></td>
-    </tr><tr><th>nmf_runs</th>
-      <td><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
-this parameter is ignored.</p></td>
-    </tr><tr><th>lambda_rate_alpha</th>
-      <td><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+    <div id="ref-sections">
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>x</dt>
+<dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+<dt>K</dt>
+<dd><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></dd>
+<dt>beta</dt>
+<dd><p>starting beta for the estimation. If it is NULL, starting beta is estimated by NMF.</p></dd>
+<dt>background_signature</dt>
+<dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
+estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
+<dt>normalize_counts</dt>
+<dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+<dt>nmf_runs</dt>
+<dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
+this parameter is ignored.</p></dd>
+<dt>lambda_rate_alpha</dt>
+<dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the exposure values to 0 within one step. The higher lambda_rate_alpha is, the sparser are the resulting exposure values, 
-but too large values may result in a reduced fit of the observed counts.</p></td>
-    </tr><tr><th>lambda_rate_beta</th>
-      <td><p>value of LASSO to be used for beta between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
+but too large values may result in a reduced fit of the observed counts.</p></dd>
+<dt>lambda_rate_beta</dt>
+<dd><p>value of LASSO to be used for beta between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the signatures to 0 within one step. The higher lambda_rate_beta is, the sparser are the resulting signatures, 
-but too large values may result in a reduced fit of the observed counts.</p></td>
-    </tr><tr><th>iterations</th>
-      <td><p>Number of iterations to be performed. Each iteration corresponds to a first step where beta is fitted 
-and a second step where alpha is fitted.</p></td>
-    </tr><tr><th>max_iterations_lasso</th>
-      <td><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></td>
-    </tr><tr><th>seed</th>
-      <td><p>Seed for reproducibility.</p></td>
-    </tr><tr><th>verbose</th>
-      <td><p>boolean; Shall I print all messages?</p></td>
-    </tr></table><h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
+but too large values may result in a reduced fit of the observed counts.</p></dd>
+<dt>iterations</dt>
+<dd><p>Number of iterations to be performed. Each iteration corresponds to a first step where beta is fitted 
+and a second step where alpha is fitted.</p></dd>
+<dt>max_iterations_lasso</dt>
+<dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
+<dt>seed</dt>
+<dd><p>Seed for reproducibility.</p></dd>
+<dt>verbose</dt>
+<dd><p>boolean; Shall I print all messages?</p></dd>
+</dl></div>
+    <div id="value">
+    <h2>Value</h2>
     <p>A list with the discovered signatures. It includes 6 elements: 
              alpha: matrix of the discovered exposure values
              beta: matrix of the discovered signatures
@@ -118,10 +121,13 @@ and a second step where alpha is fitted.</p></td>
              starting_beta: initial beta on which the method has been applied
              loglik_progression: log-likelihood values during the iterations. This values should be increasing, if not the selected value of lambda is too high
              best_loglik: log-likelihood of the best signatures configuration</p>
+    </div>
+    </div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
+    <div id="examples">
+    <h2>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">nmfLasso</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
 <span class="r-in">     K<span class="op">=</span><span class="fl">5</span>,</span>
@@ -139,6 +145,7 @@ and a second step where alpha is fitted.</p></td>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
 <span class="r-in"></span>
 </code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
