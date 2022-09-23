@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
       </span>
     </div>
 
@@ -63,36 +63,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">patients.plot</span><span class="op">(</span>
-  <span class="va">trinucleotides_counts</span>,
-  samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">trinucleotides_counts</span><span class="op">)</span>,
-  freq <span class="op">=</span> <span class="cn">FALSE</span>,
-  xlabels <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">patients.plot</span><span class="op">(</span></span>
+<span>  <span class="va">trinucleotides_counts</span>,</span>
+<span>  samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">trinucleotides_counts</span><span class="op">)</span>,</span>
+<span>  freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  xlabels <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>trinucleotides_counts</dt>
 <dd><p>trinucleotides counts matrix.</p></dd>
+
+
 <dt>samples</dt>
 <dd><p>name of the samples. This should match a rownames in trinucleotides_counts.</p></dd>
+
+
 <dt>freq</dt>
 <dd><p>boolean value; shall I display rates instead of counts?</p></dd>
+
+
 <dt>xlabels</dt>
 <dd><p>boolean value; shall I display x labels?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot2 object.</p>
+    
+
+<p>A ggplot2 object.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">patients.plot</span><span class="op">(</span>trinucleotides_counts<span class="op">=</span><span class="va">patients</span>,samples<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PD10010a"</span>,<span class="st">"PD10011a"</span>,<span class="st">"PD10014a"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">patients.plot</span><span class="op">(</span>trinucleotides_counts<span class="op">=</span><span class="va">patients</span>,samples<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PD10010a"</span>,<span class="st">"PD10011a"</span>,<span class="st">"PD10014a"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="patients.plot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -107,7 +116,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

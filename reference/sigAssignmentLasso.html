@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
       </span>
     </div>
 
@@ -63,51 +63,66 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sigAssignmentLasso</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">beta</span>,
-  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,
-  lambda_rate_alpha <span class="op">=</span> <span class="fl">0.05</span>,
-  max_iterations_lasso <span class="op">=</span> <span class="fl">10000</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sigAssignmentLasso</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">beta</span>,</span>
+<span>  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  lambda_rate_alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  max_iterations_lasso <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+
+
 <dt>beta</dt>
 <dd><p>beta to be fixed during the estimation of alpha.</p></dd>
+
+
 <dt>normalize_counts</dt>
 <dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+
+
 <dt>lambda_rate_alpha</dt>
 <dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the exposure values to 0 within one step. The higher lambda_rate_alpha is, the sparser are the resulting exposure values, 
 but too large values may result in a reduced fit of the observed counts.</p></dd>
+
+
 <dt>max_iterations_lasso</dt>
 <dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed for reproducibility.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>boolean; Shall I print all messages?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the discovered signatures and their assignment to patients. It includes 2 elements: 
+    
+
+<p>A list with the discovered signatures and their assignment to patients. It includes 2 elements: 
              alpha: matrix of the assigned exposure values
              beta: matrix of the discovered signatures</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">sigAssignmentLasso</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,beta<span class="op">=</span><span class="va">beta</span>,lambda_rate_alpha<span class="op">=</span><span class="fl">0.05</span>,seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">sigAssignmentLasso</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,beta<span class="op">=</span><span class="va">beta</span>,lambda_rate_alpha<span class="op">=</span><span class="fl">0.05</span>,seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Performing the assignment of signatures to patients with Lasso... </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -122,7 +137,7 @@ but too large values may result in a reduced fit of the observed counts.</p></dd
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
       </span>
     </div>
 
@@ -63,50 +63,65 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">startingBetaEstimation</span><span class="op">(</span>
-  <span class="va">x</span>,
-  K <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">10</span>,
-  background_signature <span class="op">=</span> <span class="cn">NULL</span>,
-  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,
-  nmf_runs <span class="op">=</span> <span class="fl">10</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">startingBetaEstimation</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  K <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">10</span>,</span>
+<span>  background_signature <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nmf_runs <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+
+
 <dt>K</dt>
 <dd><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></dd>
+
+
 <dt>background_signature</dt>
 <dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
 estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
+
+
 <dt>normalize_counts</dt>
 <dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+
+
 <dt>nmf_runs</dt>
 <dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
 this parameter is ignored.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed for reproducibility.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>boolean; Shall I print all messages?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing the starting beta values for each configuration of K.</p>
+    
+
+<p>A list containing the starting beta values for each configuration of K.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">startingBetaEstimation</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
-<span class="r-in">     K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>,</span>
-<span class="r-in">     background_signature<span class="op">=</span><span class="va">background</span>,</span>
-<span class="r-in">     nmf_runs<span class="op">=</span><span class="fl">1</span>,</span>
-<span class="r-in">     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">background</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">startingBetaEstimation</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span></span>
+<span class="r-in"><span>     K<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>     background_signature<span class="op">=</span><span class="va">background</span>,</span></span>
+<span class="r-in"><span>     nmf_runs<span class="op">=</span><span class="fl">1</span>,</span></span>
+<span class="r-in"><span>     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Performing a robust estimation of the starting betas for the nmfLasso method... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computing the initial values of beta by standard NMF... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 33.333%... </span>
@@ -114,7 +129,7 @@ this parameter is ignored.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 66.667%... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Computing the initial values of beta by standard NMF... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -129,7 +144,7 @@ this parameter is ignored.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

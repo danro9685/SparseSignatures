@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.0</span>
       </span>
     </div>
 
@@ -63,59 +63,84 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">nmfLasso</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">K</span>,
-  beta <span class="op">=</span> <span class="cn">NULL</span>,
-  background_signature <span class="op">=</span> <span class="cn">NULL</span>,
-  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,
-  nmf_runs <span class="op">=</span> <span class="fl">10</span>,
-  lambda_rate_alpha <span class="op">=</span> <span class="fl">0.05</span>,
-  lambda_rate_beta <span class="op">=</span> <span class="fl">0.05</span>,
-  iterations <span class="op">=</span> <span class="fl">30</span>,
-  max_iterations_lasso <span class="op">=</span> <span class="fl">10000</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">nmfLasso</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">K</span>,</span>
+<span>  beta <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  background_signature <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  normalize_counts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nmf_runs <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  lambda_rate_alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  lambda_rate_beta <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  iterations <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  max_iterations_lasso <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
+
+
 <dt>K</dt>
 <dd><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></dd>
+
+
 <dt>beta</dt>
 <dd><p>starting beta for the estimation. If it is NULL, starting beta is estimated by NMF.</p></dd>
+
+
 <dt>background_signature</dt>
 <dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
 estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
+
+
 <dt>normalize_counts</dt>
 <dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
+
+
 <dt>nmf_runs</dt>
 <dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
 this parameter is ignored.</p></dd>
+
+
 <dt>lambda_rate_alpha</dt>
 <dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the exposure values to 0 within one step. The higher lambda_rate_alpha is, the sparser are the resulting exposure values, 
 but too large values may result in a reduced fit of the observed counts.</p></dd>
+
+
 <dt>lambda_rate_beta</dt>
 <dd><p>value of LASSO to be used for beta between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the signatures to 0 within one step. The higher lambda_rate_beta is, the sparser are the resulting signatures, 
 but too large values may result in a reduced fit of the observed counts.</p></dd>
+
+
 <dt>iterations</dt>
 <dd><p>Number of iterations to be performed. Each iteration corresponds to a first step where beta is fitted 
 and a second step where alpha is fitted.</p></dd>
+
+
 <dt>max_iterations_lasso</dt>
 <dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed for reproducibility.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>boolean; Shall I print all messages?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the discovered signatures. It includes 6 elements: 
+    
+
+<p>A list with the discovered signatures. It includes 6 elements: 
              alpha: matrix of the discovered exposure values
              beta: matrix of the discovered signatures
              starting_alpha: initial alpha on which the method has been applied
@@ -126,16 +151,16 @@ and a second step where alpha is fitted.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">nmfLasso</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span>
-<span class="r-in">     K<span class="op">=</span><span class="fl">5</span>,</span>
-<span class="r-in">     beta<span class="op">=</span><span class="va">beta</span>,</span>
-<span class="r-in">     lambda_rate_alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
-<span class="r-in">     lambda_rate_beta<span class="op">=</span><span class="fl">0.05</span>,</span>
-<span class="r-in">     iterations<span class="op">=</span><span class="fl">5</span>,</span>
-<span class="r-in">     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">starting_betas_example</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">=</span> <span class="va">starting_betas_example</span><span class="op">[[</span><span class="st">"5_signatures"</span>,<span class="st">"Value"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">nmfLasso</span><span class="op">(</span>x<span class="op">=</span><span class="va">patients</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,<span class="op">]</span>,</span></span>
+<span class="r-in"><span>     K<span class="op">=</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>     beta<span class="op">=</span><span class="va">beta</span>,</span></span>
+<span class="r-in"><span>     lambda_rate_alpha<span class="op">=</span><span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>     lambda_rate_beta<span class="op">=</span><span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>     iterations<span class="op">=</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>     seed<span class="op">=</span><span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Performing the discovery of the signatures by NMF with Lasso... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Performing a total of 5 iterations... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 20%... </span>
@@ -143,7 +168,7 @@ and a second step where alpha is fitted.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 60%... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 80%... </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Progress 100%... </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -158,7 +183,7 @@ and a second step where alpha is fitted.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>
