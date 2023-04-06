@@ -1,9 +1,36 @@
 ---
-title: Using the package
-output: html_document
+title: "Using the package"
+author: 
+  - Daniele Ramazzotti
+  - Avantika Lal
+  - Keli Liu
+  - Luca De Sano
+  - Robert Tibshirani
+  - Arend Sidow
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+graphics: yes
+package: SparseSignatures
+output:
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Using the package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{SparseSignatures,BiocStyle}
 ---
 
 We now present the main features of the package. To start, we show how to load data and transform them to a count matrix to perform the signatures discovery; first we load some example data provided in the package. 
+
+
+The SparseSignatures package can be installed from Bioconductor as follow.
+
+```{r, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("SparseSignature")
+```
 
 ```{r}
 library("SparseSignatures")
