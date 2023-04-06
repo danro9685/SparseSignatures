@@ -1,8 +1,24 @@
 ---
-title: Introduction
-output: html_document
+title: "Introduction"
+author: 
+  - Daniele Ramazzotti
+  - Avantika Lal
+  - Keli Liu
+  - Luca De Sano
+  - Robert Tibshirani
+  - Arend Sidow
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+graphics: yes
+package: SparseSignatures
+output:
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{SparseSignatures,BiocStyle}
 ---
-
 
 Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. 
 
@@ -11,6 +27,7 @@ A mutational signature represents the pattern of mutations produced by a mutagen
 ## Changelog
 
 
+- *2.9.3* New vignette. 
 - *2.0.0* Migration from Travis-CI to Github Actions and Major refactoring. 
 - *1.0.4* Move NMF to Depends section. 
 - *1.0.3* Issue with the basis function solved. 
