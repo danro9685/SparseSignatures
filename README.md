@@ -1,8 +1,10 @@
 SparseSignatures
 ================
 
-[![Actions Status](https://github.com/danro9685/SparseSignatures/workflows/check-master/badge.svg)](https://github.com/danro9685/SparseSignatures/actions?query=workflow%3Acheck-master)
-[![Actions Status](https://github.com/danro9685/SparseSignatures/workflows/check-development/badge.svg)](https://github.com/danro9685/SparseSignatures/actions?query=workflow%3Acheck-development)
+| Branch | Status |
+| --- | --- |
+| master | [![R-CMD-check-bioc](https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml/badge.svg?branch=master)](https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml) |
+| development | [![R-CMD-check-bioc](https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml/badge.svg?branch=development)](https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml) |
 
 Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient's tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient. 
 
