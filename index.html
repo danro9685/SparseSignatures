@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -81,7 +81,26 @@
 <div class="section level1">
 <div class="page-header"><h1 id="sparsesignatures">SparseSignatures<a class="anchor" aria-label="anchor" href="#sparsesignatures"></a>
 </h1></div>
-<p><a href="https://github.com/danro9685/SparseSignatures/actions?query=workflow%3Acheck-master" class="external-link"><img src="https://github.com/danro9685/SparseSignatures/workflows/check-master/badge.svg" alt="Actions Status"></a> <a href="https://github.com/danro9685/SparseSignatures/actions?query=workflow%3Acheck-development" class="external-link"><img src="https://github.com/danro9685/SparseSignatures/workflows/check-development/badge.svg" alt="Actions Status"></a></p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>Branch</th>
+<th>Status</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>master</td>
+<td><a href="https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml" class="external-link"><img src="https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml/badge.svg?branch=master" alt="R-CMD-check-bioc"></a></td>
+</tr>
+<tr class="even">
+<td>development</td>
+<td><a href="https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml" class="external-link"><img src="https://github.com/danro9685/SparseSignatures/actions/workflows/check-bioc.yml/badge.svg?branch=development" alt="R-CMD-check-bioc"></a></td>
+</tr>
+</tbody>
+</table>
 <p>Point mutations occurring in a genome can be divided into 96 categories based on the base being mutated, the base it is mutated into and its two flanking bases. Therefore, for any patient, it is possible to represent all the point mutations occurring in that patient’s tumor as a vector of length 96, where each element represents the count of mutations for a given category in the patient.</p>
 <p>A mutational signature represents the pattern of mutations produced by a mutagen or mutagenic process inside the cell. Each signature can also be represented by a vector of length 96, where each element represents the probability that this particular mutagenic process generates a mutation of the 96 above mentioned categories. In this R package, we provide a set of functions to extract and visualize the mutational signatures that best explain the mutation counts of a large number of patients.</p>
 </div>
