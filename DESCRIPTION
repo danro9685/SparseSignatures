@@ -1,6 +1,6 @@
 Package: SparseSignatures
 Version: 2.15.0
-Date: 2024-04-24
+Date: 2024-05-07
 Title: SparseSignatures
 Authors@R: c(
     person("Daniele", "Ramazzotti", role=c("aut"),email="daniele.ramazzotti@unimib.it",
