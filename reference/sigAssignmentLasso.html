@@ -76,33 +76,33 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
+    <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
 
 
-<dt>beta</dt>
+<dt id="arg-beta">beta<a class="anchor" aria-label="anchor" href="#arg-beta"></a></dt>
 <dd><p>beta to be fixed during the estimation of alpha.</p></dd>
 
 
-<dt>normalize_counts</dt>
+<dt id="arg-normalize-counts">normalize_counts<a class="anchor" aria-label="anchor" href="#arg-normalize-counts"></a></dt>
 <dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
 
 
-<dt>lambda_rate_alpha</dt>
+<dt id="arg-lambda-rate-alpha">lambda_rate_alpha<a class="anchor" aria-label="anchor" href="#arg-lambda-rate-alpha"></a></dt>
 <dd><p>value of LASSO to be used for alpha between 0 and 1. This value should be greater than 0. 1 is the value of LASSO 
 that would shrink all the exposure values to 0 within one step. The higher lambda_rate_alpha is, the sparser are the resulting exposure values, 
 but too large values may result in a reduced fit of the observed counts.</p></dd>
 
 
-<dt>max_iterations_lasso</dt>
+<dt id="arg-max-iterations-lasso">max_iterations_lasso<a class="anchor" aria-label="anchor" href="#arg-max-iterations-lasso"></a></dt>
 <dd><p>Number of maximum iterations to be performed during the sparsification via Lasso.</p></dd>
 
 
-<dt>seed</dt>
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Seed for reproducibility.</p></dd>
 
 
-<dt>verbose</dt>
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>boolean; Shall I print all messages?</p></dd>
 
 </dl></div>

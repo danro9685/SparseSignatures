@@ -76,33 +76,33 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
+    <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>count matrix for a set of n patients and 96 trinucleotides.</p></dd>
 
 
-<dt>K</dt>
+<dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
 <dd><p>numeric value (minimum 2) indicating the number of signatures to be discovered.</p></dd>
 
 
-<dt>background_signature</dt>
+<dt id="arg-background-signature">background_signature<a class="anchor" aria-label="anchor" href="#arg-background-signature"></a></dt>
 <dd><p>background signature to be used. If not provided, a warning is thrown and an initial value for it is 
 estimated by NMF. If beta is not NULL, this parameter is ignored.</p></dd>
 
 
-<dt>normalize_counts</dt>
+<dt id="arg-normalize-counts">normalize_counts<a class="anchor" aria-label="anchor" href="#arg-normalize-counts"></a></dt>
 <dd><p>if true, the input count matrix x is normalize such that the patients have the same number of mutation.</p></dd>
 
 
-<dt>nmf_runs</dt>
+<dt id="arg-nmf-runs">nmf_runs<a class="anchor" aria-label="anchor" href="#arg-nmf-runs"></a></dt>
 <dd><p>number of iteration (minimum 1) of NMF to be performed for a robust estimation of starting beta. If beta is not NULL, 
 this parameter is ignored.</p></dd>
 
 
-<dt>seed</dt>
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Seed for reproducibility.</p></dd>
 
 
-<dt>verbose</dt>
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>boolean; Shall I print all messages?</p></dd>
 
 </dl></div>
