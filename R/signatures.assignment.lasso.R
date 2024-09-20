@@ -193,6 +193,7 @@
 
         # perform the inference
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","beta","normalize_counts","cross_validation_entries"),envir=environment())
         clusterExport(parallel,varlist=c("lambda_values_alpha","cross_validation_iterations","max_iterations_lasso"),envir=environment())
@@ -437,6 +438,7 @@
     }
     else {
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","beta","normalize_counts","max_iterations_lasso"),envir=environment())
         clusterExport(parallel,c('sigAssignmentLasso','nmfLassoDeconstruction'),envir=environment())

@@ -289,6 +289,7 @@
 
         # perform the inference
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","K","starting_beta","background_signature","normalize_counts","cross_validation_entries"),envir=environment())
         clusterExport(parallel,varlist=c("lambda_values_alpha","lambda_values_beta","cross_validation_iterations","iterations","max_iterations_lasso"),envir=environment())
@@ -799,6 +800,7 @@
 
         # perform the inference
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","K","starting_beta","background_signature","normalize_counts"),envir=environment())
         clusterExport(parallel,varlist=c("lambda_values_alpha","lambda_values_beta","iterations","max_iterations_lasso"),envir=environment())
@@ -1278,6 +1280,7 @@
     }
     else {
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","K","beta","normalize_counts","iterations","max_iterations_lasso"),envir=environment())
         clusterExport(parallel,c('nmfLasso','nmfLassoDecomposition','basis','nmf'),envir=environment())
@@ -1508,6 +1511,7 @@
     }
     else {
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnls"))
+        res_clusterEvalQ <- clusterEvalQ(parallel,library("RhpcBLASctl"))
         res_clusterEvalQ <- clusterEvalQ(parallel,library("nnlasso"))
         clusterExport(parallel,varlist=c("x","K","beta","normalize_counts","iterations","max_iterations_lasso"),envir=environment())
         clusterExport(parallel,c('nmfLasso','nmfLassoDecomposition','basis','nmf'),envir=environment())
