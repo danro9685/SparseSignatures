@@ -50,6 +50,7 @@
 #' @import NMF
 #' @import nnlasso
 #' @import nnls
+#' @import RhpcBLASctl
 #' @import parallel
 #'
 "nmfLassoCV" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, lambda_values_alpha = c(0.00, 0.01, 0.05, 0.10), lambda_values_beta = c(0.00, 0.01, 0.05, 0.10), cross_validation_entries = 0.01, cross_validation_iterations = 5, cross_validation_repetitions = 50, iterations = 30, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE, log_file = "" ) {
@@ -138,7 +139,9 @@
         background_signature_beta <- t(background_signature)
         background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
         for(i in 1:dim(x)[1]) {
+            blas_set_num_threads(1)
             background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
         curr_x <- x - (background_signature_alpha %*% background_signature_beta)
         curr_x[curr_x<0] <- 0
@@ -452,6 +455,7 @@
 #' @import NMF
 #' @import nnlasso
 #' @import nnls
+#' @import RhpcBLASctl
 #' @import parallel
 #'
 "nmfLassoBootstrap" <- function( x, K = 3:10, starting_beta = NULL, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, bootstrap_repetitions = 50, iterations = 30, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE, log_file = "" ) {
@@ -542,7 +546,9 @@
         background_signature_beta <- t(background_signature)
         background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
         for(i in 1:dim(x)[1]) {
+            blas_set_num_threads(1)
             background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
         curr_x <- x - (background_signature_alpha %*% background_signature_beta)
         curr_x[curr_x<0] <- 0
@@ -985,6 +991,7 @@
 #' @export startingBetaEstimation
 #' @import NMF
 #' @import nnls
+#' @import RhpcBLASctl
 #'
 "startingBetaEstimation" <- function( x, K = 3:10, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, seed = NULL, verbose = TRUE ) {
     
@@ -1028,7 +1035,9 @@
     background_signature_beta <- t(background_signature)
     background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
     for(i in 1:dim(x)[1]) {
+        blas_set_num_threads(1)
         background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+        blas_set_num_threads(blas_get_num_procs()) # reset to default
     }
     curr_x <- x - (background_signature_alpha %*% background_signature_beta)
     curr_x[curr_x<0] <- 0
@@ -1122,6 +1131,7 @@
 #' @import NMF
 #' @import nnlasso
 #' @import nnls
+#' @import RhpcBLASctl
 #' @import parallel
 #'
 "lambdaRangeAlphaEvaluation" <- function( x, K = 5, beta = NULL, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, lambda_values = c(0.01, 0.05, 0.10, 0.20), iterations = 30, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE, log_file = "" ) {
@@ -1172,7 +1182,9 @@
 
         background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
         for(i in 1:dim(x)[1]) {
+            blas_set_num_threads(1)
             background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
         curr_x <- x - (background_signature_alpha %*% background_signature_beta)
         curr_x[curr_x<0] <- 0
@@ -1349,6 +1361,7 @@
 #' @import NMF
 #' @import nnlasso
 #' @import nnls
+#' @import RhpcBLASctl
 #' @import parallel
 #'
 "lambdaRangeBetaEvaluation" <- function( x, K = 5, beta = NULL, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, lambda_values = c(0.01, 0.05, 0.10, 0.20), iterations = 30, max_iterations_lasso = 10000, num_processes = Inf, seed = NULL, verbose = TRUE, log_file = "" ) {
@@ -1399,7 +1412,9 @@
 
         background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
         for(i in 1:dim(x)[1]) {
+            blas_set_num_threads(1)
             background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
         curr_x <- x - (background_signature_alpha %*% background_signature_beta)
         curr_x[curr_x<0] <- 0
@@ -1577,6 +1592,7 @@
 #' @export nmfLasso
 #' @import NMF
 #' @import nnls
+#' @import RhpcBLASctl
 #' @import nnlasso
 #'
 "nmfLasso" <- function( x, K, beta = NULL, background_signature = NULL, normalize_counts = TRUE, nmf_runs = 10, lambda_rate_alpha = 0.05, lambda_rate_beta = 0.05, iterations = 30, max_iterations_lasso = 10000, seed = NULL, verbose = TRUE ) {
@@ -1650,7 +1666,9 @@
 
         background_signature_alpha <- matrix(0,nrow=dim(x)[1],ncol=1)
         for(i in 1:dim(x)[1]) {
+            blas_set_num_threads(1)
             background_signature_alpha[i,] <- nnls(t(background_signature_beta),as.vector(x[i,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
         curr_x <- x - (background_signature_alpha %*% background_signature_beta)
         curr_x[curr_x<0] <- 0
@@ -1717,14 +1735,18 @@
     rownames(alpha) <- 1:nrow(alpha)
     colnames(alpha) <- rownames(beta)
     for(i in 1:n) {
+        blas_set_num_threads(1)
         alpha[i,] <- nnls(t(beta),as.vector(x[i,]))$x
+        blas_set_num_threads(blas_get_num_procs()) # reset to default
     }
     starting_alpha <- alpha
 
     # rescale the two matrices of a factor of 50 for numerical reasons
     beta <- beta * 50
     for(i in 1:n) {
+        blas_set_num_threads(1)
         alpha[i,] <- nnls(t(beta),as.vector(x[i,]))$x
+        blas_set_num_threads(blas_get_num_procs()) # reset to default
     }
     
     # structure where to save the log-likelihood at each iteration
@@ -1754,12 +1776,16 @@
             # update beta by Non-Negative Linear Least Squares
             for(k in 1:J) {
                  # the first signature represents the background model, thus it is not changed
+                blas_set_num_threads(1)
                 beta[2:K,k] <- nnls(alpha[,2:K,drop=FALSE],as.vector(x[,k]-(alpha[,1]*beta[1,k])))$x
+                blas_set_num_threads(blas_get_num_procs()) # reset to default
             }
 
             # update alpha by Non-Negative Linear Least Squares
             for(j in 1:n) {
+                blas_set_num_threads(1)
                 alpha[j,] <- nnls(t(beta),as.vector(x[j,]))$x
+                blas_set_num_threads(blas_get_num_procs()) # reset to default
             }
 
             # update the log-likelihood for the current iteration
@@ -1797,7 +1823,9 @@
 
             # update alpha by Non-Negative Linear Least Squares
             for(j in 1:n) {
+                blas_set_num_threads(1)
                 alpha[j,] <- nnls(t(beta),as.vector(x[j,]))$x
+                blas_set_num_threads(blas_get_num_procs()) # reset to default
             }
             
             # update the log-likelihood for the current iteration
@@ -1815,7 +1843,9 @@
             # update beta by Non-Negative Linear Least Squares
             for(k in 1:J) {
                 # the first signature represents the background model, thus it is not changed
+                blas_set_num_threads(1)
                 beta[2:K,k] <- nnls(alpha[,2:K,drop=FALSE],as.vector(x[,k]-(alpha[,1]*beta[1,k])))$x
+                blas_set_num_threads(blas_get_num_procs()) # reset to default
             }
 
             # update alpha by Non-Negative Lasso
@@ -1968,7 +1998,9 @@
 
         # update alpha by Non-Negative Linear Least Squares
         for(j in 1:n) {
+            blas_set_num_threads(1)
             alpha[j,] <- nnls(t(beta),as.vector(x[j,]))$x
+            blas_set_num_threads(blas_get_num_procs()) # reset to default
         }
 
     }

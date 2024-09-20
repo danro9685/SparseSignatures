@@ -26,7 +26,8 @@ Imports:
     GenomeInfoDb,
     ggplot2,
     gridExtra,
-    reshape2
+    reshape2,
+    RhpcBLASctl
 Suggests:
     BiocGenerics,
     BSgenome.Hsapiens.1000genomes.hs37d5,
