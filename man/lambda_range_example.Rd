@@ -3,16 +3,16 @@
 \docType{data}
 \name{lambda_range_example}
 \alias{lambda_range_example}
-\title{example of results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016).}
+\title{example of results obtained with the function lambdaRangeBetaEvaluation on the counts input from Nik-Zainal, Serena, et al. (2016).}
 \format{
-results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016)
+results obtained with the function lambdaRangeBetaEvaluation on the counts input from Nik-Zainal, Serena, et al. (2016)
 }
 \usage{
 data(lambda_range_example)
 }
 \value{
-results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016)
+results obtained with the function lambdaRangeBetaEvaluation on the counts input from Nik-Zainal, Serena, et al. (2016)
 }
 \description{
-example of results obtained with the function evaluate.lambda.range on the counts input from Nik-Zainal, Serena, et al. (2016).
+example of results obtained with the function lambdaRangeBetaEvaluation on the counts input from Nik-Zainal, Serena, et al. (2016).
 }
