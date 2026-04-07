@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SparseSignatures</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.20.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.22.0</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@ Tibshirani</h4>
                         <h4 data-toc-skip class="author">Arend
 Sidow</h4>
             
-            <h4 data-toc-skip class="date">October 15, 2025</h4>
+            <h4 data-toc-skip class="date">April 07, 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/danro9685/SparseSignatures/blob/master/vignettes/v2_using_the_package.rmd" class="external-link"><code>vignettes/v2_using_the_package.rmd</code></a></small>
       <div class="hidden name"><code>v2_using_the_package.rmd</code></div>
@@ -160,7 +160,7 @@ in the example we use hs37d5 as our reference genome.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">##     expand.grid, I, unname</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: IRanges</span></span></code></pre>
-<pre><code><span><span class="co">## Loading required package: GenomeInfoDb</span></span></code></pre>
+<pre><code><span><span class="co">## Loading required package: Seqinfo</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: GenomicRanges</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: Biostrings</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: XVector</span></span></code></pre>
@@ -241,7 +241,7 @@ for the first patient PD10010a in the following plot.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/patients.plot.html">patients.plot</a></span><span class="op">(</span>trinucleotides_counts<span class="op">=</span><span class="va">imported_data</span>,samples<span class="op">=</span><span class="st">"PD10010a"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="v2_using_the_package_files/figure-html/unnamed-chunk-5-1.png" alt="Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al." width="672"><p class="caption">
+<img src="v2_using_the_package_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="Visualization of the counts from patient PD10010a from the dataset published in Nik-Zainal, Serena, et al." width="672"><p class="caption">
 Visualization of the counts from patient PD10010a from the dataset
 published in Nik-Zainal, Serena, et al.
 </p>
@@ -423,7 +423,7 @@ i.e., K = 5.</p>
 <span><span class="va">signatures</span> <span class="op">=</span> <span class="va">nmf_LassoK_example</span><span class="op">$</span><span class="va">beta</span></span>
 <span><span class="fu"><a href="../reference/signatures.plot.html">signatures.plot</a></span><span class="op">(</span>beta<span class="op">=</span><span class="va">signatures</span>, xlabels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="v2_using_the_package_files/figure-html/unnamed-chunk-13-1.png" alt="Visualization of the discovered signatures." width="672"><p class="caption">
+<img src="v2_using_the_package_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="Visualization of the discovered signatures." width="672"><p class="caption">
 Visualization of the discovered signatures.
 </p>
 </div>
@@ -444,7 +444,7 @@ Visualization of the discovered signatures.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
       </footer>
