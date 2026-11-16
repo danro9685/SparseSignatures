@@ -23,13 +23,17 @@ import(nnlasso)
 import(nnls)
 import(parallel)
 importFrom(BSgenome,getSeq)
-importFrom(Biostrings,DNAStringSet)
-importFrom(Biostrings,complement)
-importFrom(Biostrings,reverseComplement)
-importFrom(Biostrings,subseq)
-importFrom(data.table,":=")
-importFrom(data.table,.N)
-importFrom(data.table,as.data.table)
-importFrom(data.table,data.table)
-importFrom(data.table,dcast)
+importFrom(Biostrings,
+  DNAStringSet,
+  complement,
+  reverseComplement,
+  subseq
+)
+importFrom(data.table,
+  ":=",
+  .N,
+  as.data.table,
+  data.table,
+  dcast
+)
 importFrom(reshape2,melt)
